@@ -12,7 +12,7 @@ COPY . .
 
 RUN chown -R node ./public
 
-EXPOSE 3003
+EXPOSE 3001
 
 RUN npm run build
 
