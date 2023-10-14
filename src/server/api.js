@@ -7,7 +7,7 @@ import path from 'path'
 // import fontRenamer from '../lib/font-renamer.js'
 
 // const upload = multer({ dest: 'uploads/' })
-// const router = express.Router()
+const router = express.Router()
 
 // const cleanUploads = () => {
 //     const p = path.join(path.resolve(), 'uploads')

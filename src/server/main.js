@@ -5,7 +5,7 @@ import ViteExpress from 'vite-express'
 
 import api from './api.js'
 
-const port = process.env.PORT || 3003
+const port = process.env.PORT || 3001
 const publicPath = path.join(path.resolve(), 'public')
 const app = express()
 
