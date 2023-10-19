@@ -1,12 +1,10 @@
 <template>
 
-  <v-divider class="mb-4"></v-divider>
-
-  <v-form action="/upload" method="post" enctype="multipart/form-data" @submit.prevent="submit($event)" ref="form">
+  <v-form action="/mirasay" method="post" @submit.prevent="submit($event)" ref="form">
 
     <p class="mb-4">
 
-      <v-file-input 
+      <!-- <v-file-input 
         :rules="fileRules" 
         :label="fileLabel" 
         multiple 
@@ -15,13 +13,14 @@
         name="filer"
         accept="font/*"
       ></v-file-input>
-      <br>
+      <br> -->
       <v-text-field 
         :rules="textRules" 
         :label="nameLabel" 
         variant="underlined"
-        id="nyttnavn"
-        name="nyttnavn"
+        id="miramessage"
+        name="miramessage"
+        v-model="message"
       ></v-text-field>
     </p>
 
@@ -34,7 +33,7 @@
         height="40"
         type="submit"
       >
-        <v-icon icon="mdi-transfer-down" size="32"></v-icon>
+        <v-icon icon="mdi-bullhorn-outline" size="32"></v-icon>
       </v-btn>
     </div>
 
@@ -46,18 +45,18 @@
 
   import { ref } from 'vue'
 
-  const fileRules = ref([value => value && value.length > 0 && value[0] instanceof File || props.fileErrorLabel])
+  // const fileRules = ref([value => value && value.length > 0 && value[0] instanceof File || props.fileErrorLabel])
   const textRules = ref([value => value && value.length > 0 || props.nameErrorLabel])
   const props = defineProps(['fileLabel', 'nameLabel', 'fileErrorLabel', 'nameErrorLabel'])
   const emit = defineEmits(['submitted'])
   const form = ref(null)
+  const message = ref('')
 
   async function submit(event) {
     const { valid } = await form.value.validate()
     if (!valid)
       return
-    const data = new FormData(event.target)
-    emit('submitted', data)
+    emit('submitted', { message: message.value })
   }
 
   defineExpose({

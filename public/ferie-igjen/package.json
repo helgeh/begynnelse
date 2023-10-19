@@ -1,0 +1,25 @@
+{
+  "name": "ferie-igjen",
+  "version": "1.0.0",
+  "description": "Viser hvor mye ferie jeg har igjen",
+  "main": "index.js",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "express": "^4.16.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/helgeh/ferie-igjen.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/helgeh/ferie-igjen/issues"
+  },
+  "homepage": "https://github.com/helgeh/ferie-igjen#readme"
+}

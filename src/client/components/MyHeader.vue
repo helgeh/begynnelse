@@ -4,8 +4,8 @@
 
     <v-icon
       class="mb-5"
-      color="success"
-      icon="mdi-archive-edit-outline"
+      color="brown-lighten-1"
+      icon="mdi-dog"
       size="112"
     ></v-icon>
 

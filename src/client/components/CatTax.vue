@@ -173,12 +173,12 @@
     position: absolute;
     display: flex;
     justify-content: center;
-    bottom: 0;
+    bottom: 56px;
     left: 0;
     right: 0;
     margin: 0;
     padding: 0;
-    z-index: -2;
+    z-index: 0;
 }
 
 .cat svg {

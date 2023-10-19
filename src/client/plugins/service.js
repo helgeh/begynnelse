@@ -34,6 +34,34 @@ export default {
           })
 	      ),
 
+	    miraSay: (data) => {
+	    	return new Promise((resolve, reject) => {
+	    		axios({
+	    			url: '/mirasay',
+	    			method: 'post',
+	    			data: data
+	    		})
+			      .then(response => {
+			        if (response && response.data) {
+			        	resolve(response.data)
+			        }
+			        else resolve({})
+			      })
+			      .catch(err => {
+					    reject(err && err.response || {})
+					    if (err && err.response) {
+					      if (err.response.data instanceof Blob) {
+					        const reader = new FileReader()
+					        reader.onload = function() {
+					          console.log(reader.result)
+					        }
+					        reader.readAsText(err.response.data)
+					      }
+					    }
+			      })
+			    })
+	    },
+
 	    uploadFonts: (data) => {
 	    	return new Promise((resolve, reject) => {
 			    axios({

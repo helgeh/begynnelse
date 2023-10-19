@@ -2,12 +2,16 @@
 import express from 'express'
 import fs from 'fs/promises'
 import path from 'path'
+import axios from 'axios'
+import 'dotenv/config'
 // import multer from 'multer'
 
 // import fontRenamer from '../lib/font-renamer.js'
 
 // const upload = multer({ dest: 'uploads/' })
 const router = express.Router()
+
+router.use(express.json())
 
 // const cleanUploads = () => {
 //     const p = path.join(path.resolve(), 'uploads')
@@ -19,6 +23,40 @@ const router = express.Router()
 //             })
 //         })
 // }
+
+router.post('/mirasay', (req, res) => {
+    const miramessage = req.body && req.body.message || ''
+	// console.log('mira sier: ' + miramessage, req.body)
+	
+	const webHookKey = process.env.WEBHOOK_KEY || ''
+	const hookUrl = `https://discord.com/api/webhooks/${webHookKey}`
+	// const hookUrl = 'http://echo.jsontest.com/'
+	const data = {
+		// content: 'Voff voff!'
+		content: miramessage
+	}
+
+	axios.post(hookUrl, data, {
+	  headers: {
+	    'Content-Type': 'application/json'
+	  }
+	})
+	  .then(function (response) {
+	    // console.log(response.data)
+	    // res.json(response.data)
+	    res.json({success: true})
+	  })
+	  .catch(function (error) {
+	    // console.log(error)
+	    res.status(500).send("Huff, noe gikk visst galt på vei til Discord...")
+	  })
+
+	    // res.status(500).send("Nei og nei nå gikk det på tverke her!")
+
+
+
+	// res.json({data: 'javel'})
+})
 
 // router.post('/upload', upload.array('filer', 32), function (req, res, next) {
 //     const nyttnavn = req.body && req.body.nyttnavn || ''
@@ -45,6 +83,15 @@ const router = express.Router()
 //             res.status(500).send(err)
 //         })
 // })
+
+router.get('/ziplist', function (req, res, next) {
+    const z = path.join(path.resolve(), 'public', 'zips')
+    const result = []
+    fs.readdir(z)
+        .then(files => files.filter(file => /.zip$/.test(file)))
+        .then(files => files.map(file => ({path: path.join('/zips', file), fileName: file})))
+        .then(files => res.json({ files }))
+})
 
 // router.get('/ziplist', function (req, res, next) {
 //     const z = path.join(path.resolve(), 'public', 'zips')

@@ -33,6 +33,7 @@
             variant="outlined" 
             class="ms-2" 
             @click.stop="onClickRemoveZip(i)"
+            v-if="props.canRemove"
           >
             <v-icon icon="mdi-close"></v-icon>
           </v-btn>
@@ -52,6 +53,7 @@
 
   const service = inject('service')
   const emit = defineEmits(['download', 'slett'])
+  const props = defineProps(['canRemove'])
   const zipList = ref(null)
   const zipItems = ref([])
   const selected = ref([])
