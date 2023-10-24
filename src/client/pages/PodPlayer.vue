@@ -5,7 +5,7 @@
 	    max-width="600"
 	    rounded="lg"
 	    width="100%"
-	    class="pa-4 mx-auto mt-5"
+	    class="pa-4 mx-auto mt-5 mb-12"
 	  >
 
 		<v-audio-player
