@@ -59,6 +59,7 @@
 	function nextSrc() {
 		const newVal = Math.min(curIndex.value + 1, episodes.length - 1)
 		if (newVal !== curIndex.value) {
+			curIndex.value = newVal
 			setStoredEpisode(curIndex.value)
 			setStoredTime(0)
 		}
@@ -66,6 +67,7 @@
 	function prevSrc() {
 		const newVal = Math.max(0, curIndex.value - 1)
 		if (newVal !== curIndex.value) {
+			curIndex.value = newVal
 			setStoredEpisode(curIndex.value)
 			setStoredTime(0)
 		}
