@@ -7,6 +7,7 @@ import MyForm from '../components/MyForm.vue'
 import MyZipList from '../components/MyZipList.vue'
 import MyAlert from '../components/MyAlert.vue'
 import MyPrompt from '../components/MyPrompt.vue'
+import VuetifyAudioPlayer from '../components/VuetifyAudioPlayer.vue'
 import CatTax from '../components/CatTax.vue'
 
 
@@ -19,6 +20,7 @@ export default {
 			.component('MyZipList', MyZipList)
 			.component('MyAlert', MyAlert)
 			.component('MyPrompt', MyPrompt)
+			.component('VAudioPlayer', VuetifyAudioPlayer)
 			.component('CatTax', CatTax)
 
 		app.provide('service', {

@@ -41,6 +41,7 @@
   import HomePage from './pages/HomePage.vue'
   import MiraMull from './pages/MiraMull.vue'
   import ZipList from './pages/ZipList.vue'
+  import PodPlayer from './pages/PodPlayer.vue'
   import AboutPage from './pages/AboutPage.vue'
   import NotFoundPage from './pages/NotFoundPage.vue'
 
@@ -49,7 +50,8 @@
     '/': HomePage,
     '/mira': MiraMull,
     '/zips': ZipList,
-    '/about': AboutPage
+    '/about': AboutPage,
+    '/player': PodPlayer
   }
 
   const currentPath = ref(window.location.hash.slice(1))
