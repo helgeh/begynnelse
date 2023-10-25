@@ -10,7 +10,7 @@
       :src="albumArt"
       aspect-ratio="1"
       contain
-      class="grey darken-3 px-8 py-8"
+      class="grey darken-3 px-16 pb-8"
     ></v-img>
 
     <audio
@@ -26,7 +26,7 @@
     ></audio>
 
     <v-slider
-      class="audio-seeker"
+      class="audio-seeker mx-5"
       v-if="src"
       min="0"
       max="1000000"
@@ -62,7 +62,7 @@
 
         <v-col :cols="compact ? 12 : 2">
           <div
-            class="d-flex align-center mx-auto"
+            class="d-flex align-top mx-auto"
             :class="compact ? 'justify-center' : 'justify-end'"
             style="max-width: 12rem"
           >
@@ -71,12 +71,12 @@
             </v-btn>
 
             <v-slider
-              class="mt-2 volume-slider"
+              class="mt-1 volume-slider"
               :value="muted ? 0 : volume"
               v-model="volume"
-              thumb-label
               max="100"
               min="0"
+              hide-details="{{true}}"
             ></v-slider>
           </div>
         </v-col>

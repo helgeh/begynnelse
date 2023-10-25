@@ -1,39 +1,43 @@
 <template>
 
-	  <v-sheet
-	    elevation="12"
-	    max-width="600"
-	    rounded="lg"
-	    width="100%"
-	    class="pa-4 mx-auto mt-5 mb-12"
-	  >
+	<div class="player-container">
 
-		<v-audio-player
-			ref="player"
-			:src="currentTrack"
-			:track-title="showTitle"
-			:track-subtitle="currentTitle"
-			allow-previous
-			allow-next
-			:compact="compact"
-			:autoplay="false"
-			:start-time="startTime"
-			:start-volume="vol"
-			:album-art="albumArt"
-			@next-audio="nextSrc()"
-			@previous-audio="prevSrc()"
-			@time-update="onTimeUpdate"
-			@volume-change="onVolumeChange"
-		></v-audio-player>
+		<v-sheet
+			elevation="12"
+			:max-width="compact ? 600 : '80%'"
+			rounded="lg"
+			width="100%"
+			class="pa-4 mx-auto mt-5 mb-12"
+		>
 
-	</v-sheet>
+			<v-audio-player
+				ref="player"
+				:src="currentTrack"
+				:track-title="showTitle"
+				:track-subtitle="currentTitle"
+				allow-previous
+				allow-next
+				:compact="compact"
+				:autoplay="false"
+				:start-time="startTime"
+				:start-volume="vol"
+				:album-art="albumArt"
+				@next-audio="nextSrc()"
+				@previous-audio="prevSrc()"
+				@time-update="onTimeUpdate"
+				@volume-change="onVolumeChange"
+			></v-audio-player>
+
+		</v-sheet>
+
+	</div>
 
 </template>
 
 <script setup>
 	import { ref, computed, onMounted } from 'vue'
   	import { useDisplay } from 'vuetify'
-	const { lgAndDown } = useDisplay()
+	const { mdAndDown } = useDisplay()
 	const showTitle = ref('Skuddet på Toftøy')
 	const episodes = [
 		{url: '/mp3/skuddet-pa-toftoy_ep1.mp3', title: 'Episode 1'},
@@ -55,7 +59,7 @@
 		return episodes[curIndex.value].title
 	})
 	const albumArt = ref('/jpg/skuddet-pa-toftoy.jpg')
-	const compact = ref(lgAndDown)
+	const compact = ref(mdAndDown)
 	function nextSrc() {
 		const newVal = Math.min(curIndex.value + 1, episodes.length - 1)
 		if (newVal !== curIndex.value) {
@@ -127,3 +131,9 @@
 	})
 
 </script>
+
+<style>
+	.player-container {
+		padding: 0 5px;
+	}
+</style>
