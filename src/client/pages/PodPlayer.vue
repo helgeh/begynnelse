@@ -1,6 +1,6 @@
 <template>
 
-	<div class="px-1 pb-12">
+	<div class="px-1 pb-16">
 
 		<v-sheet
 			elevation="12"
@@ -8,7 +8,7 @@
 			rounded="lg"
 			width="100%"
 			color="rgb(54, 62, 70)"
-			class="pa-4 mx-auto mt-4 mb-5"
+			class="pa-4 mx-auto my-5"
 		>
 
 			<v-audio-player
@@ -37,7 +37,7 @@
 			rounded="lg"
 			width="100%"
 			color="rgb(54, 62, 70)"
-			class="pa-4 mx-auto mt-4 mb-4">
+			class="pa-4 mx-auto my-5">
 			
 			<my-file-list 
 				ref="fileList"
@@ -101,6 +101,8 @@
 
 	function onFileClicked(data) {
 		curIndex.value = data.index
+		setStoredEpisode(curIndex.value)
+		setStoredTime(0)
 	}
 
 
