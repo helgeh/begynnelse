@@ -1,13 +1,14 @@
 <template>
 
-	<div class="player-container">
+	<div class="px-1 pb-12">
 
 		<v-sheet
 			elevation="12"
 			:max-width="compact ? 600 : '80%'"
 			rounded="lg"
 			width="100%"
-			class="pa-4 mx-auto mt-4 mb-12"
+			color="rgb(54, 62, 70)"
+			class="pa-4 mx-auto mt-4 mb-5"
 		>
 
 			<v-audio-player
@@ -27,6 +28,22 @@
 				@time-update="onTimeUpdate"
 				@volume-change="onVolumeChange"
 			></v-audio-player>
+
+		</v-sheet>
+
+		<v-sheet
+			elevation="12"
+			:max-width="compact ? 600 : '80%'"
+			rounded="lg"
+			width="100%"
+			color="rgb(54, 62, 70)"
+			class="pa-4 mx-auto mt-4 mb-4">
+			
+			<my-file-list 
+				ref="fileList"
+				v-if="showFileList"
+				@clicked="onFileClicked" 
+			></my-file-list>
 
 		</v-sheet>
 
@@ -78,6 +95,16 @@
 	}
 
 
+	const fileList = ref(null)
+	const showFileList = ref(true)
+	const anchor = ref(null)
+
+	function onFileClicked(data) {
+		curIndex.value = data.index
+	}
+
+
+
 
 
 	function throttle (callback, limit) {
@@ -115,6 +142,8 @@
 	}
 
 	onMounted(() => {
+		fileList.value.load(episodes.map(ep => ({text: ep.title})))
+
 		var e = getStoredEpisode()
 		if (e !== null)
 			curIndex.value = e
@@ -132,8 +161,4 @@
 
 </script>
 
-<style>
-	.player-container {
-		padding: 0 5px;
-	}
-</style>
+<style></style>

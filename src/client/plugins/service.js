@@ -4,7 +4,7 @@ import axios from 'axios'
 import FontRenamer from "../components/FontRenamer.vue";
 import MyHeader from '../components/MyHeader.vue'
 import MyForm from '../components/MyForm.vue'
-import MyZipList from '../components/MyZipList.vue'
+import MyFileList from '../components/MyFileList.vue'
 import MyAlert from '../components/MyAlert.vue'
 import MyPrompt from '../components/MyPrompt.vue'
 import VuetifyAudioPlayer from '../components/VuetifyAudioPlayer.vue'
@@ -17,7 +17,7 @@ export default {
     	.component('FontRenamer', FontRenamer)
     	.component('MyHeader', MyHeader)
 			.component('MyForm', MyForm)
-			.component('MyZipList', MyZipList)
+			.component('MyFileList', MyFileList)
 			.component('MyAlert', MyAlert)
 			.component('MyPrompt', MyPrompt)
 			.component('VAudioPlayer', VuetifyAudioPlayer)
