@@ -7,7 +7,7 @@
 			:max-width="compact ? 600 : '80%'"
 			rounded="lg"
 			width="100%"
-			class="pa-4 mx-auto mt-5 mb-12"
+			class="pa-4 mx-auto mt-4 mb-12"
 		>
 
 			<v-audio-player

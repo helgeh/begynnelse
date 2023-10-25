@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="mt-5"
+    class=""
     ref="playerContainer"
     :loading="!audioDownloaded"
     v-bind="$attrs"
@@ -10,7 +10,7 @@
       :src="albumArt"
       aspect-ratio="1"
       contain
-      class="grey darken-3 px-16 pb-8"
+      class="grey darken-3 px-16 pb-8 pt-4"
     ></v-img>
 
     <audio
@@ -32,10 +32,12 @@
       max="1000000"
       @update:model-value="handleSliderInput($event)"
       v-model="sliderVal"
+      hide-details="true"
     ></v-slider>
 
     <v-card-text>
       <v-row
+        class="pb-5"
         :class="compact ? 'text-center' : 'text-left'"
         align="center"
         justify="center"
@@ -76,7 +78,7 @@
               v-model="volume"
               max="100"
               min="0"
-              hide-details="{{true}}"
+              hide-details="true"
             ></v-slider>
           </div>
         </v-col>
