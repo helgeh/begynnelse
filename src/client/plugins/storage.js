@@ -80,6 +80,9 @@ export default {
 				}
 				this.setStoredShow(slug)
 				this.setPodShowValues(slug, freshValues)
+				localStorage.removeItem('curTime')
+				localStorage.removeItem('curEpisode')
+				localStorage.removeItem('curVolume')
 			}
 		})
 	}
