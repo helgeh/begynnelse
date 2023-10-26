@@ -192,14 +192,19 @@ export default {
   watch: {
     playing(value) {
       if (value) {
-        return this.$refs.audio.play();
+        return this.$refs.audio.play()
       }
-      this.$refs.audio.pause();
+      this.$refs.audio.pause()
+      this.$emit('time-update')
     },
     muted(value) {
       this.$refs.audio.muted = value;
     },
     audioDownloaded(value) {
+      if (!this.playing) {
+        this.currentTime = this.startTime
+        this.$refs.audio.currentTime = this.currentTime
+      }
       if (this.autoplay) {
         if (value) {
           this.playing = true;
@@ -213,10 +218,8 @@ export default {
       }
     },
     startTime(value) {
-      if (value > 1) {
-        this.currentTime = value;
-        this.$refs.audio.currentTime = this.currentTime
-      }
+      this.currentTime = value
+      this.$refs.audio.currentTime = this.currentTime
     },
     startVolume(value) {
       if (value > 0) {
@@ -284,6 +287,7 @@ export default {
     this.muted = this.$refs.audio.muted;
 
     this.throttledTimeUpdate = throttle(function () {
+      if (this.playing)
       this.$emit('time-update')
     }, 5000)
 

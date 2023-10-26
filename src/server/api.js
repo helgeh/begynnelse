@@ -113,8 +113,6 @@ router.get('/podcasts', function (req, res, next) {
 router.get('/podcasts/:slug/episodes', async function (req, res, next) {
 	const slug = req.params.slug
     const showDir = path.join(path.resolve(), 'public', 'mp3', slug)
-    console.log('dir', showDir)
-    // const episodes = []
     try {
 	    const showStat = await fs.lstat(showDir)
 	    if (!showStat.isDirectory())
@@ -127,7 +125,6 @@ router.get('/podcasts/:slug/episodes', async function (req, res, next) {
 	catch (ex) {
 		return res.send(ex.message)
 	}
-	// res.json(episodes)
 })
 
 // router.get('/ziplist', function (req, res, next) {

@@ -174,10 +174,11 @@
 			return
 		showSlug.value = settings.showSlug
 		const values = storage.getPodShowValues(showSlug.value)
-		if (values.episode)
+		if (values.episode !== NaN)
 			curIndex.value = values.episode
-		if (values.time > 0)
+		if (values.time !== NaN) {
 			startTime.value = values.time
+		}
 		if (values.vol)
 			vol.value = values.vol
 	}

@@ -73,12 +73,6 @@ export default {
 			convertIfFresh(slug) {
 				if (this.usesSettings(slug))
 					return
-				if (
-						isNaN(this.getStoredEpisode()) &&
-						isNaN(this.getStoredTime()) &&
-						isNaN(this.getStoredVolume())
-					)
-					return
 				const freshValues = {
 					episode: this.getStoredEpisode() || 0,
 					time: this.getStoredTime() || 0,
