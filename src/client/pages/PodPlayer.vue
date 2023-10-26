@@ -45,6 +45,19 @@
 				@clicked="onFileClicked" 
 			></my-file-list>
 
+            <v-btn
+              class="my-4 mr-4"
+              size="large"
+              icon
+              v-for="show in shows"
+              :elevation="show.slug === showSlug ? '8' : '0'"
+              :variant="show.slug === showSlug ? 'elevated' : 'outlined'"
+              @click="setShow(show.slug)"
+              :title="show.title"
+            >
+              <v-icon size="30">{{show.icon}}</v-icon>
+            </v-btn>
+
 		</v-sheet>
 
 	</div>
@@ -52,113 +65,126 @@
 </template>
 
 <script setup>
-	import { ref, computed, onMounted } from 'vue'
-  	import { useDisplay } from 'vuetify'
+	import { ref, computed, onMounted, inject } from 'vue'
+  import { useDisplay } from 'vuetify'
+	
 	const { mdAndDown } = useDisplay()
-	const showTitle = ref('Skuddet på Toftøy')
-	const episodes = [
-		{url: '/mp3/skuddet-pa-toftoy_ep1.mp3', title: 'Episode 1'},
-		{url: '/mp3/skuddet-pa-toftoy_ep2.mp3', title: 'Episode 2'},
-		{url: '/mp3/skuddet-pa-toftoy_ep3.mp3', title: 'Episode 3'},
-		{url: '/mp3/skuddet-pa-toftoy_ep4.mp3', title: 'Episode 4'},
-		{url: '/mp3/skuddet-pa-toftoy_ep5.mp3', title: 'Episode 5'},
-		{url: '/mp3/skuddet-pa-toftoy_ep6.mp3', title: 'Episode 6'}
-	]
+	const storage = inject('storage')
+	const podcasts = inject('podcasts')
+
+	const shows = ref([])
+	const showSlug = ref('spt')
+	const showTitle = ref('')
+	const episodes = ref([])
 	const player = ref(null)
 	const startTime = ref(0)
 	const vol = ref(0)
-
-	const curIndex = ref(0)
-	const currentTrack = computed(() => {
-		return episodes[curIndex.value].url
-	})
-	const currentTitle = computed(() => {
-		return episodes[curIndex.value].title
-	})
-	const albumArt = ref('/jpg/skuddet-pa-toftoy.jpg')
+	const albumArt = ref('/gif/loading.gif')
 	const compact = ref(mdAndDown)
-	function nextSrc() {
-		const newVal = Math.min(curIndex.value + 1, episodes.length - 1)
-		if (newVal !== curIndex.value) {
-			curIndex.value = newVal
-			setStoredEpisode(curIndex.value)
-			setStoredTime(0)
-		}
-	}
-	function prevSrc() {
-		const newVal = Math.max(0, curIndex.value - 1)
-		if (newVal !== curIndex.value) {
-			curIndex.value = newVal
-			setStoredEpisode(curIndex.value)
-			setStoredTime(0)
-		}
-	}
-
-
+	const curIndex = ref(0)
 	const fileList = ref(null)
 	const showFileList = ref(true)
 	const anchor = ref(null)
 
+	const currentTrack = computed(() => {
+		if (!episodes.value[curIndex.value])
+			return '-'
+		return episodes.value[curIndex.value].url
+	})
+	const currentTitle = computed(() => {
+		if (!episodes.value[curIndex.value])
+			return '-'
+		return episodes.value[curIndex.value].title
+	})
+
+	const showSlugMap = {
+		'spt': {
+			title: 'Skuddet på Toftøy',
+			icon: 'mdi-sail-boat'
+		},
+		'kmdtk': {
+			title: 'Kvinden med den tunge kuffert',
+			icon: 'mdi-bag-suitcase'
+		}
+	}
+
+	async function loadShows() {
+		shows.value = (await podcasts.getShows())
+			.filter(show => Object.keys(showSlugMap).indexOf(show.slug) >= 0)
+			.map(show => ({
+				slug: show.slug,
+				title: showSlugMap[show.slug].title,
+				icon: showSlugMap[show.slug].icon
+			}))
+			setShow(showSlug.value)
+	}
+
+	function setShow(slug) {
+		var show = shows.value.find(s => s.slug === slug)
+		if (show) {
+			storage.setStoredShow(show.slug)
+			showSlug.value = show.slug
+			showTitle.value = show.title
+			albumArt.value = `/jpg/${show.slug}.jpg`
+			podcasts.getEpisodes(show.slug).then(files => {
+				episodes.value = files
+				fileList.value.load(episodes.value.map(ep => ({text: ep.title})))
+				loadLocalStorageSettings()
+			})
+		}
+	}
+
+	function nextSrc() {
+		const newVal = Math.min(curIndex.value + 1, episodes.value.length - 1)
+		if (newVal !== curIndex.value) {
+			curIndex.value = newVal
+			storage.setStoredEpisode(curIndex.value)
+			storage.setStoredTime(0)
+		}
+	}
+
+	function prevSrc() {
+		const newVal = Math.max(0, curIndex.value - 1)
+		if (newVal !== curIndex.value) {
+			curIndex.value = newVal
+			storage.setStoredEpisode(curIndex.value)
+			storage.setStoredTime(0)
+		}
+	}
+
 	function onFileClicked(data) {
 		curIndex.value = data.index
-		setStoredEpisode(curIndex.value)
-		setStoredTime(0)
+		storage.setStoredEpisode(curIndex.value)
+		storage.setStoredTime(0)
 	}
-
-
-
-
-
-	function throttle (callback, limit) {
-	  var waiting = false;                      // Initially, we're not waiting
-	  return function () {                      // We return a throttled function
-	      if (!waiting) {                       // If we're not waiting
-	          callback.apply(this, arguments);  // Execute users function
-	          waiting = true;                   // Prevent future invocations
-	          setTimeout(function () {          // After a period of time
-	              waiting = false;              // And allow future invocations
-	          }, limit);
-	      }
-	  }
-	}
-
-	const getStoredTime = () => parseInt(localStorage.getItem('curTime') * 100) / 100
-	const setStoredTime = curTime => localStorage.setItem('curTime', curTime)
-
-	const getStoredShow = () => localStorage.getItem('curShow')
-	const setStoredShow = curShow => localStorage.setItem('curShow', curShow)
-
-	const getStoredEpisode = () => localStorage.getItem('curEpisode')
-	const setStoredEpisode = curEpisode => localStorage.setItem('curEpisode', curEpisode)
-
-	const getStoredVolume = () => parseInt(localStorage.getItem('curVolume') * 100) / 100
-	const setStoredVolume = curVolume => localStorage.setItem('curVolume', curVolume)
 
 	function onTimeUpdate() {
 		if (player.value.currentTime > 1)
-			setStoredTime(player.value.currentTime)
+			storage.setStoredTime(player.value.currentTime)
 	}
 
 	function onVolumeChange() {
-		setStoredVolume(player.value.volume)
+		storage.setStoredVolume(player.value.volume)
+	}
+
+	function loadLocalStorageSettings() {
+		storage.convertIfFresh(showSlug.value)
+		var settings = storage.getPodSettings()
+		if (!settings.showSlug)
+			return
+		showSlug.value = settings.showSlug
+		const values = storage.getPodShowValues(showSlug.value)
+		if (values.episode)
+			curIndex.value = values.episode
+		if (values.time > 0)
+			startTime.value = values.time
+		if (values.vol)
+			vol.value = values.vol
 	}
 
 	onMounted(() => {
-		fileList.value.load(episodes.map(ep => ({text: ep.title})))
-
-		var e = getStoredEpisode()
-		if (e !== null)
-			curIndex.value = e
-		else
-			setStoredEpisode(curIndex.value)
-
-		var t = getStoredTime()
-		if (t > 0)
-			startTime.value = t
-
-		var v = getStoredVolume()
-		if (v > 0)
-			vol.value = v
+		loadLocalStorageSettings()
+		loadShows()
 	})
 
 </script>
