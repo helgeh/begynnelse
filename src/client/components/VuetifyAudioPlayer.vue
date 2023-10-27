@@ -1,153 +1,153 @@
 <template>
-  <v-card
-    class=""
-    ref="playerContainer"
-    :loading="!audioDownloaded"
-    v-bind="$attrs"
-  >
-    <v-img
-      v-if="albumArt && compact"
-      :src="albumArt"
-      aspect-ratio="1"
-      contain
-      class="grey darken-3 px-16 pb-8 pt-4"
-    ></v-img>
+    <v-card
+        class=""
+        ref="playerContainer"
+        :loading="!audioDownloaded"
+        v-bind="$attrs"
+    >
+        <v-img
+            v-if="albumArt && compact"
+            :src="albumArt"
+            aspect-ratio="1"
+            contain
+            class="grey darken-3 px-16 pb-8 pt-4"
+        ></v-img>
 
-    <audio
-      ref="audio"
-      @pause="playing = false"
-      @play="playing = true"
-      @timeupdate="handleTimeUpdate"
-      @durationchange="setDuration"
-      @canplaythrough="audioDownloaded = true"
-      @ended="handleAudioEnd"
-      @error="emit('error', $event)"
-      :muted="muted"
-      :src="src"
-    ></audio>
+        <audio
+            ref="audio"
+            @pause="playing = false"
+            @play="playing = true"
+            @timeupdate="handleTimeUpdate"
+            @durationchange="setDuration"
+            @canplaythrough="audioDownloaded = true"
+            @ended="handleAudioEnd"
+            @error="emit('error', $event)"
+            :muted="muted"
+            :src="src"
+        ></audio>
 
-    <v-slider
-      class="audio-seeker mx-5"
-      v-if="src"
-      min="0"
-      max="1000000"
-      @update:model-value="handleSliderInput($event)"
-      v-model="sliderVal"
-      hide-details="true"
-    ></v-slider>
+        <v-slider
+            class="audio-seeker mx-5"
+            v-if="src"
+            min="0"
+            max="1000000"
+            @update:model-value="handleSliderInput($event)"
+            v-model="sliderVal"
+            hide-details="true"
+        ></v-slider>
 
-    <v-card-text>
-      <v-row
-        class="pb-5"
-        :class="compact ? 'text-center' : 'text-left'"
-        align="center"
-        justify="center"
-      >
-        <v-col :cols="compact ? 12 : 6" class="d-flex align-center">
-          <v-avatar tile class="d-inline-block" v-if="albumArt && !compact">
-            <v-img :src="albumArt" aspect-ratio="1"></v-img>
-          </v-avatar>
-
-          <div
-            class="mx-auto"
-            :class="albumArt && !compact && 'ml-3 d-inline-block'"
-          >
-            <span v-if="trackTitle" class="d-block" v-text="trackTitle"></span>
-            <span
-              v-text="trackSubtitle"
-              class="d-block text-uppercase font-weight-bold"
-              style="letter-spacing: 0.05em"
-            ></span>
-          </div>
-        </v-col>
-
-        <v-spacer></v-spacer>
-
-        <v-col :cols="compact ? 12 : 2">
-          <div
-            class="d-flex align-top mx-auto"
-            :class="compact ? 'justify-center' : 'justify-end'"
-            style="max-width: 12rem"
-          >
-            <v-btn icon @click="muted = !muted" size="small">
-              <v-icon>{{volumeIcon}}</v-icon>
-            </v-btn>
-
-            <v-slider
-              class="mt-1 volume-slider"
-              :value="muted ? 0 : volume"
-              v-model="volume"
-              max="100"
-              min="0"
-              hide-details="true"
-            ></v-slider>
-          </div>
-        </v-col>
-
-        <v-col
-          v-if="src"
-          :cols="compact ? 12 : 4"
-          class="d-flex align-center"
-          :class="compact ? 'justify-center' : 'justify-end'"
-        >
-          <div :class="compact ? 'mx-1' : 'mx-2'">
-            <v-btn
-              size="small"
-              icon
-              :disabled="!audioDownloaded || !allowPrevious"
-              @click="emit('previous-audio')"
+        <v-card-text>
+            <v-row
+                class="pb-5"
+                :class="compact ? 'text-center' : 'text-left'"
+                align="center"
+                justify="center"
             >
-              <v-icon size="20">mdi-skip-previous</v-icon>
-            </v-btn>
-          </div>
+                <v-col :cols="compact ? 12 : 6" class="d-flex align-center">
+                    <v-avatar tile class="d-inline-block" v-if="albumArt && !compact">
+                        <v-img :src="albumArt" aspect-ratio="1"></v-img>
+                    </v-avatar>
 
-          <div :class="compact ? 'mx-1' : 'mx-2'">
-            <v-btn
-              size="small"
-              icon
-              :disabled="!audioDownloaded"
-              @click="forwardSeconds(-5)"
-            >
-              <v-icon size="20">mdi-rewind-5</v-icon>
-            </v-btn>
-          </div>
+                    <div
+                        class="mx-auto"
+                        :class="albumArt && !compact && 'ml-3 d-inline-block'"
+                    >
+                        <span v-if="trackTitle" class="d-block" v-text="trackTitle"></span>
+                        <span
+                            v-text="trackSubtitle"
+                            class="d-block text-uppercase font-weight-bold"
+                            style="letter-spacing: 0.05em"
+                        ></span>
+                    </div>
+                </v-col>
 
-          <div :class="compact ? 'mx-2' : 'mx-3'">
-            <v-btn
-              size="small"
-              icon
-              :disabled="!audioDownloaded"
-              @click="playing = !playing"
-            >
-              <v-icon size="30">{{playing ? 'mdi-pause' : 'mdi-play'}}</v-icon>
-            </v-btn>
-          </div>
+                <v-spacer></v-spacer>
 
-          <div :class="compact ? 'mx-1' : 'mx-2'">
-            <v-btn
-              size="small"
-              icon
-              :disabled="!audioDownloaded"
-              @click="forwardSeconds(15)"
-            >
-              <v-icon size="20">mdi-fast-forward-15</v-icon>
-            </v-btn>
-          </div>
+                <v-col :cols="compact ? 12 : 2">
+                    <div
+                        class="d-flex align-top mx-auto"
+                        :class="compact ? 'justify-center' : 'justify-end'"
+                        style="max-width: 12rem"
+                    >
+                        <v-btn icon @click="muted = !muted" size="small">
+                            <v-icon>{{volumeIcon}}</v-icon>
+                        </v-btn>
 
-          <div :class="compact ? 'mx-1' : 'mx-2'">
-            <v-btn
-              size="small"
-              icon
-              :disabled="!audioDownloaded || !allowNext"
-              @click="emit('next-audio')"
-            >
-              <v-icon size="20">mdi-skip-next</v-icon>
-            </v-btn>
-          </div>
-        </v-col>
-      </v-row>
-    </v-card-text>
-  </v-card>
+                        <v-slider
+                            class="mt-1 volume-slider"
+                            :value="muted ? 0 : volume"
+                            v-model="volume"
+                            max="100"
+                            min="0"
+                            hide-details="true"
+                        ></v-slider>
+                    </div>
+                </v-col>
+
+                <v-col
+                    v-if="src"
+                    :cols="compact ? 12 : 4"
+                    class="d-flex align-center"
+                    :class="compact ? 'justify-center' : 'justify-end'"
+                >
+                    <div :class="compact ? 'mx-1' : 'mx-2'">
+                        <v-btn
+                            size="small"
+                            icon
+                            :disabled="!audioDownloaded || !allowPrevious"
+                            @click="emit('previous-audio')"
+                        >
+                            <v-icon size="20">mdi-skip-previous</v-icon>
+                        </v-btn>
+                    </div>
+
+                    <div :class="compact ? 'mx-1' : 'mx-2'">
+                        <v-btn
+                            size="small"
+                            icon
+                            :disabled="!audioDownloaded"
+                            @click="forwardSeconds(-5)"
+                        >
+                            <v-icon size="20">mdi-rewind-5</v-icon>
+                        </v-btn>
+                    </div>
+
+                    <div :class="compact ? 'mx-2' : 'mx-3'">
+                        <v-btn
+                            size="small"
+                            icon
+                            :disabled="!audioDownloaded"
+                            @click="playing = !playing"
+                        >
+                            <v-icon size="30">{{playing ? 'mdi-pause' : 'mdi-play'}}</v-icon>
+                        </v-btn>
+                    </div>
+
+                    <div :class="compact ? 'mx-1' : 'mx-2'">
+                        <v-btn
+                            size="small"
+                            icon
+                            :disabled="!audioDownloaded"
+                            @click="forwardSeconds(15)"
+                        >
+                            <v-icon size="20">mdi-fast-forward-15</v-icon>
+                        </v-btn>
+                    </div>
+
+                    <div :class="compact ? 'mx-1' : 'mx-2'">
+                        <v-btn
+                            size="small"
+                            icon
+                            :disabled="!audioDownloaded || !allowNext"
+                            @click="emit('next-audio')"
+                        >
+                            <v-icon size="20">mdi-skip-next</v-icon>
+                        </v-btn>
+                    </div>
+                </v-col>
+            </v-row>
+        </v-card-text>
+    </v-card>
 </template>
 
 <script setup>
@@ -188,13 +188,13 @@
 
     const volumeIcon = computed(() => {
         if (muted.value) {
-            return 'mdi-volume-off';
+            return 'mdi-volume-off'
         } else if (volume.value === 0) {
-            return 'mdi-volume-low';
+            return 'mdi-volume-low'
         } else if (volume.value >= 50) {
-            return 'mdi-volume-high';
+            return 'mdi-volume-high'
         } else {
-            return 'mdi-volume-medium';
+            return 'mdi-volume-medium'
         }
     })
 
@@ -260,23 +260,25 @@
     }
 
     function forwardSeconds(seconds) {
-        let newTimestamp = currentTime.value + seconds;
+        let newTimestamp = currentTime.value + seconds
 
         if (newTimestamp < 0) {
-            newTimestamp = 0;
+            newTimestamp = 0
         } else if (newTimestamp > duration.value) {
-            newTimestamp = duration.value;
+            newTimestamp = duration.value
         }
 
-        audio.value.currentTime = newTimestamp;
+        audio.value.currentTime = newTimestamp
         emit('time-update', audio.value.currentTime)
     }
 
     function setDuration() {
-        duration.value = audio.value.duration;
+        duration.value = audio.value.duration
     }
 
     function handleTimeUpdate() {
+        if (!audio.value)
+            return
         currentTime.value = audio.value.currentTime
         sliderVal.value = parseInt((currentTime.value / duration.value) * 1000000) || 0
         throttledTimeUpdate(currentTime.value)
@@ -284,11 +286,11 @@
 
     function handleAudioEnd() {
         if (allowNext.value) {
-            emit('next-audio');
+            emit('next-audio')
         }
     }
 
-    let keydownListener, throttledTimeUpdate, throttledSlider;
+    let keydownListener, throttledTimeUpdate, throttledSlider
     onMounted(() => {
         volume.value = props.startVolume
 
@@ -306,14 +308,14 @@
 
         keydownListener = document.addEventListener("keydown", (event) => {
             if (event.keyCode === 32) {// && seekerFocused) {
-                event.preventDefault();
-                playing = !playing;
+                event.preventDefault()
+                playing = !playing
             }
         })
     })
 
     onBeforeUnmount(() => {
-        document.removeEventListener("keydown", keydownListener);
+        document.removeEventListener("keydown", keydownListener)
     })
 
 </script>

@@ -46,7 +46,7 @@ export default {
 				.then(json => json.files.map(file => ({
 					key: Date.now(),
 					url: file.path,
-					title: file.fileName.replace('ep', 'Ep ').replace('.mp3', ''),
+					title: file.fileName.replace('ep', 'Episode ').replace('.mp3', ''),
 					fileName: file.fileName
 				}))),
 
