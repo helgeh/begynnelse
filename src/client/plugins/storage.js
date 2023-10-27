@@ -37,7 +37,7 @@ export default {
 				this.setPodShowValues(curSet.slug, vals)
 			},
 			getStoredVolume() {
-				if (this.usesSettings(curSet.slug))
+				if (this.getPodSettings().volume !== undefined)
 					return this.getPodSettings().volume || 0
 				return parseInt(localStorage.getItem('curVolume') * 100) / 100
 			},
@@ -75,10 +75,11 @@ export default {
 					return
 				const freshValues = {
 					episode: this.getStoredEpisode() || 0,
-					time: this.getStoredTime() || 0,
-					vol: this.getStoredVolume() || 0
+					time: this.getStoredTime() || 0
 				}
+				const vol = this.getStoredVolume() || 20
 				this.setStoredShow(slug)
+				this.setStoredVolume(vol)
 				this.setPodShowValues(slug, freshValues)
 				localStorage.removeItem('curTime')
 				localStorage.removeItem('curEpisode')

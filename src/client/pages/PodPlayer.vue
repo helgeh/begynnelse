@@ -88,7 +88,7 @@
 
 	const currentTrack = computed(() => {
 		if (!episodes.value[curIndex.value])
-			return '-'
+			return ''
 		return episodes.value[curIndex.value].url
 	})
 	const currentTitle = computed(() => {
@@ -158,13 +158,13 @@
 		storage.setStoredTime(0)
 	}
 
-	function onTimeUpdate() {
-		if (player.value.currentTime > 1)
-			storage.setStoredTime(player.value.currentTime)
+	function onTimeUpdate(time) {
+		if (time > 1)
+			storage.setStoredTime(time)
 	}
 
-	function onVolumeChange() {
-		storage.setStoredVolume(player.value.volume)
+	function onVolumeChange(val) {
+		storage.setStoredVolume(val)
 	}
 
 	function loadLocalStorageSettings() {
@@ -173,14 +173,13 @@
 		if (!settings.showSlug)
 			return
 		showSlug.value = settings.showSlug
+		vol.value = settings.volume
 		const values = storage.getPodShowValues(showSlug.value)
 		if (values.episode !== NaN)
 			curIndex.value = values.episode
 		if (values.time !== NaN) {
 			startTime.value = values.time
 		}
-		if (values.vol)
-			vol.value = values.vol
 	}
 
 	onMounted(() => {

@@ -1,5 +1,17 @@
 import axios from 'axios'
 
+// class PodcastPlayer {
+// 	src = ''
+// 	trackTitle = ''
+// 	trackSubtitle = ''
+// 	allowPrevious = false
+// 	allowNext = true
+// 	compact = false
+// 	albumArt = ''
+// 	autoplay = false
+// 	startTime = 0
+// 	startVolume = 20
+// }
 
 export default {
  	install(app, options) {
@@ -14,6 +26,8 @@ export default {
 		// 	.component('CatTax', CatTax)
 
 		app.provide('podcasts', {
+
+			// PodcastShow,
 			
 			getShows: () => fetch('/podcasts')
 				.then(res => res.json())
