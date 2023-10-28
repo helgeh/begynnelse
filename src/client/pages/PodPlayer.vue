@@ -95,25 +95,8 @@
         return episodes.value[curIndex.value].title
     })
 
-    const showSlugMap = {
-        'spt': {
-            title: 'Skuddet på Toftøy',
-            icon: 'mdi-sail-boat'
-        },
-        'kmdtk': {
-            title: 'Kvinden med den tunge kuffert',
-            icon: 'mdi-bag-suitcase'
-        }
-    }
-
     async function loadShows() {
-        shows.value = (await podcasts.getShows())
-        .filter(show => Object.keys(showSlugMap).indexOf(show.slug) >= 0)
-        .map(show => ({
-            slug: show.slug,
-            title: showSlugMap[show.slug].title,
-            icon: showSlugMap[show.slug].icon
-        }))
+        shows.value = await podcasts.getShows()
         setShow(showSlug.value)
     }
 

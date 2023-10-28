@@ -114,7 +114,6 @@
 
                     <div :class="compact ? 'mx-2' : 'mx-3'">
                         <v-btn
-                            size="small"
                             icon
                             :disabled="!audioDownloaded"
                             @click="playing = !playing"

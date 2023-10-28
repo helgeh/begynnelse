@@ -1,22 +1,22 @@
 <template>
-	
-  <div class="text-center">
 
-    <v-icon
-      class="mb-5"
-      color="brown-lighten-1"
-      icon="mdi-dog"
-      size="112"
-    ></v-icon>
+    <div class="text-center">
 
-    <h1 class="mb-4" :title="version">{{ heading }}</h1>
+        <v-icon
+            class="mb-5"
+            color="brown-lighten-1"
+            icon="mdi-dog"
+            size="112"
+        ></v-icon>
 
-  </div>
+        <h1 class="mb-4" :title="version">{{ heading }}</h1>
+
+    </div>
 
 </template>
 
 <script setup>
 
-  defineProps(['heading', 'version'])
-  
+    defineProps(['heading', 'version'])
+
 </script>

@@ -7,11 +7,11 @@ import storage from './storage'
 // import router from '../router'
 
 export function registerPlugins (app) {
-  loadFonts()
-  app
+    loadFonts()
+    app
     .use(vuetify)
     .use(service)
     .use(podcasts)
     .use(storage)
-    // .use(router)
+// .use(router)
 }

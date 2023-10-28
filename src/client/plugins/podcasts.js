@@ -13,33 +13,36 @@ import axios from 'axios'
 // 	startVolume = 20
 // }
 
+const showSlugMap = {
+    'spt': {
+        title: 'Skuddet på Toftøy',
+        icon: 'mdi-sail-boat'
+    },
+    'kmdtk': {
+        title: 'Kvinden med den tunge kuffert',
+        icon: 'mdi-bag-suitcase'
+    }
+}
+
 export default {
  	install(app, options) {
-    	app
-    	// .component('FontRenamer', FontRenamer)
-    	// .component('MyHeader', MyHeader)
-		// 	.component('MyForm', MyForm)
-		// 	.component('MyFileList', MyFileList)
-		// 	.component('MyAlert', MyAlert)
-		// 	.component('MyPrompt', MyPrompt)
-		// 	.component('VAudioPlayer', VuetifyAudioPlayer)
-		// 	.component('CatTax', CatTax)
-
+    	
 		app.provide('podcasts', {
 
 			// PodcastShow,
 			
 			getShows: () => fetch('/podcasts')
 				.then(res => res.json())
-				// .then(json => {
-				// 	console.log('got json', json)
-				// 	return json
-				// })
-				.then(json => json.dirs.map(file => ({
-					key: Date.now(),
-					slug: file.slug,
-					path: file.path
-				}))),
+				.then(json => json.dirs
+					.map(file => ({
+						key: Date.now(),
+						slug: file.slug,
+						path: file.path,
+		                title: showSlugMap[file.slug].title,
+		                icon: showSlugMap[file.slug].icon
+					}))
+		            .filter(show => Object.keys(showSlugMap).indexOf(show.slug) >= 0)
+		        ),
 
 			getEpisodes: (slug) => fetch(`/podcasts/${slug}/episodes`)
 				.then(res => res.json())
@@ -49,34 +52,6 @@ export default {
 					title: file.fileName.replace('ep', 'Episode ').replace('.mp3', ''),
 					fileName: file.fileName
 				}))),
-
-		    // miraSay: (data) => {
-		    // 	return new Promise((resolve, reject) => {
-		    // 		axios({
-		    // 			url: '/mirasay',
-		    // 			method: 'post',
-		    // 			data: data
-		    // 		})
-			// 	      .then(response => {
-			// 	        if (response && response.data) {
-			// 	        	resolve(response.data)
-			// 	        }
-			// 	        else resolve({})
-			// 	      })
-			// 	      .catch(err => {
-			// 			    reject(err && err.response || {})
-			// 			    if (err && err.response) {
-			// 					if (err.response.data instanceof Blob) {
-			// 						const reader = new FileReader()
-			// 						reader.onload = function() {
-			// 							console.log(reader.result)
-			// 						}
-			// 						reader.readAsText(err.response.data)
-			// 					}
-			// 			    }
-			// 	      })
-			// 	    })
-		    // },
 		})
 	}
 }

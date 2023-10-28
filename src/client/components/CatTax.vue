@@ -160,23 +160,23 @@
 
 <style>
     
-.cat {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    bottom: 56px;
-    left: 0;
-    right: 0;
-    margin: 0;
-    padding: 0;
-    z-index: 0;
-}
+    .cat {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        z-index: 0;
+    }
 
-.cat svg {
-    width: 70%;
-    position: absolute;
-    bottom: 0;
-    filter: invert(2%) sepia(21%) saturate(2436%) hue-rotate(335deg) brightness(86%) contrast(79%);
-}
+    .cat svg {
+        width: 70%;
+        position: absolute;
+        bottom: 0;
+        filter: invert(2%) sepia(21%) saturate(2436%) hue-rotate(335deg) brightness(86%) contrast(79%);
+    }
 
 </style>
