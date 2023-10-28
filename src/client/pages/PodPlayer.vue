@@ -38,9 +38,10 @@
             class="pa-4 mx-auto my-5"
         >
             <my-file-list 
-            ref="fileList"
-            v-if="showFileList"
-            @clicked="onFileClicked" 
+                ref="fileList"
+                v-if="showFileList"
+                :activeIndex="curIndex"
+                @clicked="onFileClicked" 
             ></my-file-list>
 
             <v-btn
@@ -109,7 +110,7 @@
             albumArt.value = `/jpg/${show.slug}.jpg`
             podcasts.getEpisodes(show.slug).then(files => {
                 episodes.value = files
-                fileList.value.load(episodes.value.map(ep => ({text: ep.title})))
+                fileList.value.load(files.map(ep => ({text: ep.title})))
                 loadLocalStorageSettings()
             })
         }
@@ -119,6 +120,7 @@
         const newVal = Math.min(curIndex.value + 1, episodes.value.length - 1)
         if (newVal !== curIndex.value) {
             curIndex.value = newVal
+            startTime.value = 0
             storage.setStoredEpisode(curIndex.value)
             storage.setStoredTime(0)
         }
@@ -128,6 +130,7 @@
         const newVal = Math.max(0, curIndex.value - 1)
         if (newVal !== curIndex.value) {
             curIndex.value = newVal
+            startTime.value = 0
             storage.setStoredEpisode(curIndex.value)
             storage.setStoredTime(0)
         }
@@ -135,6 +138,7 @@
 
     function onFileClicked(data) {
         curIndex.value = data.index
+        startTime.value = 0
         storage.setStoredEpisode(curIndex.value)
         storage.setStoredTime(0)
     }

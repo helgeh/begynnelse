@@ -12,6 +12,7 @@
                 v-for="(item, i) in fileItems"
                 :key="i"
                 :value="item"
+                :active="activeIndex === i"
                 color="primary"
                 select-strategy="classic"
                 @click="onClick(i)"
@@ -45,10 +46,13 @@
 
     import { ref, watch } from 'vue'
 
+    defineProps({activeIndex: {type: Number}})
+
     const emit = defineEmits(['clicked', 'altClicked'])
     const fileList = ref(null)
     const fileItems = ref([])
     const selected = ref([])
+    // const activeIndex = ref(0)
 
     function onClick (index) {
         const item = fileItems.value[index]
@@ -63,7 +67,8 @@
     // watch the <selected> array and de-select everything always
     watch(selected, async (cur, old) => {
         if (cur.length > 0) {
-            fileList.value.select(fileItems.value.indexOf(cur[0], false))
+            activeIndex.value = fileItems.value.indexOf(cur[0], false)
+            fileList.value.select(activeIndex.value)
         }
     })
 
