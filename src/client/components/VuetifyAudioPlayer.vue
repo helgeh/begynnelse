@@ -58,6 +58,11 @@
                             class="d-block text-uppercase font-weight-bold"
                             style="letter-spacing: 0.05em"
                         ></span>
+                        <span
+                            style="font-size: small; font-family: monospace; color: lightgray;"
+                        >
+                            {{ timeDisplay }}
+                        </span>
                     </div>
                 </v-col>
 
@@ -195,6 +200,25 @@
         } else {
             return 'mdi-volume-medium'
         }
+    })
+
+    function parseTime(time) {
+        const min = Math.floor(time / 60)
+        const sec = Math.floor(time - min * 60)
+        return {min, sec}
+    }
+
+    function addZero(val) {
+        if (('' + val).length > 1)
+            return '' + val
+        return `0${val}`
+
+    }
+
+    const timeDisplay = computed(() => {
+        const cur = parseTime(currentTime.value)
+        const tot = parseTime(duration.value)
+        return `${addZero(cur.min)}:${addZero(cur.sec)} / ${addZero(tot.min)}:${addZero(tot.sec)}`
     })
 
     watch(playing, async (newState, oldState) => {
