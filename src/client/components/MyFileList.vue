@@ -52,7 +52,7 @@
     const fileList = ref(null)
     const fileItems = ref([])
     const selected = ref([])
-    // const activeIndex = ref(0)
+    const activeIndex = ref(0)
 
     function onClick (index) {
         const item = fileItems.value[index]

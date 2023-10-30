@@ -88,16 +88,29 @@
     const currentTrack = computed(() => {
         if (!episodes.value[curIndex.value])
             return ''
+        updateAlbumArt()
         return episodes.value[curIndex.value].url
     })
+
     const currentTitle = computed(() => {
         if (!episodes.value[curIndex.value])
             return '-'
         return episodes.value[curIndex.value].title
     })
 
+    function updateAlbumArt() {
+        const trackImage = episodes.value[curIndex.value].image
+        // console.log('img', trackImage)
+        if (trackImage && trackImage.length > 0)
+            albumArt.value = trackImage
+    }
+
     async function loadShows() {
         shows.value = await podcasts.getShows()
+            .then(shows => {
+                return podcasts.getRss()
+                    .then(rss => shows.concat(rss))
+            })
         setShow(showSlug.value)
     }
 
@@ -107,11 +120,13 @@
             storage.setStoredShow(show.slug)
             showSlug.value = show.slug
             showTitle.value = show.title
-            albumArt.value = `/jpg/${show.slug}.jpg`
-            podcasts.getEpisodes(show.slug).then(files => {
+            if (!show.isRss)
+                albumArt.value = `/jpg/${show.slug}.jpg`
+            podcasts.getEpisodes(show.slug, show.isRss).then(files => {
                 episodes.value = files
                 fileList.value.load(files.map(ep => ({text: ep.title})))
                 loadLocalStorageSettings()
+                updateAlbumArt()
             })
         }
     }

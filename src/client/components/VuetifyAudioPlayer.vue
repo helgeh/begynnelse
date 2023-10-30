@@ -332,7 +332,7 @@
         keydownListener = document.addEventListener("keydown", (event) => {
             if (event.keyCode === 32) {// && seekerFocused) {
                 event.preventDefault()
-                playing = !playing
+                playing.value = !playing.value
             }
         })
     })

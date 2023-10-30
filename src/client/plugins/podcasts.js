@@ -21,11 +21,31 @@ const showSlugMap = {
     'kmdtk': {
         title: 'Kvinden med den tunge kuffert',
         icon: 'mdi-bag-suitcase'
+    },
+    'rbeai': {
+        title: 'Roger Bullman: Etterlyst av Interpol',
+        icon: 'mdi-incognito'
+    },
+    'kak': {
+        title: 'Kongen av Kongsberg',
+        icon: 'mdi-crown'
     }
 }
 
 export default {
  	install(app, options) {
+
+ 		function getRssItems(slug) {
+ 			return fetch(`/rss/${slug}/episodes`)
+				.then(res => res.json())
+				.then(json => json.files.map(file => ({
+					key: Date.now, 
+					url: file.path,
+					title: file.fileName.replace(showSlugMap[slug].title + ' ', ''),
+					fileName: file.fileName,
+					image: file.image
+				})))
+		}
     	
 		app.provide('podcasts', {
 
@@ -34,6 +54,7 @@ export default {
 			getShows: () => fetch('/podcasts')
 				.then(res => res.json())
 				.then(json => json.dirs
+		            .filter(show => Object.keys(showSlugMap).indexOf(show.slug) >= 0)
 					.map(file => ({
 						key: Date.now(),
 						slug: file.slug,
@@ -41,17 +62,41 @@ export default {
 		                title: showSlugMap[file.slug].title,
 		                icon: showSlugMap[file.slug].icon
 					}))
-		            .filter(show => Object.keys(showSlugMap).indexOf(show.slug) >= 0)
 		        ),
 
-			getEpisodes: (slug) => fetch(`/podcasts/${slug}/episodes`)
+			getEpisodes: (slug, isRss) => {
+				if (isRss)
+					return getRssItems(slug)
+				return fetch(`/podcasts/${slug}/episodes`)
+					.then(res => res.json())
+					.then(json => json.files.map(file => ({
+						key: Date.now(),
+						url: file.path,
+						title: file.fileName.replace('ep', 'Episode ').replace('.mp3', ''),
+						fileName: file.fileName
+					})))
+				},
+
+			getRss: () => fetch('/rss')
+				.then(res => res.json())
+				.then(json => json.dirs
+					.map(file => ({
+						key: Date.now(),
+						slug: file.slug,
+		                title: showSlugMap[file.slug].title,
+		                icon: showSlugMap[file.slug].icon,
+		                isRss: true
+					}))
+				),
+
+			getRssItems: (slug) => fetch(`/rss/${slug}/episodes`)
 				.then(res => res.json())
 				.then(json => json.files.map(file => ({
-					key: Date.now(),
+					key: Date.now, 
 					url: file.path,
-					title: file.fileName.replace('ep', 'Episode ').replace('.mp3', ''),
+					title: file.fileName.replace(showSlugMap[slug].title + ' ', ''),
 					fileName: file.fileName
-				}))),
+				})))
 		})
 	}
 }

@@ -4,6 +4,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import axios from 'axios'
 import 'dotenv/config'
+import parser from 'xml2json'
 
 const router = express.Router()
 
@@ -71,8 +72,40 @@ router.get('/podcasts/:slug/episodes', async function (req, res, next) {
 	        .then(files => res.json({ files }))
 	}
 	catch (ex) {
-		return res.send(ex.message)
+		return res.status(404).send({files: []})
 	}
 })
 
+router.get('/rss', function (req, res, next) {
+	res.json({dirs: ['rbeai', 'kak'].map(k => ({slug: k}))})
+})
+
+router.get('/rss/:slug/episodes', async function (req, res, next) {
+	const slug = req.params.slug
+
+	const xmlData = xmlMap[slug]
+	if (!xmlData || xmlData.length < 1)
+		return res.status(404).send('Not found')
+
+	const xmlFile = fs.readFile(path.resolve(`./src/server/${slug}.xml`), 'utf8')
+		.then(file => {
+			const json = parser.toJson(file)
+			res.json({
+				files: JSON.parse(json).rss.item.map(item => ({
+						path: item.enclosure.url, 
+						fileName: item.title,
+						image: item['itunes:image'].href
+					})).reverse()
+			})
+		})
+		.catch(err => {
+			return res.status(404).send({files: []})
+		});
+})
+
 export default router
+
+const xmlMap = {
+	rbeai: 'Roger Bullman - Etterlyst av Interpol',
+	kak: 'Kongen av Kongsberg'
+}
