@@ -26,6 +26,7 @@
                 @previous-audio="prevSrc()"
                 @time-update="onTimeUpdate"
                 @volume-change="onVolumeChange"
+                @play-started="onPlayStarted"
             ></v-audio-player>
         </v-sheet>
 
@@ -70,6 +71,31 @@
     const { mdAndDown } = useDisplay()
     const storage = inject('storage')
     const podcasts = inject('podcasts')
+    const mediasession = inject('mediasession')
+
+    mediasession.setCallback('play', () => {
+        player.value.play()
+    })
+
+    mediasession.setCallback('pause', () => {
+        player.value.pause()
+    })
+
+    mediasession.setCallback('previoustrack', () => {
+        prevSrc()
+    })
+
+    mediasession.setCallback('nexttrack', () => {
+        nextSrc()
+    })
+
+    mediasession.setCallback('seekbackward', () => {
+        player.value.skip(-5)
+    })
+
+    mediasession.setCallback('seekforward', () => {
+        player.value.skip(15)
+    })
 
     const shows = ref([])
     const showSlug = ref('spt')
@@ -120,6 +146,7 @@
             storage.setStoredShow(show.slug)
             showSlug.value = show.slug
             showTitle.value = show.title
+            updateWindowTitle()
             if (!show.isRss)
                 albumArt.value = `/jpg/${show.slug}.jpg`
             podcasts.getEpisodes(show.slug, show.isRss).then(files => {
@@ -127,6 +154,7 @@
                 fileList.value.load(files.map(ep => ({text: ep.title})))
                 loadLocalStorageSettings()
                 updateAlbumArt()
+                updateWindowTitle()
             })
         }
     }
@@ -138,6 +166,7 @@
             startTime.value = 0
             storage.setStoredEpisode(curIndex.value)
             storage.setStoredTime(0)
+            updateWindowTitle()
         }
     }
 
@@ -148,6 +177,7 @@
             startTime.value = 0
             storage.setStoredEpisode(curIndex.value)
             storage.setStoredTime(0)
+            updateWindowTitle()
         }
     }
 
@@ -156,6 +186,7 @@
         startTime.value = 0
         storage.setStoredEpisode(curIndex.value)
         storage.setStoredTime(0)
+        updateWindowTitle()
     }
 
     function onTimeUpdate(time) {
@@ -165,6 +196,13 @@
 
     function onVolumeChange(val) {
         storage.setStoredVolume(val)
+    }
+
+    function onPlayStarted() {
+        mediasession.setMetadata({
+            title: currentTitle.value,
+            artist: showTitle.value
+        })
     }
 
     function loadLocalStorageSettings() {
@@ -182,9 +220,17 @@
         }
     }
 
+    function updateWindowTitle() {
+        if (currentTitle.value === '-')
+            return window.document.title = 'podcast-begy.nnel.se'
+        const title = `${currentTitle.value} (${showTitle.value}) | podcast-begy.nnel.se`
+        window.document.title = title
+    }
+
     onMounted(() => {
         loadLocalStorageSettings()
         loadShows()
+        updateWindowTitle()
     })
 
 </script>

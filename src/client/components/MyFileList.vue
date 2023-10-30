@@ -52,7 +52,7 @@
     const fileList = ref(null)
     const fileItems = ref([])
     const selected = ref([])
-    const activeIndex = ref(0)
+    // const activeIndex = ref(0)
 
     function onClick (index) {
         const item = fileItems.value[index]
@@ -67,8 +67,8 @@
     // watch the <selected> array and de-select everything always
     watch(selected, async (cur, old) => {
         if (cur.length > 0) {
-            activeIndex.value = fileItems.value.indexOf(cur[0], false)
-            fileList.value.select(activeIndex.value)
+            // activeIndex.value = fileItems.value.indexOf(cur[0], false)
+            fileList.value.select(fileItems.value.indexOf(cur[0], false))
         }
     })
 

@@ -176,8 +176,24 @@
         'previous-audio',
         'next-audio',
         'time-update',
-        'volume-change'
+        'volume-change',
+        'play-started'
     ])
+
+    defineExpose({
+        play() {
+            console.log('player play')
+            playing.value = true
+        },
+        pause() {
+            console.log('player pause')
+            playing.value = false
+        },
+        skip(seconds) {
+            console.log('player skip ' + seconds)
+            forwardSeconds(seconds)
+        }
+    })
 
     const audioDownloaded = ref(false)
     const currentTime = ref(0)
@@ -222,8 +238,11 @@
     })
 
     watch(playing, async (newState, oldState) => {
-        if (newState)
-            return audio.value.play()
+        if (newState) {
+            await audio.value.play()
+            emit('play-started')
+            return
+        }
         audio.value.pause()
         emit('time-update', audio.value.currentTime)
     })
