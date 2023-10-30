@@ -4,7 +4,12 @@ WORKDIR /home/node/app
 
 COPY package*.json ./
 
-RUN npm install --quiet
+RUN apk add --no-cache --virtual .gyp \
+		py3-pip \
+		make \
+		g++ \
+	&& npm install --quiet \
+	&& apk del .gyp
 
 COPY . .
 
