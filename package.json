@@ -1,7 +1,7 @@
 {
   "name": "begy-nnel-se",
   "private": true,
-  "version": "1.0.13",
+  "version": "1.0.14",
   "type": "module",
   "scripts": {
     "dev": "nodemon src/server/main.js -w src/server -w src/lib",
