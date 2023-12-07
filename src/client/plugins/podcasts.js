@@ -31,8 +31,12 @@ const showSlugMap = {
         icon: 'mdi-crown'
     },
     'tom': {
-    	title: 'Torpedoen og milliard&aelig;ren',
+    	title: 'Torpedoen og Milliardæren',
     	icon: 'mdi-cash-multiple'
+    },
+    'stdmeb': {
+    	title: 'Skyldig til det motsatte er bevist',
+    	icon: 'mdi-redhat'
     }
 }
 

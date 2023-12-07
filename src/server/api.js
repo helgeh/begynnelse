@@ -77,7 +77,7 @@ router.get('/podcasts/:slug/episodes', async function (req, res, next) {
 })
 
 router.get('/rss', function (req, res, next) {
-	res.json({dirs: ['rbeai', 'kak', 'tom'].map(k => ({slug: k}))})
+	res.json({dirs: Object.keys(xmlMap).map(k => ({slug: k}))})
 })
 
 router.get('/rss/:slug/episodes', async function (req, res, next) {
@@ -109,5 +109,6 @@ export default router
 const xmlMap = {
 	rbeai: 'Roger Bullman - Etterlyst av Interpol',
 	kak: 'Kongen av Kongsberg',
-	tom: 'Torpedoen og milliard&aelig;ren'
+	tom: 'Torpedoen og Milliardæren',
+	stdmeb: 'Skyldig til det motsatte er bevist'
 }
