@@ -29,6 +29,10 @@ const showSlugMap = {
     'kak': {
         title: 'Kongen av Kongsberg',
         icon: 'mdi-crown'
+    },
+    'tom': {
+    	title: 'Torpedoen og milliard&aelig;ren',
+    	icon: 'mdi-cash-multiple'
     }
 }
 
