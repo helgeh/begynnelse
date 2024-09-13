@@ -37,6 +37,10 @@ const showSlugMap = {
     'stdmeb': {
     	title: 'Skyldig til det motsatte er bevist',
     	icon: 'mdi-redhat'
+    },
+    'tkht': {
+        title: 'Tore Karlsen - Helvetesturen',
+        icon: 'mdi-fire'
     }
 }
 
