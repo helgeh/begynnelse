@@ -111,6 +111,14 @@
     const showFileList = ref(true)
     const anchor = ref(null)
 
+    let initShow = ''
+    const currentPath = window.location.hash.slice(1)
+    if (currentPath.startsWith('/player/')) {
+        initShow = currentPath.substr('/player/'.length)
+        if (initShow && initShow.length > 0)
+            storage.setStoredShow(initShow)
+    }
+
     const currentTrack = computed(() => {
         if (!episodes.value[curIndex.value])
             return ''

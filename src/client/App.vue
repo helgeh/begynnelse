@@ -56,7 +56,10 @@
     const route = ref(getRouteIndex())
 
     const currentView = computed(() => {
-        const index = currentPath.value || '/'
+        let index = currentPath.value || '/'
+        if (index.substr(1).indexOf('/') >= 0) {
+            index = index.substr(0, index.substr(1).indexOf('/') + 1)
+        }
         return routes[index] || NotFoundPage
     })
 
