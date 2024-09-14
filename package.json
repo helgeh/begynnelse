@@ -20,7 +20,7 @@
     "roboto-fontface": "*",
     "vite-express": "*",
     "vue": "^3.2.45",
-    "vuetify": "^3.3.3",
+    "vuetify": "^3.6.12",
     "webfontloader": "^1.0.0",
     "xml2json": "^0.12.0"
   },

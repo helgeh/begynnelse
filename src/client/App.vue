@@ -27,6 +27,11 @@
                 <v-icon>mdi-folder-zip</v-icon>
                 <span>Zips</span>
             </v-btn>
+
+            <v-btn href="#/videos">
+                <v-icon>mdi-movie</v-icon>
+                <span>Movies</span>
+            </v-btn>
         </v-bottom-navigation>
 
     </v-app>
@@ -41,6 +46,7 @@
     import ZipList from './pages/ZipList.vue'
     import PodPlayer from './pages/PodPlayer.vue'
     import AboutPage from './pages/AboutPage.vue'
+    import VideoPage from './pages/VideoPage.vue'
     import NotFoundPage from './pages/NotFoundPage.vue'
 
 
@@ -49,7 +55,8 @@
         '/mira': MiraMull,
         '/zips': ZipList,
         '/about': AboutPage,
-        '/player': PodPlayer
+        '/player': PodPlayer,
+        '/videos': VideoPage
     }
 
     const currentPath = ref(window.location.hash.slice(1))

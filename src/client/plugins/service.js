@@ -34,6 +34,17 @@ export default {
             })
             ),
 
+            getVideoList: () => fetch('/videolist')
+            .then(res => res.json())
+            .then(json => json.files.map(file => {
+                return {
+                    key: Date.now(),
+                    text: file.fileName,
+                    value: file.path
+                }
+            })
+            ),
+
             miraSay: (data) => {
                 return new Promise((resolve, reject) => {
                     axios({

@@ -42,6 +42,19 @@ router.get('/ziplist', function (req, res, next) {
         .then(files => res.json({ files }))
 })
 
+router.get('/videolist', function (req, res, next) {
+    const z = path.join(path.resolve(), 'public', 'videos')
+    const result = []
+    fs.readdir(z)
+        .then(files => files.filter(file => /.mp4$/.test(file)))
+        .then(files => files.map(file => ({path: path.join('/videos', file), fileName: file})))
+        .then(files => res.json({ files }))
+        .catch(function (err) {
+        	console.log(err)
+        	res.json({files: []})
+        })
+})
+
 router.get('/podcasts', function (req, res, next) {
     const mp3Dir = path.join(path.resolve(), 'public', 'mp3')
     const result = []
