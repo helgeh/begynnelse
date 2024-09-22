@@ -34,3 +34,10 @@ h1 {
   margin: 0 auto;
   padding: 2rem;*/
 }
+
+.throw-ups > .v-application__wrap {
+    background: url(./assets/throw-ups-bg.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-x: center;
+}

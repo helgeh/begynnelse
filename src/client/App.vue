@@ -1,8 +1,8 @@
 <template>
 
-    <v-app>
+    <v-app class="throw-ups">
 
-        <CatTax />
+        <!-- <CatTax /> -->
 
         <div class="page-content">
             <component :is="currentView" />
@@ -85,6 +85,7 @@
     .page-content {
         position: relative;
     }
+
 /*.logo {
 height: 6em;
 padding: 1.5em;
