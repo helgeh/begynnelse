@@ -1,13 +1,7 @@
 <template>
-	<v-dialog
-    v-model="dialog"
-    max-width="400"
-    persistent
-  >
+  <v-dialog v-model="dialog" max-width="400" persistent>
     <template v-slot:activator="{ props: activatorProps }">
-      <v-btn v-bind="activatorProps" class="mx-auto">
-        Slipp meg inn
-      </v-btn>
+      <v-btn v-bind="activatorProps" class="mx-auto"> Slipp meg inn </v-btn>
     </template>
 
     <v-card
@@ -36,38 +30,34 @@
       <template v-slot:actions>
         <v-spacer></v-spacer>
 
-        <v-btn @click="dialog = false">
-          Avbryt
-        </v-btn>
+        <v-btn @click="dialog = false"> Avbryt </v-btn>
 
-        <v-btn @click="onSubmit()">
-          OK
-        </v-btn>
+        <v-btn @click="onSubmit()"> OK </v-btn>
       </template>
     </v-card>
   </v-dialog>
 </template>
 
 <script setup>
-	import { ref, inject } from 'vue'
+  import { ref, inject } from 'vue'
 
-	const emit = defineEmits(['godkjent'])
+  const emit = defineEmits(['godkjent'])
 
-	const usr = ref('')
-	const pw = ref('')
-	const dialog = ref(false)
-	const pwVisible = ref(false)
-	const sorry = ref('')
-	const tilgang = inject('tilgang')
+  const usr = ref('')
+  const pw = ref('')
+  const dialog = ref(false)
+  const pwVisible = ref(false)
+  const sorry = ref('')
+  const tilgang = inject('tilgang')
 
-	async function onSubmit() {
-	  try {
-	    await tilgang.heisann(usr.value, pw.value);
-	  	sorry.value = false
-	    dialog.value = false
-	    emit('godkjent')
-	  } catch (error) {
-	  	sorry.value = error.message
-	  }
-	}
+  async function onSubmit() {
+    try {
+      await tilgang.heisann(usr.value, pw.value)
+      sorry.value = false
+      dialog.value = false
+      emit('godkjent')
+    } catch (error) {
+      sorry.value = error.message
+    }
+  }
 </script>

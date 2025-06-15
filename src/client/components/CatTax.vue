@@ -1,10 +1,20 @@
 <template>
-
-<div class="cat">
-    
-    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="720px" height="324.607px" viewBox="0 0 720 316.607" xml:space="preserve"
-            preserveAspectRatio="xMidYMax meet">
-        <path d="M468.806,179.239c-9.65,1.462-19.47,1.808-29.836,2.665c3.47-2.077,9.534-6.122,9.478-6.296
+  <div class="cat">
+    <svg
+      version="1.1"
+      id="Layer_1"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      x="0px"
+      y="0px"
+      width="720px"
+      height="324.607px"
+      viewBox="0 0 720 316.607"
+      xml:space="preserve"
+      preserveAspectRatio="xMidYMax meet"
+    >
+      <path
+        d="M468.806,179.239c-9.65,1.462-19.47,1.808-29.836,2.665c3.47-2.077,9.534-6.122,9.478-6.296
             c-2.182,0-6.733-0.583-6.827-0.874c6.051-2.945,12.101-5.89,18.152-8.835c0.143,0.218-0.697,2.445-1.606,3.89
             c5.627-0.458,16.145-0.787,16.195-0.527c-4.548,1.315-13.513,5.016-13.447,5.552c7.108-0.482,14.216-0.964,21.325-1.446
             C482.354,173.54,473.56,178.519,468.806,179.239z M456.365,186.831c0.927,0.14,1.868,0.463,2.778,0.391
@@ -151,32 +161,29 @@
             c5.144-6.75,5.315-14.822,5.247-22.959c3.794,3.505,2.099,14.113,3.985,20.49c9.84-11.773,2.563,3.714,0.845,10.809
             c13.956-6.68,11.109-19.373,11.78-30.672c11.218,5.559,13.725,15.572,7.759,30.329c18.852-9.193,12.027-31.242,1.476-44.682
             c13.08,8.158,21.047,26.887,12.117,41.144C681.109,303.115,683.569,301.762,686.62,300.085z"
-        />
+      />
     </svg>
-
-</div>
-
+  </div>
 </template>
 
 <style>
-    
-    .cat {
-        position: absolute;
-        display: flex;
-        justify-content: center;
-        bottom: 56px;
-        left: 0;
-        right: 0;
-        margin: 0;
-        padding: 0;
-        z-index: 0;
-    }
+  .cat {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    bottom: 56px;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    z-index: 0;
+  }
 
-    .cat svg {
-        width: 70%;
-        position: absolute;
-        bottom: 0;
-        filter: invert(2%) sepia(21%) saturate(2436%) hue-rotate(335deg) brightness(86%) contrast(79%);
-    }
-
+  .cat svg {
+    width: 70%;
+    position: absolute;
+    bottom: 0;
+    filter: invert(2%) sepia(21%) saturate(2436%) hue-rotate(335deg)
+      brightness(86%) contrast(79%);
+  }
 </style>

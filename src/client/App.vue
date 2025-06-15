@@ -1,98 +1,88 @@
 <template>
+  <!-- <v-app class="throw-ups"> -->
+  <v-app class="">
+    <!-- <CatTax /> -->
 
-    <!-- <v-app class="throw-ups"> -->
-    <v-app class="">
+    <div class="page-content">
+      <component :is="currentView" />
+    </div>
 
-        <!-- <CatTax /> -->
+    <v-bottom-navigation v-model="route" mode="shift" color="primary">
+      <v-btn href="#/">
+        <v-icon>mdi-home-variant</v-icon>
+        <span>Home</span>
+      </v-btn>
 
-        <div class="page-content">
-            <component :is="currentView" />
-        </div>
+      <v-btn href="#/mira">
+        <v-icon>mdi-dog</v-icon>
+        <span>Mira</span>
+      </v-btn>
 
-        <v-bottom-navigation
-            v-model="route"
-            mode="shift"
-            color="primary"
-        >
-            <v-btn href="#/">
-                <v-icon>mdi-home-variant</v-icon>
-                <span>Home</span>
-            </v-btn>
+      <v-btn href="#/zips">
+        <v-icon>mdi-folder-zip</v-icon>
+        <span>Zips</span>
+      </v-btn>
 
-            <v-btn href="#/mira">
-                <v-icon>mdi-dog</v-icon>
-                <span>Mira</span>
-            </v-btn>
-
-            <v-btn href="#/zips">
-                <v-icon>mdi-folder-zip</v-icon>
-                <span>Zips</span>
-            </v-btn>
-
-            <v-btn href="#/videos">
-                <v-icon>mdi-movie</v-icon>
-                <span>Movies</span>
-            </v-btn>
-        </v-bottom-navigation>
-
-    </v-app>
-
+      <v-btn href="#/videos">
+        <v-icon>mdi-movie</v-icon>
+        <span>Movies</span>
+      </v-btn>
+    </v-bottom-navigation>
+  </v-app>
 </template>
 
 <script setup>
-    import { ref, computed } from 'vue'
+  import { ref, computed } from 'vue'
 
-    import HomePage from './pages/HomePage.vue'
-    import MyPage from './pages/MyPage.vue'
-    import MiraMull from './pages/MiraMull.vue'
-    import ZipList from './pages/ZipList.vue'
-    import PodPlayer from './pages/PodPlayer.vue'
-    import AboutPage from './pages/AboutPage.vue'
-    import VideoPage from './pages/VideoPage.vue'
-    import NotFoundPage from './pages/NotFoundPage.vue'
+  import HomePage from './pages/HomePage.vue'
+  import MyPage from './pages/MyPage.vue'
+  import MiraMull from './pages/MiraMull.vue'
+  import ZipList from './pages/ZipList.vue'
+  import PodPlayer from './pages/PodPlayer.vue'
+  import AboutPage from './pages/AboutPage.vue'
+  import VideoPage from './pages/VideoPage.vue'
+  import NotFoundPage from './pages/NotFoundPage.vue'
 
+  const routes = {
+    '/': HomePage,
+    '/mira': MiraMull,
+    '/zips': ZipList,
+    '/videos': VideoPage,
 
-    const routes = {
-        '/': HomePage,
-        '/mira': MiraMull,
-        '/zips': ZipList,
-        '/videos': VideoPage,
+    // These are not in the exposed menu and need to come
+    // last to not f up the 'active' state
+    '/player': PodPlayer,
+    '/about': AboutPage,
+    '/my': MyPage,
+  }
 
-        // These are not in the exposed menu and need to come
-        // last to not f up the 'active' state
-        '/player': PodPlayer,
-        '/about': AboutPage,
-        '/my': MyPage
+  const currentPath = ref(window.location.hash.slice(1))
+  const route = ref(getRouteIndex())
+
+  const currentView = computed(() => {
+    let index = currentPath.value || '/'
+    if (index.substr(1).indexOf('/') >= 0) {
+      index = index.substr(0, index.substr(1).indexOf('/') + 1)
     }
+    return routes[index] || NotFoundPage
+  })
 
-    const currentPath = ref(window.location.hash.slice(1))
-    const route = ref(getRouteIndex())
+  window.addEventListener('hashchange', () => {
+    currentPath.value = window.location.hash.slice(1)
+    route.value = getRouteIndex()
+  })
 
-    const currentView = computed(() => {
-        let index = currentPath.value || '/'
-        if (index.substr(1).indexOf('/') >= 0) {
-            index = index.substr(0, index.substr(1).indexOf('/') + 1)
-        }
-        return routes[index] || NotFoundPage
-    })
-
-    window.addEventListener('hashchange', () => {
-        currentPath.value = window.location.hash.slice(1)
-        route.value = getRouteIndex()
-    })
-
-    function getRouteIndex() {
-        return Object.keys(routes).indexOf(currentPath.value || '/')
-    }
-
+  function getRouteIndex() {
+    return Object.keys(routes).indexOf(currentPath.value || '/')
+  }
 </script>
 
 <style scoped>
-    .page-content {
-        position: relative;
-    }
+  .page-content {
+    position: relative;
+  }
 
-/*.logo {
+  /*.logo {
 height: 6em;
 padding: 1.5em;
 will-change: filter;

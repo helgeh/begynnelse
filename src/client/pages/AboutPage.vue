@@ -1,6 +1,4 @@
-<template>
-	The About Page
-</template>
+<template>The About Page</template>
 
 <script setup></script>
 

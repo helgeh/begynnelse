@@ -1,4 +1,3 @@
-
 import path from 'path'
 import express from 'express'
 import cors from 'cors'
@@ -14,14 +13,12 @@ app.use(cors())
 app.use(api)
 app.use('/', express.static(publicPath))
 app.use((err, req, res, next) => {
-    if (req.xhr)
-        res.status(500).send({error: 'Something feila'})
-    else
-        next(err)
+  if (req.xhr) res.status(500).send({ error: 'Something feila' })
+  else next(err)
 })
 
 ViteExpress.config({ inlineViteConfig: 'vite.config.js' })
 
 ViteExpress.listen(app, port, () =>
-    console.log(`Server is listening on port ${port}...`)
+  console.log(`Server is listening on port ${port}...`),
 )

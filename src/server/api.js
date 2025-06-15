@@ -1,4 +1,3 @@
-
 import express from 'express'
 import fs from 'fs/promises'
 import path from 'path'
@@ -8,7 +7,6 @@ import parser from 'xml2json'
 
 import { authTheToken, makeTheToken, isRealUser } from './sikkerhet.js'
 
-
 const router = express.Router()
 
 router.use(express.json())
@@ -16,131 +14,149 @@ router.use(express.json())
 // router.post('/blimed')
 
 router.post('/heisann', (req, res) => {
-	const { usr, pw } = req.body
-	if (isRealUser(usr, pw)) {
-		const token = makeTheToken(usr)
-		return res.json({token})
-	}
-    return res.status(401).json({ error: 'Invalid credentials' })
+  const { usr, pw } = req.body
+  if (isRealUser(usr, pw)) {
+    const token = makeTheToken(usr)
+    return res.json({ token })
+  }
+  return res.status(401).json({ error: 'Invalid credentials' })
 })
 
 router.get('/foo-bar', authTheToken, (req, res) => {
-	// console.log('inside protected endpoint')
-	res.json({message: 'hells yes!', success: true})
+  // console.log('inside protected endpoint')
+  res.json({ message: 'hells yes!', success: true })
 })
 
 router.post('/mirasay', (req, res) => {
-    const miramessage = req.body && req.body.message || ''
-	
-	const webHookKey = process.env.WEBHOOK_KEY || ''
-	const hookUrl = `https://discord.com/api/webhooks/${webHookKey}`
-	// const hookUrl = 'http://echo.jsontest.com/'
-	const data = {
-		content: miramessage
-	}
+  const miramessage = (req.body && req.body.message) || ''
 
-	axios.post(hookUrl, data, {
-	  headers: {
-	    'Content-Type': 'application/json'
-	  }
-	})
-	  .then(function (response) {
-	    res.json({success: true})
-	  })
-	  .catch(function (error) {
-	    res.status(500).send("Huff, noe gikk visst galt på vei til Discord...")
-	  })
+  const webHookKey = process.env.WEBHOOK_KEY || ''
+  const hookUrl = `https://discord.com/api/webhooks/${webHookKey}`
+  // const hookUrl = 'http://echo.jsontest.com/'
+  const data = {
+    content: miramessage,
+  }
+
+  axios
+    .post(hookUrl, data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(function (response) {
+      res.json({ success: true })
+    })
+    .catch(function (error) {
+      res.status(500).send('Huff, noe gikk visst galt på vei til Discord...')
+    })
 })
 
 router.get('/ziplist', function (req, res, next) {
-    const z = path.join(path.resolve(), 'public', 'zips')
-    const result = []
-    fs.readdir(z)
-        .then(files => files.filter(file => /.zip$/.test(file)))
-        .then(files => files.map(file => ({path: path.join('/zips', file), fileName: file})))
-        .then(files => res.json({ files }))
+  const z = path.join(path.resolve(), 'public', 'zips')
+  const result = []
+  fs.readdir(z)
+    .then((files) => files.filter((file) => /.zip$/.test(file)))
+    .then((files) =>
+      files.map((file) => ({ path: path.join('/zips', file), fileName: file })),
+    )
+    .then((files) => res.json({ files }))
 })
 
 router.get('/videolist', function (req, res, next) {
-    const z = path.join(path.resolve(), 'public', 'videos')
-    const result = []
-    fs.readdir(z)
-        .then(files => files.filter(file => /.mp4$/.test(file)))
-        .then(files => files.map(file => ({path: path.join('/videos', file), fileName: file})))
-        .then(files => res.json({ files }))
-        .catch(function (err) {
-        	console.log(err)
-        	res.json({files: []})
-        })
+  const z = path.join(path.resolve(), 'public', 'videos')
+  const result = []
+  fs.readdir(z)
+    .then((files) => files.filter((file) => /.mp4$/.test(file)))
+    .then((files) =>
+      files.map((file) => ({
+        path: path.join('/videos', file),
+        fileName: file,
+      })),
+    )
+    .then((files) => res.json({ files }))
+    .catch(function (err) {
+      console.log(err)
+      res.json({ files: [] })
+    })
 })
 
 router.get('/podcasts', function (req, res, next) {
-    const mp3Dir = path.join(path.resolve(), 'public', 'mp3')
-    const result = []
-    fs.readdir(mp3Dir)
-        .then(async files => {
-        	const dirs = []
-        	for (let i = 0; i < files.length; i++) {
-        		const stat = await fs.lstat(path.join(mp3Dir, files[i]))
-        		if (stat.isDirectory())
-        			dirs.push(files[i])
-        	}
-        	return dirs
-        })
-        .then(dirs => dirs.map(dir => ({path: path.join('/mp3', dir), slug: dir, episodes: []})))
-        .then(dirs => res.json({ dirs }))
+  const mp3Dir = path.join(path.resolve(), 'public', 'mp3')
+  const result = []
+  fs.readdir(mp3Dir)
+    .then(async (files) => {
+      const dirs = []
+      for (let i = 0; i < files.length; i++) {
+        const stat = await fs.lstat(path.join(mp3Dir, files[i]))
+        if (stat.isDirectory()) dirs.push(files[i])
+      }
+      return dirs
+    })
+    .then((dirs) =>
+      dirs.map((dir) => ({
+        path: path.join('/mp3', dir),
+        slug: dir,
+        episodes: [],
+      })),
+    )
+    .then((dirs) => res.json({ dirs }))
 })
 
 router.get('/podcasts/:slug/episodes', async function (req, res, next) {
-	const slug = req.params.slug
-    const showDir = path.join(path.resolve(), 'public', 'mp3', slug)
-    try {
-	    const showStat = await fs.lstat(showDir)
-	    if (!showStat.isDirectory())
-	    	return res.send(404)
-	    fs.readdir(showDir)
-	        .then(files => files.filter(file => /.mp3$/.test(file)))
-	        .then(files => files.map(file => ({path: path.join('/mp3', slug, file), fileName: file})))
-	        .then(files => res.json({ files }))
-	}
-	catch (ex) {
-		return res.status(404).send({files: []})
-	}
+  const slug = req.params.slug
+  const showDir = path.join(path.resolve(), 'public', 'mp3', slug)
+  try {
+    const showStat = await fs.lstat(showDir)
+    if (!showStat.isDirectory()) return res.send(404)
+    fs.readdir(showDir)
+      .then((files) => files.filter((file) => /.mp3$/.test(file)))
+      .then((files) =>
+        files.map((file) => ({
+          path: path.join('/mp3', slug, file),
+          fileName: file,
+        })),
+      )
+      .then((files) => res.json({ files }))
+  } catch (ex) {
+    return res.status(404).send({ files: [] })
+  }
 })
 
 router.get('/rss', function (req, res, next) {
-	res.json({dirs: Object.keys(xmlMap).map(k => ({slug: k}))})
+  res.json({ dirs: Object.keys(xmlMap).map((k) => ({ slug: k })) })
 })
 
 router.get('/rss/:slug/episodes', async function (req, res, next) {
-	const slug = req.params.slug
+  const slug = req.params.slug
 
-	const xmlData = xmlMap[slug]
-	if (!xmlData || xmlData.length < 1)
-		return res.status(404).send('Not found')
+  const xmlData = xmlMap[slug]
+  if (!xmlData || xmlData.length < 1) return res.status(404).send('Not found')
 
-	const xmlFile = fs.readFile(path.resolve(`./src/server/${slug}.xml`), 'utf8')
-		.then(file => {
-			const json = parser.toJson(file)
-			res.json({
-				files: JSON.parse(json).rss.item.map(item => ({
-						path: item.enclosure.url, 
-						fileName: item.title,
-						image: item['itunes:image'].href
-					})).reverse()
-			})
-		})
-		.catch(err => {
-			console.log(err)
-			return res.status(404).send({files: []})
-		});
+  const xmlFile = fs
+    .readFile(path.resolve(`./src/server/${slug}.xml`), 'utf8')
+    .then((file) => {
+      const json = parser.toJson(file)
+      res.json({
+        files: JSON.parse(json)
+          .rss.item.map((item) => ({
+            path: item.enclosure.url,
+            fileName: item.title,
+            image: item['itunes:image'].href,
+          }))
+          .reverse(),
+      })
+    })
+    .catch((err) => {
+      console.log(err)
+      return res.status(404).send({ files: [] })
+    })
 })
 
 export default router
 
 const xmlMap = {
-	rbeai: 'Roger Bullman - Etterlyst av Interpol',
-	kak: 'Kongen av Kongsberg',
-	tom: 'Torpedoen og Milliardæren',
-	stdmeb: 'Skyldig til det motsatte er bevist'
+  rbeai: 'Roger Bullman - Etterlyst av Interpol',
+  kak: 'Kongen av Kongsberg',
+  tom: 'Torpedoen og Milliardæren',
+  stdmeb: 'Skyldig til det motsatte er bevist',
 }

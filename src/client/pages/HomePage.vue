@@ -1,5 +1,5 @@
 <template>
-	<MyLinksList />
+  <MyLinksList />
 </template>
 
 <script setup></script>

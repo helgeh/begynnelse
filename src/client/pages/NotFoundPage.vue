@@ -1,6 +1,4 @@
-<template>
-	Not Found
-</template>
+<template>Not Found</template>
 
 <script setup></script>
 
