@@ -6,9 +6,28 @@ import axios from 'axios'
 import 'dotenv/config'
 import parser from 'xml2json'
 
+import { authTheToken, makeTheToken, isRealUser } from './sikkerhet.js'
+
+
 const router = express.Router()
 
 router.use(express.json())
+
+// router.post('/blimed')
+
+router.post('/heisann', (req, res) => {
+	const { usr, pw } = req.body
+	if (isRealUser(usr, pw)) {
+		const token = makeTheToken(usr)
+		return res.json({token})
+	}
+    return res.status(401).json({ error: 'Invalid credentials' })
+})
+
+router.get('/foo-bar', authTheToken, (req, res) => {
+	// console.log('inside protected endpoint')
+	res.json({message: 'hells yes!', success: true})
+})
 
 router.post('/mirasay', (req, res) => {
     const miramessage = req.body && req.body.message || ''

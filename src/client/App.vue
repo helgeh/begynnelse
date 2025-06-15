@@ -1,6 +1,7 @@
 <template>
 
-    <v-app class="throw-ups">
+    <!-- <v-app class="throw-ups"> -->
+    <v-app class="">
 
         <!-- <CatTax /> -->
 
@@ -42,6 +43,7 @@
     import { ref, computed } from 'vue'
 
     import HomePage from './pages/HomePage.vue'
+    import MyPage from './pages/MyPage.vue'
     import MiraMull from './pages/MiraMull.vue'
     import ZipList from './pages/ZipList.vue'
     import PodPlayer from './pages/PodPlayer.vue'
@@ -54,9 +56,13 @@
         '/': HomePage,
         '/mira': MiraMull,
         '/zips': ZipList,
-        '/about': AboutPage,
+        '/videos': VideoPage,
+
+        // These are not in the exposed menu and need to come
+        // last to not f up the 'active' state
         '/player': PodPlayer,
-        '/videos': VideoPage
+        '/about': AboutPage,
+        '/my': MyPage
     }
 
     const currentPath = ref(window.location.hash.slice(1))
