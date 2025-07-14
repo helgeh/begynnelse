@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Q</title>
+  <link rel="stylesheet" href="https://unpkg.com/vuetify@3.8.8/dist/vuetify.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/@mdi/font@7.4.47/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=roboto:400,500,700" />
+  <style>
+    html {
+      background-color: #212121;
+      background-color: rgb(18, 18, 18);
+    }
+    html, body {
+      overflow-y: auto;
+    }
+    [v-cloak] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app">
+
+    <v-responsive>
+      <v-app :theme="theme">
+        <v-layout class="rounded rounded-md border">
+          <v-app-bar title="Q" density="compact">
+            <template v-slot:prepend>
+              <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon> -->
+            </template>
+            <v-spacer></v-spacer>
+            <v-btn
+              :prepend-icon="theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
+              :text="theme === 'light' ? 'Light' : 'Dark'"
+              slim
+              @click="onThemeClick"
+            ></v-btn>
+            <template v-slot:append>
+              <v-btn icon="mdi-dots-vertical"></v-btn>
+            </template>
+          </v-app-bar>
+
+          <!-- <v-navigation-drawer v-model="drawer" :disable-resize-watcher="true">
+            <v-list nav>
+              <v-list-item 
+                v-for="item in sections" 
+                :title="item.name" 
+                :active="item.section === section" 
+                @click="onNavClick(item.section)"
+              ></v-list-item>
+            </v-list>
+          </v-navigation-drawer> -->
+
+          <v-main v-cloak>
+            <v-container responsive>
+
+              <v-row dense class="mb-5" v-for="(prio, j) in priorities" :key="j">
+                <v-col
+                  v-for="(link, i) in filtered(links, prio)"
+                  :key="i"
+                  cols="6"
+                  sm="6"
+                  md="3"
+                  lg="2"
+                  xl="1"
+                >
+                  <v-card 
+                    :href="link.href" 
+                    @click="onCardClick($event, link)" 
+                    :title="link.name"
+                  >
+                    <template v-slot:append v-if="link.icon">
+                      <v-icon size="32">
+                        <v-img
+                          :alt="link.name"
+                          :src="link.icon[theme] ? link.icon[theme] : link.icon"
+                        ></v-img>
+                      </v-icon>
+                    </template>
+                  </v-card>
+                </v-col>
+                <v-spacer></v-spacer>
+              </v-row>
+
+            </v-container>
+            <v-dialog
+              v-cloak
+              v-model="overlay"
+              @update:model-value="onOverlayUpdate"
+              width="auto"
+              min-width="300px"
+            >
+              <v-card title="Modal" max-width="500px" prepend-icon="mdi-update">
+                <v-card-text>
+                  Tekst tekst tekst
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text="Lukk"
+                    @click="overlay = false"
+                  ></v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-main>
+        </v-layout>
+      </v-app>
+    </v-responsive>
+
+  </div>
+  
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/vuetify@3.8.8/dist/vuetify.min.js"></script>
+  <script>
+    const { createApp, ref, computed, onMounted } = Vue
+    const { createVuetify } = Vuetify
+    const vuetify = createVuetify({
+      theme: {
+        defaultTheme: 'dark'
+      }
+    })
+    const priorities = ref(['pri1', 'pri2', 'pri3', 'pri4', 'pri5', 'pri6'])
+    const voidLink = 'void(0)'
+    createApp({
+      setup() {
+        const theme = ref('dark')
+        const loaded = ref(false)
+        const drawer = ref(false)
+        const overlay = ref(false)
+        const sections = ref([
+          {name: 'Links', section: 'links'},
+          {name: 'About', section: 'about'}
+        ])
+        const section = ref(sections.value[0].section)
+        const allLinks = [
+          {href: 'https://mail.proton.me', name: 'Proton', icon: 'https://favicone.com/mail.proton.me?s=32', section: 'links', tags: 'email,proton,pri1,standard'},
+          {href: 'https://github.com/helgeh', name: 'Github', icon: {light: '/icons/github-light-32x32.png', dark: '/icons/github-dark-32x32.png'}, section: 'links', tags: 'code,git,pri1,standard'},
+          {href: 'https://bsky.app', name: 'Bluesky', icon: 'https://favicone.com/bsky.app?s=32', section: 'links', tags: 'social,bsky,pri1,standard'},
+          {href: 'https://archlinux.org', name: 'Arch', icon: 'https://favicone.com/archlinux.org?s=32', section: 'links', tags: 'os,arch,pri1,standard'},
+          {href: 'https://xcancel.com', name: 'Xcancel', icon: 'https://favicone.com/xcancel.com?s=32', section: 'links', tags: 'social,xcancel,pri1,standard'},
+          {href: 'https://duckduckgo.com', name: 'duckduckgo', icon: 'https://favicone.com/duckduckgo.com?s=32', section: 'links', tags: 'search,duckduckgo,pri1,standard'},
+          {href: voidLink, name: '-', icon: '', section: 'links', tags: ',,pri1,standard'},
+
+          {href: 'https://minecraft.wiki', name: 'Minecraft.wiki', icon: 'https://favicone.com/minecraft.wiki?s=32', section: 'links', tags: 'minecraft,wiki,pri2,gaming'},
+          {href: 'https://www.chunkbase.com', name: 'Chunkbase', icon: 'https://favicone.com/chunkbase.com?s=32', section: 'links', tags: 'minecraft,map,chunkbase,pri2,gaming'},
+          {href: 'https://modrinth.com', name: 'Modrinth', icon: 'https://favicone.com/modrinth.com?s=32', section: 'links', tags: 'minecraft,mods,modrinth,pri2,gaming'},
+          {href: 'https://vanillatweaks.net', name: 'Vanillatweaks', icon: 'https://favicone.com/vanillatweaks.net?s=32', section: 'links', tags: 'minecraft,vanillatweaks,pri2,gaming'},
+          {href: 'https://legacy.curseforge.com/minecraft/mc-mods', name: 'Curseforge', icon: 'https://favicone.com/curseforge.com?s=32', section: 'links', tags: 'minecraft,mods,curseforge,pri2,gaming'},
+          {href: 'https://fabricmc.net', name: 'Fabric', icon: 'https://favicone.com/fabricmc.net?s=32', section: 'links', tags: 'minecraft,mods,fabric,pri2,gaming'},
+          // {href: voidLink, name: '-', icon: '', section: 'links', tags: ',,pri2,gaming'},
+
+          {href: 'https://domene.shop', name: 'Domeneshop', icon: 'https://domene.shop/favicon/76x76.png', section: 'links', tags: 'hosting,domeneshop,pri3,dev'},
+          {href: 'https://vuejs.org', name: 'Vue.js', icon: 'https://favicone.com/vuejs.org?s=32', section: 'links', tags: 'js,vue,pri3,dev'},
+          {href: 'https://vuetifyjs.com', name: 'Vuetify', icon: 'https://favicone.com/vuetifyjs.com?s=32', section: 'links', tags: 'js,vuetify,pri3,dev'},
+          {href: 'https://pinia.vuejs.org', name: 'Pinia', icon: 'https://favicone.com/pinia.vuejs.org?s=32', section: 'links', tags: 'js,pinia,pri3,dev'},
+          // {href: voidLink, name: '-', section: 'links', tags: ',,pri3,dev'},
+
+          {href: 'https://solcigar.no/', name: 'Solcigar', icon: '/icons/solcigar-57x57.png', section: 'links', tags: 'solcigar,pri4,shopping'},
+          {href: 'https://www.nespresso.com/no/nb', name: 'Nespresso', icon: 'https://favicone.com/nespresso.com?s=32', section: 'links', tags: 'nespresso,pri4,shopping'},
+          {href: 'https://www.komplett.no', name: 'Komplett', icon: 'https://favicone.com/www.komplett.no?s=32', section: 'links', tags: 'data,komplett,pri4,shopping'},
+          {href: 'https://www.dustinhome.no', name: 'Dustinhome', icon: '/icons/dustinhome-32x32.png', section: 'links', tags: 'data,dustinhome,pri4,shopping'},
+          // {href: voidLink, name: '-', section: 'links', tags: ',,pri4,shopping'},
+
+          {href: 'https://begy.nnel.se', name: 'begy', icon: '/icons/begynnelse-32x32.png', section: 'links', tags: 'begynnelse,pri5,mysites'},
+          {href: 'https://admin-blokkda.nnel.se/letsplay', name: 'admin-blokkda', icon: '/icons/adminblokkda.svg', section: 'links', tags: 'admin-blokkda,pri5,mysites'},
+          {href: 'https://proxy-ante.nnel.se', name: 'proxy-ante', icon: '/icons/proxyantennelse-32x32.png', section: 'links', tags: 'proxy-ante,nxginx,pri5,mysites'},
+          {href: 'https://font-bete.nnel.se', name: 'font-bete', icon: '/icons/fontbetennelse.svg', section: 'links', tags: 'font-bete,foxpublish,pri5,mysites'},
+          // {href: voidLink, name: '-', section: 'links', tags: ',,pri5,mysites'},
+
+          {href: 'https://youtube.com', name: 'Youtube', icon: 'https://favicone.com/youtube.com?s=32', section: 'links', tags: 'video,youtube,pri6,entertainment'},
+          {href: 'https://vimeo.com', name: 'Vimeo', icon: 'https://favicone.com/vimeo.com?s=32', section: 'links', tags: 'video,vimeo,pri6,entertainment'},
+          {href: 'https://tv.nrk.no', name: 'NRK.tv', icon: '/icons/nrk-tv-32x32.png', section: 'links', tags: 'video,nrk,pri6,entertainment'},
+          {href: 'https://radio.nrk.no', name: 'NRK.radio', icon: '/icons/nrk-radio-32x32.png', section: 'links', tags: 'radio,nrk,pri6,entertainment'},
+          {href: 'https://netflix.com', name: 'Netflix', icon: 'https://favicone.com/netflix.com?s=32', section: 'links', tags: 'video,netflix,pri6,entertainment'},
+          // {href: voidLink, name: '-', section: 'links', tags: ',,pri6,entertainment'},
+
+        ]
+        function onThemeClick() {
+          theme.value = theme.value === 'light' ? 'dark' : 'light'
+        }
+        function onNavClick(val) {
+          section.value = val
+          drawer.value = false
+        }
+        function onCardClick(event, link) {
+          if (link.href === voidLink) {
+            overlay.value = true
+            event.preventDefault()
+            event.stopPropagation()
+            return false
+          }
+          // else {
+          //   window.location = link.href
+          // }
+        }
+        function onOverlayUpdate(state) {
+          overlay.value = state
+        }
+        function filtered(ls, val) {
+          return ls.filter(l => l.tags.indexOf(val) >= 0)
+        }
+        onMounted(() => {
+          loaded.value = true
+        })
+        return {
+          theme,
+          loaded,
+          drawer,
+          overlay,
+          onThemeClick,
+          onNavClick,
+          onCardClick,
+          onOverlayUpdate,
+          sections,
+          section,
+          filtered,
+          priorities,
+          links: computed(() => {
+            return allLinks.filter(link => link.section === section.value)
+          }),
+        }
+      }
+    })
+    .use(vuetify)
+    .mount('#app')
+  </script>
+</body>
+</html>
