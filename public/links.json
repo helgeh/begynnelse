@@ -1,0 +1,228 @@
+{
+  "sections": [
+    {
+      "name": "*Alle",
+      "section": "*"
+    },
+    {
+      "name": "Ordne",
+      "section": "common"
+    },
+    {
+      "name": "Skape",
+      "section": "develop"
+    },
+    {
+      "name": "Moro",
+      "section": "entertain"
+    }
+  ],
+  "links": [
+    {
+      "href": "https://mail.proton.me",
+      "name": "Proton",
+      "icon": "https://favicone.com/mail.proton.me?s=32",
+      "section": "common",
+      "tags": "email,proton,pri1,standard"
+    },
+    {
+      "href": "https://github.com/helgeh",
+      "name": "Github",
+      "icon": {
+        "light": "/icons/github-light-32x32.png",
+        "dark": "/icons/github-dark-32x32.png"
+      },
+      "section": "develop",
+      "tags": "code,git,pri1,standard"
+    },
+    {
+      "href": "https://bsky.app",
+      "name": "Bluesky",
+      "icon": "https://favicone.com/bsky.app?s=32",
+      "section": "common",
+      "tags": "social,bsky,pri1,standard"
+    },
+    {
+      "href": "https://archlinux.org",
+      "name": "Arch",
+      "icon": "https://favicone.com/archlinux.org?s=32",
+      "section": "common",
+      "tags": "os,arch,pri1,standard"
+    },
+    {
+      "href": "https://xcancel.com",
+      "name": "Xcancel",
+      "icon": "https://favicone.com/xcancel.com?s=32",
+      "section": "common",
+      "tags": "social,xcancel,pri1,standard"
+    },
+    {
+      "href": "https://duckduckgo.com",
+      "name": "duckduckgo",
+      "icon": "https://favicone.com/duckduckgo.com?s=32",
+      "section": "common",
+      "tags": "search,duckduckgo,pri1,standard"
+    },
+    {
+      "href": "https://minecraft.wiki",
+      "name": "Minecraft.wiki",
+      "icon": "https://favicone.com/minecraft.wiki?s=32",
+      "section": "entertain",
+      "tags": "minecraft,wiki,pri2,gaming"
+    },
+    {
+      "href": "https://www.chunkbase.com",
+      "name": "Chunkbase",
+      "icon": "https://favicone.com/chunkbase.com?s=32",
+      "section": "entertain",
+      "tags": "minecraft,map,chunkbase,pri2,gaming"
+    },
+    {
+      "href": "https://modrinth.com",
+      "name": "Modrinth",
+      "icon": "https://favicone.com/modrinth.com?s=32",
+      "section": "entertain",
+      "tags": "minecraft,mods,modrinth,pri2,gaming"
+    },
+    {
+      "href": "https://vanillatweaks.net",
+      "name": "Vanillatweaks",
+      "icon": "https://favicone.com/vanillatweaks.net?s=32",
+      "section": "entertain",
+      "tags": "minecraft,vanillatweaks,pri2,gaming"
+    },
+    {
+      "href": "https://legacy.curseforge.com/minecraft/mc-mods",
+      "name": "Curseforge",
+      "icon": "https://favicone.com/curseforge.com?s=32",
+      "section": "entertain",
+      "tags": "minecraft,mods,curseforge,pri2,gaming"
+    },
+    {
+      "href": "https://fabricmc.net",
+      "name": "Fabric",
+      "icon": "https://favicone.com/fabricmc.net?s=32",
+      "section": "entertain",
+      "tags": "minecraft,mods,fabric,pri2,gaming"
+    },
+    {
+      "href": "https://domene.shop",
+      "name": "Domeneshop",
+      "icon": "https://domene.shop/favicon/76x76.png",
+      "section": "develop",
+      "tags": "hosting,domeneshop,pri3,dev"
+    },
+    {
+      "href": "https://vuejs.org",
+      "name": "Vue.js",
+      "icon": "https://favicone.com/vuejs.org?s=32",
+      "section": "develop",
+      "tags": "js,vue,pri3,dev"
+    },
+    {
+      "href": "https://vuetifyjs.com",
+      "name": "Vuetify",
+      "icon": "https://favicone.com/vuetifyjs.com?s=32",
+      "section": "develop",
+      "tags": "js,vuetify,pri3,dev"
+    },
+    {
+      "href": "https://pinia.vuejs.org",
+      "name": "Pinia",
+      "icon": "https://favicone.com/pinia.vuejs.org?s=32",
+      "section": "develop",
+      "tags": "js,pinia,pri3,dev"
+    },
+    {
+      "href": "https://solcigar.no/",
+      "name": "Solcigar",
+      "icon": "/icons/solcigar-57x57.png",
+      "section": "common",
+      "tags": "solcigar,pri4,shopping"
+    },
+    {
+      "href": "https://www.nespresso.com/no/nb",
+      "name": "Nespresso",
+      "icon": "https://favicone.com/nespresso.com?s=32",
+      "section": "common",
+      "tags": "nespresso,pri4,shopping"
+    },
+    {
+      "href": "https://www.komplett.no",
+      "name": "Komplett",
+      "icon": "https://favicone.com/www.komplett.no?s=32",
+      "section": "common",
+      "tags": "data,komplett,pri4,shopping"
+    },
+    {
+      "href": "https://www.dustinhome.no",
+      "name": "Dustinhome",
+      "icon": "/icons/dustinhome-32x32.png",
+      "section": "common",
+      "tags": "data,dustinhome,pri4,shopping"
+    },
+    {
+      "href": "https://begy.nnel.se",
+      "name": "begy",
+      "icon": "/icons/begynnelse-32x32.png",
+      "section": "develop",
+      "tags": "begynnelse,pri5,mysites"
+    },
+    {
+      "href": "https://admin-blokkda.nnel.se/letsplay",
+      "name": "admin-blokkda",
+      "icon": "/icons/adminblokkda.svg",
+      "section": "develop",
+      "tags": "admin-blokkda,pri5,mysites"
+    },
+    {
+      "href": "https://proxy-ante.nnel.se",
+      "name": "proxy-ante",
+      "icon": "/icons/proxyantennelse-32x32.png",
+      "section": "develop",
+      "tags": "proxy-ante,nxginx,pri5,mysites"
+    },
+    {
+      "href": "https://font-bete.nnel.se",
+      "name": "font-bete",
+      "icon": "/icons/fontbetennelse.svg",
+      "section": "develop",
+      "tags": "font-bete,foxpublish,pri5,mysites"
+    },
+    {
+      "href": "https://youtube.com",
+      "name": "Youtube",
+      "icon": "https://favicone.com/youtube.com?s=32",
+      "section": "entertain",
+      "tags": "video,youtube,pri6,media"
+    },
+    {
+      "href": "https://vimeo.com",
+      "name": "Vimeo",
+      "icon": "https://favicone.com/vimeo.com?s=32",
+      "section": "entertain",
+      "tags": "video,vimeo,pri6,media"
+    },
+    {
+      "href": "https://tv.nrk.no",
+      "name": "NRK.tv",
+      "icon": "/icons/nrk-tv-32x32.png",
+      "section": "entertain",
+      "tags": "video,nrk,pri6,media"
+    },
+    {
+      "href": "https://radio.nrk.no",
+      "name": "NRK.radio",
+      "icon": "/icons/nrk-radio-32x32.png",
+      "section": "entertain",
+      "tags": "radio,nrk,pri6,media"
+    },
+    {
+      "href": "https://netflix.com",
+      "name": "Netflix",
+      "icon": "https://favicone.com/netflix.com?s=32",
+      "section": "entertain",
+      "tags": "video,netflix,pri6,media"
+    }
+  ]
+}
