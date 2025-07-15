@@ -15,6 +15,10 @@
     {
       "name": "Moro",
       "section": "entertain"
+    },
+    {
+      "name": "Extra",
+      "section": "utility"
     }
   ],
   "links": [
@@ -127,6 +131,20 @@
       "tags": "minecraft,planetminecraft,pri2,gaming"
     },
     {
+      "href": "https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki",
+      "name": "Satisf.wiki",
+      "icon": "https://favicone.com/satisfactory.wiki.gg?s=32",
+      "section": "entertain",
+      "tags": "satisfactory,wiki,pri2,gaming"
+    },
+    {
+      "href": "https://satisfactory-calculator.com/en/planners/production",
+      "name": "Satisf.calc",
+      "icon": "/icons/satisfactory-calculator-32x32.png",
+      "section": "entertain",
+      "tags": "satisfactory,calculator,pri2,gaming"
+    },
+    {
       "href": "https://stackoverflow.com",
       "name": "Stackoverflow",
       "icon": "https://favicone.com/stackoverflow.com?s=32",
@@ -167,6 +185,20 @@
       "icon": "https://favicone.com/getbootstrap.com?s=32",
       "section": "develop",
       "tags": "css,bootstrap,pri3,dev"
+    },
+    {
+      "href": "https://lodash.com/docs",
+      "name": "Lodash",
+      "icon": "https://favicone.com/lodash.com?s=32",
+      "section": "develop",
+      "tags": "js,lodash,pri3,dev"
+    },
+    {
+      "href": "https://jsbin.com/",
+      "name": "JsBin",
+      "icon": "https://favicone.com/jsbin.com?s=32",
+      "section": "develop",
+      "tags": "online,jsbin,pri3,dev"
     },
     {
       "href": "https://solcigar.no/",
@@ -225,6 +257,13 @@
       "tags": "font-bete,foxpublish,pri5,mysites"
     },
     {
+      "href": "https://pyrofoniks.no/",
+      "name": "Pyrofoniks",
+      "icon": "https://pyrofoniks.no/favicon.ico",
+      "section": "develop",
+      "tags": "web,pyrofoniks,pri5,mysites"
+    },
+    {
       "href": "https://leonlingua.com",
       "name": "Leonlingua",
       "icon": "/icons/leonlingua-32x32.png",
@@ -232,18 +271,18 @@
       "tags": "leonlingua,wordpress,pri5,mysites"
     },
     {
+      "href": "https://sonixmadnezz.com",
+      "name": "Sonixmadnezz",
+      "icon": "",
+      "section": "develop",
+      "tags": "sonixmadnezz,wordpress,pri5,mysites"
+    },
+    {
       "href": "https://youtube.com",
       "name": "Youtube",
       "icon": "https://favicone.com/youtube.com?s=32",
       "section": "entertain",
       "tags": "video,youtube,pri6,media"
-    },
-    {
-      "href": "https://vimeo.com",
-      "name": "Vimeo",
-      "icon": "https://favicone.com/vimeo.com?s=32",
-      "section": "entertain",
-      "tags": "video,vimeo,pri6,media"
     },
     {
       "href": "https://tv.nrk.no",
@@ -267,11 +306,32 @@
       "tags": "video,netflix,pri6,media"
     },
     {
+      "href": "https://vimeo.com",
+      "name": "Vimeo",
+      "icon": "https://favicone.com/vimeo.com?s=32",
+      "section": "entertain",
+      "tags": "video,vimeo,pri6,media"
+    },
+    {
       "href": "https://twitch.tv",
       "name": "Twitch",
       "icon": "https://favicone.com/twitch.tv?s=32",
       "section": "entertain",
       "tags": "streaming,twitch,pri6,media"
+    },
+    {
+      "href": "https://norgeskart.no/",
+      "name": "Norgeskart",
+      "icon": "/icons/norgeskart.ico",
+      "section": "utility",
+      "tags": "map,norgeskart,pri7,utils"
+    },
+    {
+      "href": "https://www.imdb.com/",
+      "name": "Imdb",
+      "icon": "https://favicone.com/imdb.com?s=32",
+      "section": "utility",
+      "tags": "movies,imdb,pri7,utils"
     }
   ]
 }
