@@ -20,10 +20,17 @@
   "links": [
     {
       "href": "https://mail.proton.me",
-      "name": "Proton",
+      "name": "Proton.mail",
       "icon": "https://favicone.com/mail.proton.me?s=32",
       "section": "common",
       "tags": "email,proton,pri1,standard"
+    },
+    {
+      "href": "https://pass.proton.me",
+      "name": "Proton.pass",
+      "icon": "https://favicone.com/pass.proton.me?s=32",
+      "section": "common",
+      "tags": "passwords,proton,pri1,standard"
     },
     {
       "href": "https://github.com/helgeh",
@@ -65,7 +72,7 @@
     },
     {
       "href": "https://minecraft.wiki",
-      "name": "Minecraft.wiki",
+      "name": "MC.wiki",
       "icon": "https://favicone.com/minecraft.wiki?s=32",
       "section": "entertain",
       "tags": "minecraft,wiki,pri2,gaming"
@@ -86,7 +93,7 @@
     },
     {
       "href": "https://vanillatweaks.net",
-      "name": "Vanillatweaks",
+      "name": "VanillaTweaks",
       "icon": "https://favicone.com/vanillatweaks.net?s=32",
       "section": "entertain",
       "tags": "minecraft,vanillatweaks,pri2,gaming"
@@ -104,6 +111,27 @@
       "icon": "https://favicone.com/fabricmc.net?s=32",
       "section": "entertain",
       "tags": "minecraft,mods,fabric,pri2,gaming"
+    },
+    {
+      "href": "https://www.digminecraft.com/",
+      "name": "DigMC",
+      "icon": "https://favicone.com/www.digminecraft.com?s=32",
+      "section": "entertain",
+      "tags": "minecraft,digminecraft,pri2,gaming"
+    },
+    {
+      "href": "https://www.planetminecraft.com/",
+      "name": "PlanetMC",
+      "icon": "https://favicone.com/www.planetminecraft.com?s=32",
+      "section": "entertain",
+      "tags": "minecraft,planetminecraft,pri2,gaming"
+    },
+    {
+      "href": "https://stackoverflow.com",
+      "name": "Stackoverflow",
+      "icon": "https://favicone.com/stackoverflow.com?s=32",
+      "section": "develop",
+      "tags": "qna,stackoverflow,pri3,dev"
     },
     {
       "href": "https://domene.shop",
@@ -132,6 +160,13 @@
       "icon": "https://favicone.com/pinia.vuejs.org?s=32",
       "section": "develop",
       "tags": "js,pinia,pri3,dev"
+    },
+    {
+      "href": "https://getbootstrap.com",
+      "name": "Bootstrap",
+      "icon": "https://favicone.com/getbootstrap.com?s=32",
+      "section": "develop",
+      "tags": "css,bootstrap,pri3,dev"
     },
     {
       "href": "https://solcigar.no/",
@@ -190,6 +225,13 @@
       "tags": "font-bete,foxpublish,pri5,mysites"
     },
     {
+      "href": "https://leonlingua.com",
+      "name": "Leonlingua",
+      "icon": "/icons/leonlingua-32x32.png",
+      "section": "develop",
+      "tags": "leonlingua,wordpress,pri5,mysites"
+    },
+    {
       "href": "https://youtube.com",
       "name": "Youtube",
       "icon": "https://favicone.com/youtube.com?s=32",
@@ -223,6 +265,13 @@
       "icon": "https://favicone.com/netflix.com?s=32",
       "section": "entertain",
       "tags": "video,netflix,pri6,media"
+    },
+    {
+      "href": "https://twitch.tv",
+      "name": "Twitch",
+      "icon": "https://favicone.com/twitch.tv?s=32",
+      "section": "entertain",
+      "tags": "streaming,twitch,pri6,media"
     }
   ]
 }

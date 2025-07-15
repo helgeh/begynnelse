@@ -57,7 +57,7 @@
                 return (curSec === '*' || link.section === curSec) && link.tags.indexOf(prio) >= 0
               })
             }
-          })
+          }).filter(prio => prio.links.length > 0)
         }),
         setSection: (val) => {
           currentSection.value = sections.value.findIndex(s => s.section === val)
