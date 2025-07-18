@@ -59,6 +59,7 @@ createUsers.run()
 
 const insertUser = db.prepare('INSERT INTO users (name, email, password, details) VALUES (?, ?, ?, ?)')
 const updateUserDetails = db.prepare('UPDATE users SET details = ? WHERE id = ?')
+const removeUserById = db.prepare('DELETE from users WHERE id = ?')
 const userById = db.prepare('SELECT name, email FROM users WHERE id = ?')
 const userByEmail = db.prepare('SELECT id, name, email, password, details FROM users WHERE email = ?')
 
@@ -75,6 +76,14 @@ function setUserDetails(email, str) {
   if (!user)
     throw new Error('User not found')
   updateUserDetails.run(str, user.id)
+}
+
+function removeUser(id) {
+  const user = getUserById(id)
+  if (user)
+    removeUserById.run(id)
+  else throw new Error('User not found')
+  return user
 }
 
 function getUserById(id) {
@@ -122,7 +131,7 @@ function getLinks(userId) {
   return linksByUser.all(userId)
 }
 
-// addUser('hjh', 'haefs@pm.me', '')
+// addUser('hjh', 'test@somedomain.com', '')
 
 // addLink('vg.no', 'https://www.vg.no', 1)
 // addLink('gmail', 'https://mail.google.com', 1)
@@ -136,6 +145,7 @@ console.log('links', getLinks(1))
 export {
   addUser,
   setUserDetails,
+  removeUser,
   getUserByEmail,
   
   getCategories,

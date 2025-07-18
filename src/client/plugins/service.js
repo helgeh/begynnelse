@@ -40,42 +40,56 @@ export default {
     const ikkeGodkjent = shallowRef(false)
     app.provide('ikkeGodkjent', ikkeGodkjent)
     app.provide('tilgang', {
-      blimed: async (namn, hemmelighet) => {
+      blimed: async (epost, passord) => {
         try {
           ikkeGodkjent.value = false
-          const result = await axios.post('/blimed', { usr: namn, pw: hemmelighet })
-          if (result.data.success) {
-            console.log('heck yes, registered')
-          }
+          const result = await axios.post('/blimed', { usr: epost, pw: passord })
+          // if (result.data.success) {
+          //   console.log('heck yes, registered')
+          // }
+          return result.data.success
         }
         catch (err) {
           if (err.response.data.code !== undefined) {
             if (err.response.data.code === 0) {
-              throw new Error('Passordet må være lenger (minimum 8, helst 11)')
+              return Promise.reject('Passordet må være lenger (minimum 8, helst 11)')
             }
             if (err.response.data.code < 3) {
-              throw new Error('Passordet må ha være mer komplekst... Prøv store/små bokstaver, tall, tegn og/eller lengde på mer enn 11 tegn.')
+              return Promise.reject('Passordet må ha være mer komplekst... Prøv store/små bokstaver, tall, tegn og/eller lengde på mer enn 11 tegn.')
             }
           }
         }
       },
-      godkjenn: async (epost, hemmelighet) => {
+      godkjenn: async (epost, passord) => {
         try {
           ikkeGodkjent.value = false
-          const result = await axios.post('/blimed/godkjenn', { usr: epost, pw: hemmelighet })
-          if (result.data.success)
-            console.log('heck yes, registered')
+          const result = await axios.post('/blimed/godkjenn', { usr: epost, pw: passord })
+          // if (result.data.success)
+          //   console.log('new email should have been sent')
+          return result.data
         }
         catch (err) {
-          console.log('kunne ikke sende epost eller noe?')
+          // console.log('kunne ikke sende epost eller noe?')
+          return false
         }
       },
-      heisann: async (namn, hemmelighet) => {
+      godkjennHemmelighet: async (epost, hemmelighet) => {
+        try {
+          const response = await axios.get(`/blimed/godkjenn/${epost}/${hemmelighet}`)
+          return response.data
+        }
+        catch (err) {
+          // console.log('feil under godkjenning', err)
+          // throw new Error('Kunne ikke godkjenne')
+          return Promise.reject('Kunne ikke godkjenne')
+        }
+      },
+      heisann: async (epost, passord) => {
         try {
           ikkeGodkjent.value = false
           const response = await axios.post(`/heisann`, {
-            usr: namn,
-            pw: hemmelighet,
+            usr: epost,
+            pw: passord,
           })
           if (response.status !== 200) {
             throw new Error('Ikke greit')
@@ -97,33 +111,33 @@ export default {
         try {
           const response = await fetch('/lenker', addAuthHeader())
           return await response.json()
-            // .then((res) => {
-            //   if (!res.ok) throw new Error('Sorry, not allowed!')
-            //   else return res.json()
-            // })
-            // .then((json) =>
-            //   console.log('fant lenker?', json)
-            //   // json.files.map((file) => ({
-            //   //   key: Date.now(),
-            //   //   text: file.fileName,
-            //   //   value: file.path,
-            //   // })),
-            // )
         }
         catch (error) {
-          console.log('feil ved henting av lenker', error.message)
+          // console.log('feil ved henting av lenker', error.message)
           throw new Error('Sorry, kunne ikke hente lenker!')
         }
       },
       hade: () => {
         // document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'
-        localStorage.removeItem('mitt-merke')
+        return new Promise((res, rej) => {
+          localStorage.removeItem('mitt-merke')
+          res()
+        })
       },
       allerede: () => {
         const merke = localStorage.getItem('mitt-merke')
         return merke != null
-        // if (merke)
-        //   return fetch('/')
+      },
+      slettmeg: async () => {
+        try {
+          const response = await fetch('/slettmeg', addAuthHeader({method: 'POST'}))
+          localStorage.removeItem('mitt-merke')
+          return true
+        }
+        catch (err) {
+          console.log('feil ved sletting', err)
+          return false
+        }
       }
     })
 

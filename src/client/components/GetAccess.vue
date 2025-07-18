@@ -1,7 +1,7 @@
 <template>
-  <v-dialog v-model="dialog" max-width="400" persistent>
+  <v-dialog max-width="400">
     <template v-slot:activator="{ props: activatorProps }">
-      <v-btn v-bind="activatorProps" class="mx-auto"> Slipp meg inn </v-btn>
+      <v-btn v-bind="activatorProps" class="mx-auto">Slipp meg inn</v-btn>
     </template>
 
     <v-card
@@ -16,6 +16,9 @@
         placeholder="brukernavn"
         prepend-inner-icon="mdi-account-check"
         variant="outlined"
+        @keypress="onKeyPress($event, 0)"
+        :autofocus="true"
+        ref="first-input"
       ></v-text-field>
       <v-text-field
         :append-inner-icon="pwVisible ? 'mdi-eye-off' : 'mdi-eye'"
@@ -26,6 +29,8 @@
         prepend-inner-icon="mdi-lock-outline"
         variant="outlined"
         @click:append-inner="pwVisible = !pwVisible"
+        @keypress="onKeyPress($event, 1)"
+        ref="second-input"
       ></v-text-field>
       <template v-slot:actions>
 
@@ -42,13 +47,14 @@
 </template>
 
 <script setup>
-  import { ref, inject } from 'vue'
+  import { ref, useTemplateRef, inject } from 'vue'
 
   const emit = defineEmits(['godkjent'])
 
+  const firstInput = useTemplateRef('first-input')
+  const secondInput = useTemplateRef('second-input')
   const usr = ref('')
   const pw = ref('')
-  const dialog = ref(false)
   const pwVisible = ref(false)
   const sorry = ref('')
   const tilgang = inject('tilgang')
@@ -58,10 +64,11 @@
     emit('godkjent')
 
   async function onSubmit() {
+    if (usr.value.length < 1 || pw.value.length < 1)
+      return sorry.value = 'Du må iallfall skrive NOE her...'
     try {
       await tilgang.heisann(usr.value, pw.value)
       sorry.value = false
-      dialog.value = false
       emit('godkjent')
     } catch (error) {
       sorry.value = error.message
@@ -74,6 +81,15 @@
     }
     catch (error) {
       console.log('feil under godkjenn', error.message)
+    }
+  }
+
+  async function onKeyPress(evt, id) {
+    if (evt.code === 'Enter') {
+      if (id === 0) 
+        secondInput.value.focus()
+      else if (id === 1)
+        onSubmit()
     }
   }
 </script>

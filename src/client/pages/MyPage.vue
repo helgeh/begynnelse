@@ -9,9 +9,13 @@
     <v-card-text>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
       tempor incididunt ut labore et dolore magna aliqua.
+      <v-divider class="my-5"></v-divider>
       <ul>
         <li v-for="link in links"><a :href="link.url">{{ link.name }}</a></li>
       </ul>
+      <v-divider class="my-5"></v-divider>
+      <v-btn v-if="harTilgang" @click="onLogOut" class="me-2">Logg ut</v-btn>
+      <v-btn v-if="harTilgang" @click="onDeleteMe">Slett meg</v-btn>
     </v-card-text>
   </v-card>
   <v-sheet class="mx-auto mt-8 pa-3" max-width="400" rounded="lg" v-else>
@@ -42,6 +46,20 @@
   function onTommelOpp() {
     harTilgang.value = true
     finnLenker()
+  }
+
+  function onLogOut() {
+    tilgang.hade()
+      .then(_ => {
+        harTilgang.value = false
+      })
+  }
+
+  function onDeleteMe() {
+    tilgang.slettmeg()
+      .then(_ => {
+        harTilgang.value = false
+      })
   }
 </script>
 

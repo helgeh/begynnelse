@@ -36,6 +36,7 @@
 
   import HomePage from './pages/HomePage.vue'
   import MyPage from './pages/MyPage.vue'
+  import VerifyEmailPage from './pages/VerifyEmailPage.vue'
   import MiraMull from './pages/MiraMull.vue'
   import ZipList from './pages/ZipList.vue'
   import PodPlayer from './pages/PodPlayer.vue'
@@ -54,6 +55,7 @@
     '/player': PodPlayer,
     '/about': AboutPage,
     '/my': MyPage,
+    '/verify': VerifyEmailPage,
   }
 
   const currentPath = ref(window.location.hash.slice(1))

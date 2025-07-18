@@ -6,9 +6,15 @@ import 'dotenv/config'
 import parser from 'xml2json'
 
 import { authTheToken, makeTheToken, checkPassword, randomHex, getPasswordComplexityScore } from './sikkerhet.js'
-import { addUser, getUserByEmail, setUserDetails, addLink, getLinks } from './db.js'
+import { addUser, setUserDetails, removeUser, getUserByEmail, addLink, getLinks } from './db.js'
+import { sendAdminMail } from './mailer.js'
 
 const debug = process.env.DEBUG_APP || false
+
+function log(...args) {
+  if (debug)
+    console.log(...args)
+}
 
 const TIME_5_MINUTES = 1000 * 60 * 5
 
@@ -16,19 +22,36 @@ const router = express.Router()
 
 router.use(express.json())
 
+function notifyEmailVerify(to, secret) {
+  const url = `https://begy.nnel.se/?email=${to}&token=${secret}#/verify`
+  sendAdminMail(
+    to, 
+    'Email verification', 
+    `<p>To complete the begy.nnel.se registration <a href="${url}">click here</a> to verify your email address</p>`
+  )
+}
+
 router.post('/blimed', async (req, res) => {
   const { usr, pw } = req.body
   const user = getUserByEmail(usr)
   if (user) {
+    log(`Bruker fantes allerede (${usr})`)
     return res.status(409).json({ error: 'User exists' })
   }
   const reg = /^\S+@\S+\.\S+$/
-  if (!reg.test(usr))
-    return res.status(500).json({ error: 'Not a proper email address!' })
+  if (!reg.test(usr)) {
+    log(`Registrering med ikke-epost? (${usr})`)
+    return res.status(400).json({ error: 'Not a proper email address!' })
+  }
   const score = getPasswordComplexityScore(pw)
-  if (score < 3)
-    return res.status(500).json({ error: 'Needs more password complexity', code: score })
-  addUser(usr, pw, `et:${randomHex(16)}-${Date.now()};`)
+  if (score < 3) {
+    log(`For lav passord-kompleksitet`)
+    return res.status(400).json({ error: 'Needs more password complexity', code: score })
+  }
+  const secret = randomHex(16)
+  addUser(usr, pw,`et:${secret}-${Date.now()};`)
+  notifyEmailVerify(usr, secret)
+  log(`Bruker opprettet og epost sendt (${usr}, ${Date.now()})`)
   return res.json({ message: 'Registered!', success: true })
 })
 
@@ -36,45 +59,35 @@ router.post('/blimed/godkjenn', async (req, res) => {
   const { usr, pw } = req.body
   const user = getUserByEmail(usr)
   if (!user || !user.password) {
+    log(`Fant ingen bruker (${usr})`)
     return res.status(401).json({ error: 'Invalid credentials' })
   }
   if (await !checkPassword(pw, user.password)) {
+    log(`Feil passord for bruker (${usr})`)
     return res.status(401).json({ error: 'Invalid credentials' })
   }
   const secret = randomHex(16)
-  setUserDetails(usr, `et:${secret}-${Date.now()};`)
-  const url = `https://begy.nnel.se/blimed/godkjenn/${usr}/${secret}`
-  // TODO: send email somehow:
-  // sendmail({
-    // email: usr,
-    // subject: 'Email verification',
-    // body: `<p>If you just registered to begy.nnel.se <a href="${url}">click</a> to verify your email adress</p>`
-  // })
-  const extra = {}
-  if (debug)
-    extra.url = url
-  return res.json({ message: 'Email sent', success: true, extra })
+  setUserDetails(usr,`et:${secret}-${Date.now()};`)
+  notifyEmailVerify(usr, secret)
+  log(`Hemmelighet oppdatert og epost sendt (${usr}, ${Date.now()})`)
+  return res.json({ message: 'Email sent', success: true })
 })
 
 router.get('/blimed/godkjenn/:email/:token', async (req, res) => {
   const email = req.params.email
   const token = req.params.token
   const user = getUserByEmail(email)
-  if (!user || !user.details) {
-    return res.json({ message: 'Verified!', success: true })
-  }
-  if (user.details.startsWith('et:CONFIRMED-')) {
-    return res.json({ message: 'Verified!', success: true })
-  }
-  if (user.details.startsWith(`et:${token}-`)) {
-    let details = user.details.replace(`et:${token}-`, '')
-    if (details.endsWith(';'))
-      details = details.slice(0, -1)
-    if (Date.now() - parseInt(details, 10) > TIME_5_MINUTES)
+  if (user && user.details && user.details.startsWith(`et:${token}-`)) {
+    const details = user.details.replace(`et:${token}-`, '')
+    const digits = /^(\d)+/.exec(details)[0]
+    if (Date.now() - parseInt(digits, 10) > TIME_5_MINUTES) {
+      log(`For lang tid siden registrering (${email})`)
       return res.status(400).json({ error: 'Too much time passed' })
+    }
     setUserDetails(email, `et:CONFIRMED-${Date.now()};`)
     return res.json({ message: 'Verified!', success: true })
   }
+  log(`Feil hemmelighet for bruker (${email})`)
   return res.status(400).json({ error: 'Not valid token' })
 })
 
@@ -82,24 +95,25 @@ router.post('/heisann', async (req, res) => {
   const { usr, pw } = req.body
   const user = getUserByEmail(usr)
   if (!user || !user.password) {
+    log(`Fant ingen bruker (${usr})`)
     return res.status(401).json({ error: 'Invalid credentials' })
   }
   if (await checkPassword(pw, user.password)) {
     if (!user.details.startsWith('et:CONFIRMED-')) {
-      const extra = {}
-      if (debug)
-        extra.details = user.details
-      return res.status(403).json({ error: 'Email not verified', extra })
+      log(`Bruker allerede godkjent (${usr})`)
+      return res.status(403).json({ error: 'Email not verified' })
     }
     const token = makeTheToken(user.id, user.email)
     return res.json({ token })
   }
+  log(`Feil usr/pw (${usr})`)
   return res.status(401).json({ error: 'Invalid credentials' })
 })
 
-router.get('/foo-bar', authTheToken, (req, res) => {
-  // console.log('inside protected endpoint')
-  res.json({ message: 'hells yes!', success: true })
+router.post('/slettmeg', authTheToken, (req, res) => {
+  const result = removeUser(req.user.id)
+  log(`Bruker slettet (${result.id, result.email})`)
+  res.json(result)
 })
 
 router.get('/lenker', authTheToken, (req, res) => {

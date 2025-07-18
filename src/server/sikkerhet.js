@@ -22,10 +22,10 @@ export async function checkPassword(password, hash) {
     bcrypt.compare(password, hash, function(err, result) {
       if (err) {
         console.log('some error during password comparison')
-        rej('Error')
+        rej(false)
         return
       }
-      res(true)
+      res(result)
     })
   })
 }
@@ -56,7 +56,7 @@ export function makeTheToken(id, username) {
 export function getPasswordComplexityScore(pw) {
   if (pw.length < 8)
     return 0
-  const hasLongLength = px.length > 11
+  const hasLongLength = pw.length > 11
   const hasUpperCase = /[A-Z]/.test(pw)
   const hasLowerCase = /[a-z]/.test(pw)
   const hasNumbers = /\d/.test(pw)
