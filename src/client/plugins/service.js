@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { shallowRef } from 'vue'
 
 import GetAccess from '../components/GetAccess.vue'
 import MyHeader from '../components/MyHeader.vue'
@@ -36,9 +37,42 @@ export default {
       .component('MyLink', MyLink)
       .component('CatTax', CatTax)
 
+    const ikkeGodkjent = shallowRef(false)
+    app.provide('ikkeGodkjent', ikkeGodkjent)
     app.provide('tilgang', {
+      blimed: async (namn, hemmelighet) => {
+        try {
+          ikkeGodkjent.value = false
+          const result = await axios.post('/blimed', { usr: namn, pw: hemmelighet })
+          if (result.data.success) {
+            console.log('heck yes, registered')
+          }
+        }
+        catch (err) {
+          if (err.response.data.code !== undefined) {
+            if (err.response.data.code === 0) {
+              throw new Error('Passordet må være lenger (minimum 8, helst 11)')
+            }
+            if (err.response.data.code < 3) {
+              throw new Error('Passordet må ha være mer komplekst... Prøv store/små bokstaver, tall, tegn og/eller lengde på mer enn 11 tegn.')
+            }
+          }
+        }
+      },
+      godkjenn: async (epost, hemmelighet) => {
+        try {
+          ikkeGodkjent.value = false
+          const result = await axios.post('/blimed/godkjenn', { usr: epost, pw: hemmelighet })
+          if (result.data.success)
+            console.log('heck yes, registered')
+        }
+        catch (err) {
+          console.log('kunne ikke sende epost eller noe?')
+        }
+      },
       heisann: async (namn, hemmelighet) => {
         try {
+          ikkeGodkjent.value = false
           const response = await axios.post(`/heisann`, {
             usr: namn,
             pw: hemmelighet,
@@ -53,14 +87,44 @@ export default {
 
           return token
         } catch (error) {
-          console.warn('Feil ved innlogging: ', error.message)
-          throw new Error('Sorry, innlogging feilet!')
+          console.warn('Feil ved innlogging: ', error)
+          if (error.response.status === 403)
+            ikkeGodkjent.value = true
+          throw new Error(error?.response?.data?.error || 'Sorry, innlogging feilet!')
+        }
+      },
+      lenker: async () => {
+        try {
+          const response = await fetch('/lenker', addAuthHeader())
+          return await response.json()
+            // .then((res) => {
+            //   if (!res.ok) throw new Error('Sorry, not allowed!')
+            //   else return res.json()
+            // })
+            // .then((json) =>
+            //   console.log('fant lenker?', json)
+            //   // json.files.map((file) => ({
+            //   //   key: Date.now(),
+            //   //   text: file.fileName,
+            //   //   value: file.path,
+            //   // })),
+            // )
+        }
+        catch (error) {
+          console.log('feil ved henting av lenker', error.message)
+          throw new Error('Sorry, kunne ikke hente lenker!')
         }
       },
       hade: () => {
         // document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'
-        localStorage.setItem('mitt-merke', null)
+        localStorage.removeItem('mitt-merke')
       },
+      allerede: () => {
+        const merke = localStorage.getItem('mitt-merke')
+        return merke != null
+        // if (merke)
+        //   return fetch('/')
+      }
     })
 
     app.provide('service', {

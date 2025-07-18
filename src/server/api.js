@@ -5,18 +5,93 @@ import axios from 'axios'
 import 'dotenv/config'
 import parser from 'xml2json'
 
-import { authTheToken, makeTheToken, isRealUser } from './sikkerhet.js'
+import { authTheToken, makeTheToken, checkPassword, randomHex, getPasswordComplexityScore } from './sikkerhet.js'
+import { addUser, getUserByEmail, setUserDetails, addLink, getLinks } from './db.js'
+
+const debug = process.env.DEBUG_APP || false
+
+const TIME_5_MINUTES = 1000 * 60 * 5
 
 const router = express.Router()
 
 router.use(express.json())
 
-// router.post('/blimed')
-
-router.post('/heisann', (req, res) => {
+router.post('/blimed', async (req, res) => {
   const { usr, pw } = req.body
-  if (isRealUser(usr, pw)) {
-    const token = makeTheToken(usr)
+  const user = getUserByEmail(usr)
+  if (user) {
+    return res.status(409).json({ error: 'User exists' })
+  }
+  const reg = /^\S+@\S+\.\S+$/
+  if (!reg.test(usr))
+    return res.status(500).json({ error: 'Not a proper email address!' })
+  const score = getPasswordComplexityScore(pw)
+  if (score < 3)
+    return res.status(500).json({ error: 'Needs more password complexity', code: score })
+  addUser(usr, pw, `et:${randomHex(16)}-${Date.now()};`)
+  return res.json({ message: 'Registered!', success: true })
+})
+
+router.post('/blimed/godkjenn', async (req, res) => {
+  const { usr, pw } = req.body
+  const user = getUserByEmail(usr)
+  if (!user || !user.password) {
+    return res.status(401).json({ error: 'Invalid credentials' })
+  }
+  if (await !checkPassword(pw, user.password)) {
+    return res.status(401).json({ error: 'Invalid credentials' })
+  }
+  const secret = randomHex(16)
+  setUserDetails(usr, `et:${secret}-${Date.now()};`)
+  const url = `https://begy.nnel.se/blimed/godkjenn/${usr}/${secret}`
+  // TODO: send email somehow:
+  // sendmail({
+    // email: usr,
+    // subject: 'Email verification',
+    // body: `<p>If you just registered to begy.nnel.se <a href="${url}">click</a> to verify your email adress</p>`
+  // })
+  const extra = {}
+  if (debug)
+    extra.url = url
+  return res.json({ message: 'Email sent', success: true, extra })
+})
+
+router.get('/blimed/godkjenn/:email/:token', async (req, res) => {
+  const email = req.params.email
+  const token = req.params.token
+  const user = getUserByEmail(email)
+  if (!user || !user.details) {
+    return res.json({ message: 'Verified!', success: true })
+  }
+  if (user.details.startsWith('et:CONFIRMED-')) {
+    return res.json({ message: 'Verified!', success: true })
+  }
+  if (user.details.startsWith(`et:${token}-`)) {
+    let details = user.details.replace(`et:${token}-`, '')
+    if (details.endsWith(';'))
+      details = details.slice(0, -1)
+    if (Date.now() - parseInt(details, 10) > TIME_5_MINUTES)
+      return res.status(400).json({ error: 'Too much time passed' })
+    setUserDetails(email, `et:CONFIRMED-${Date.now()};`)
+    return res.json({ message: 'Verified!', success: true })
+  }
+  return res.status(400).json({ error: 'Not valid token' })
+})
+
+router.post('/heisann', async (req, res) => {
+  const { usr, pw } = req.body
+  const user = getUserByEmail(usr)
+  if (!user || !user.password) {
+    return res.status(401).json({ error: 'Invalid credentials' })
+  }
+  if (await checkPassword(pw, user.password)) {
+    if (!user.details.startsWith('et:CONFIRMED-')) {
+      const extra = {}
+      if (debug)
+        extra.details = user.details
+      return res.status(403).json({ error: 'Email not verified', extra })
+    }
+    const token = makeTheToken(user.id, user.email)
     return res.json({ token })
   }
   return res.status(401).json({ error: 'Invalid credentials' })
@@ -25,6 +100,23 @@ router.post('/heisann', (req, res) => {
 router.get('/foo-bar', authTheToken, (req, res) => {
   // console.log('inside protected endpoint')
   res.json({ message: 'hells yes!', success: true })
+})
+
+router.get('/lenker', authTheToken, (req, res) => {
+  const links = getLinks(req.user.id)
+  res.json(links)
+})
+
+router.post('/lenker', authTheToken, (req, res) => {
+  const { url, title, category, tags } = req.body
+  const result = addLink(title, url, req.user.id)
+  res.json({ success: true })
+})
+
+router.post('/lenker/:id', authTheToken, (req, res) => {
+  const { url, title, category, tags } = req.body
+  const result = updateLink({title, url, category, tags}, req.user.id)
+  res.json({ success: true })
 })
 
 router.post('/mirasay', (req, res) => {

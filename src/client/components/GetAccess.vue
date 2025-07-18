@@ -28,6 +28,9 @@
         @click:append-inner="pwVisible = !pwVisible"
       ></v-text-field>
       <template v-slot:actions>
+
+        <v-btn v-if="ikkeGodkjent" @click="onGodkjenn()"> Godkjenn </v-btn>
+
         <v-spacer></v-spacer>
 
         <v-btn @click="dialog = false"> Avbryt </v-btn>
@@ -49,6 +52,10 @@
   const pwVisible = ref(false)
   const sorry = ref('')
   const tilgang = inject('tilgang')
+  const ikkeGodkjent = inject('ikkeGodkjent')
+
+  if (tilgang.allerede())
+    emit('godkjent')
 
   async function onSubmit() {
     try {
@@ -58,6 +65,15 @@
       emit('godkjent')
     } catch (error) {
       sorry.value = error.message
+    }
+  }
+
+  async function onGodkjenn() {
+    try {
+      tilgang.godkjenn(usr.value, pw.value)
+    }
+    catch (error) {
+      console.log('feil under godkjenn', error.message)
     }
   }
 </script>

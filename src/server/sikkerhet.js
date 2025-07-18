@@ -1,7 +1,34 @@
-// const jwt = require('jsonwebtoken');
+import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import crypto from 'crypto'
 
-const users = [{ id: 1, username: 'helge', password: 'astakask' }]
+const saltRounds = 10
+
+export async function hashPassword(password) {
+  return new Promise((res, rej) => {
+    bcrypt.hash(password, saltRounds, function(err, hash) {
+      if (err) {
+        console.log('some error during password encryption', err)
+        rej('Error')
+        return
+      }
+      res(hash)
+    })
+  })
+}
+
+export async function checkPassword(password, hash) {
+  return new Promise((res, rej) => {
+    bcrypt.compare(password, hash, function(err, result) {
+      if (err) {
+        console.log('some error during password comparison')
+        rej('Error')
+        return
+      }
+      res(true)
+    })
+  })
+}
 
 export function authTheToken(req, res, next) {
   const authHeader = req.headers['authorization']
@@ -26,10 +53,17 @@ export function makeTheToken(id, username) {
   }) // '7d'
 }
 
-export function isRealUser(usr, pw) {
-  const user = users.find((user) => user.username === usr)
-  if (!user || user.password !== pw) {
-    return false
-  }
-  return true
+export function getPasswordComplexityScore(pw) {
+  if (pw.length < 8)
+    return 0
+  const hasLongLength = px.length > 11
+  const hasUpperCase = /[A-Z]/.test(pw)
+  const hasLowerCase = /[a-z]/.test(pw)
+  const hasNumbers = /\d/.test(pw)
+  const hasNonalphas = /\W/.test(pw)
+  return hasLongLength + hasUpperCase + hasLowerCase + hasNumbers + hasNonalphas
+}
+
+export function randomHex(len) {
+  return crypto.randomBytes(len).toString('hex')
 }

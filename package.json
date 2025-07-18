@@ -4,7 +4,7 @@
   "version": "1.0.19",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/server/main.js -w src/server -w src/lib",
+    "dev": "nodemon src/server/main.js -w src/server -w src/lib -p 3000",
     "start": "NODE_ENV=production node src/server/main.js",
     "build": "vite build"
   },
@@ -12,6 +12,8 @@
     "@mdi/font": "^7.2.96",
     "archiver": "^5.3.1",
     "axios": "^1.4.0",
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.2.0",
     "child-process-promise": "^2.2.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",

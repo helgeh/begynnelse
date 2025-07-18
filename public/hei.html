@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Q</title>
+  <title>Bashbored</title>
   <link rel="stylesheet" href="https://unpkg.com/vuetify@3.8.8/dist/vuetify.min.css">
   <link rel="stylesheet" href="https://unpkg.com/@mdi/font@7.4.47/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="https://fonts.bunny.net/css?family=roboto:400,500,700" />
@@ -31,19 +31,30 @@
     const { createVuetify } = Vuetify
 
     const useLinksStore = defineStore('links', () => {
-      fetch('./links.json')
+      fetch('/lenker', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('mitt-merke')}`
+        }
+      })
+      // fetch('./links.json')
         .then(data => {
           return data.json()
         })
         .then(json => {
-          sections.value = json.sections
-          links.value = json.links
-          priorities.value = json.links
+          // sections.value = json.sections
+          links.value = json.map(l => {
+            l.icon = ''
+            l.section = 'common'
+            l.tags = 'pri1'
+            return l
+          })//.links
+          priorities.value = json// .links
             .map(l => /pri\d/.test(l.tags) ? /pri\d/.exec(l.tags)[0] : null)
             .filter(item => item)
             .filter((item, index, array) => array.indexOf(item) === index)
         })
-      const sections = ref([])
+        .catch(err => console.log('Neida, fikk ikke hente lenkene gitt'))
+      const sections = ref([{section: '*', name: 'Alle'}, {section: 'common', name: 'vanlig'}])
       const links = ref([])
       const currentSection = ref(0)
       const priorities = ref([])
@@ -80,7 +91,7 @@
     <v-responsive>
       <v-app :theme="theme">
         <v-layout class="rounded rounded-md border">
-          <v-app-bar title="Q" density="compact">
+          <v-app-bar title="Bashbored" density="compact">
             <template v-slot:prepend>
               <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             </template>
@@ -152,7 +163,7 @@
         theme.value = theme.value === 'light' ? 'dark' : 'light'
       }
       function onCardClick(event, link) {
-        if (link.href === 'void(0)') {
+        if (link.url === 'void(0)') {
           overlay.value = true
           event.preventDefault()
           event.stopPropagation()
@@ -180,7 +191,7 @@
   
   <template id="link-template">
     <v-card 
-      :href="link.href" 
+      :href="link.url" 
       @click="$emit('click', $event, link)" 
       :title="link.name"
     >
