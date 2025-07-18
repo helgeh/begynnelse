@@ -31,29 +31,40 @@
     const { createVuetify } = Vuetify
 
     const useLinksStore = defineStore('links', () => {
-      fetch('/lenker', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('mitt-merke')}`
-        }
-      })
-      // fetch('./links.json')
+      fetch('./links.json')
         .then(data => {
           return data.json()
         })
         .then(json => {
-          // sections.value = json.sections
-          links.value = json.map(l => {
-            l.icon = ''
-            l.section = 'common'
-            l.tags = 'pri1'
-            return l
-          })//.links
-          priorities.value = json// .links
+          sections.value = json.sections
+          links.value = json.links
+          priorities.value = json.links
             .map(l => /pri\d/.test(l.tags) ? /pri\d/.exec(l.tags)[0] : null)
             .filter(item => item)
             .filter((item, index, array) => array.indexOf(item) === index)
         })
-        .catch(err => console.log('Neida, fikk ikke hente lenkene gitt'))
+      // fetch('/lenker', {
+      //   headers: {
+      //     'Authorization': `Bearer ${localStorage.getItem('mitt-merke')}`
+      //   }
+      // })
+      //   .then(data => {
+      //     return data.json()
+      //   })
+      //   .then(json => {
+      //     // sections.value = json.sections
+      //     links.value = json.map(l => {
+      //       l.icon = ''
+      //       l.section = 'common'
+      //       l.tags = 'pri1'
+      //       return l
+      //     })//.links
+      //     priorities.value = json// .links
+      //       .map(l => /pri\d/.test(l.tags) ? /pri\d/.exec(l.tags)[0] : null)
+      //       .filter(item => item)
+      //       .filter((item, index, array) => array.indexOf(item) === index)
+      //   })
+      //   .catch(err => console.log('Neida, fikk ikke hente lenkene gitt', err.message))
       const sections = ref([{section: '*', name: 'Alle'}, {section: 'common', name: 'vanlig'}])
       const links = ref([])
       const currentSection = ref(0)
