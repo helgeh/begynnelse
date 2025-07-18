@@ -4,3 +4,6 @@ npm-debug.log
 public/zips/*
 uploads/*
 dist
+
+src/server/db/*.db
+src/server/db/*.db-*

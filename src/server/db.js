@@ -9,7 +9,7 @@ const logSql = function (...args) {
     console.log(...args)
 }
 
-const db = new Database('./begynnelse.db', { verbose: logSql })
+const db = new Database('./src/server/db/begynnelse.db', { verbose: logSql })
 db.pragma('journal_mode = WAL')
 
 const createLinks = db.prepare(`
