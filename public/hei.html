@@ -174,7 +174,7 @@
         theme.value = theme.value === 'light' ? 'dark' : 'light'
       }
       function onCardClick(event, link) {
-        if (link.url === 'void(0)') {
+        if (link.href === 'void(0)') {
           overlay.value = true
           event.preventDefault()
           event.stopPropagation()
@@ -202,7 +202,7 @@
   
   <template id="link-template">
     <v-card 
-      :href="link.url" 
+      :href="link.href" 
       @click="$emit('click', $event, link)" 
       :title="link.name"
     >
