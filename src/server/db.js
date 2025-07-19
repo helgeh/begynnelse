@@ -1,12 +1,13 @@
 import Database from 'better-sqlite3';
 
 import { hashPassword } from './sikkerhet.js'
+import { log } from './logger.js'
 
 
 const logVerbose = process.env.DEBUG_APP || false
 const logSql = function (...args) {
   if (logVerbose)
-    console.log(...args)
+    log(...args)
 }
 
 const db = new Database('./src/server/db/begynnelse.db', { verbose: logSql })
@@ -139,8 +140,8 @@ function getLinks(userId) {
 // const remove = db.prepare('DELETE FROM links WHERE id = 3 OR id = 4')
 // remove.run()
 
-console.log('user', getUserById(1))
-console.log('links', getLinks(1))
+log('user', getUserById(1))
+log('links', getLinks(1))
 
 export {
   addUser,

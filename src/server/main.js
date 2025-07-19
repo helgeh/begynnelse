@@ -3,6 +3,8 @@ import express from 'express'
 import cors from 'cors'
 import ViteExpress from 'vite-express'
 
+import 'dotenv/config'
+
 import api from './api.js'
 
 const port = process.env.PORT || 3001
