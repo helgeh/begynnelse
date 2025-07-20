@@ -2,7 +2,7 @@
   <div>
     <v-btn v-if="!isLoggedIn" @click="overlay = true" class="mx-auto">Slipp meg inn</v-btn>
     <v-btn v-if="isLoggedIn" @click="emit('logout')" class="me-2">Logg ut</v-btn>
-    <v-btn v-if="isLoggedIn" @click="emit('delete')">Slett meg</v-btn>
+    <v-btn v-if="isLoggedIn" @click="onDelete" :size="warned ? 'small' : 'x-small'" :color="warned ? 'warning' : 'normal'" variant="tonal">{{ warned ? 'SLETT MEG?!' : 'Slett meg' }}</v-btn>
     
     <v-dialog max-width="400" v-model="overlay">
 
@@ -69,6 +69,7 @@
   const pw = shallowRef('')
   const pwVisible = shallowRef(false)
   const sorry = shallowRef('')
+  const warned = shallowRef(false)
   const overlay = shallowRef(false)
 
   watch(isLoggedIn, (newState, oldState) => {
@@ -84,6 +85,15 @@
     if (usr.value.length < 1 || pw.value.length < 1)
       return loginError.value = 'Du må iallfall skrive NOE her...'
     emit('login', usr.value, pw.value)
+  }
+
+  async function onDelete() {
+    if (!warned.value) {
+      warned.value = true
+      return
+    }
+    warned.value = false
+    emit('delete')
   }
 
   async function onKeyPress(evt, id) {

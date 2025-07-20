@@ -13,15 +13,12 @@
         <li v-for="(link, i) in links" :key="i"><a :href="link.url">{{ link.name }}</a></li>
       </ul>
       <v-divider class="my-5"></v-divider>
-      <!-- <v-btn v-if="isLoggedIn" @click="onLogOut" class="me-2">Logg ut</v-btn>
-      <v-btn v-if="isLoggedIn" @click="onDeleteMe">Slett meg</v-btn> -->
       <GetAccess @login="onLogin" @logout="onLogout" @verify="onVerify" @delete="onDeleteMe" />
     </v-card-text>
   </v-card>
 </template>
 
 <script setup>
-  import { ref, inject, onMounted } from 'vue'
   import { storeToRefs } from 'pinia'
 
   import { useUserStore, useLinksStore } from '../stores'
@@ -30,10 +27,6 @@
   const { user, isLoggedIn } = storeToRefs(userStore)
   const linksStore = useLinksStore()
   const { links } = storeToRefs(linksStore)
-
-  async function onGodkjent(usr, pw) {
-    await userStore.login(usr, pw)
-  }
 
   async function onLogin(usr, pw) {
     await userStore.login(usr, pw)
