@@ -8,6 +8,11 @@ export default function configure(router) {
 
   function notifyEmailVerify(to, secret) {
     const url = `https://begy.nnel.se/?email=${to}&token=${secret}#/verify`
+    if (process.env.DEVELOP) {
+      console.log('SKIPPING EMAIL VERIFY BECAUSE WE ARE IN DEVELOP')
+      console.log(`URL to click: ${url}`)
+      return
+    }
     sendAdminMail(
       to, 
       'Email verification', 
@@ -80,11 +85,11 @@ export default function configure(router) {
     const user = getUserByEmail(usr)
     if (!user || !user.password) {
       log(`Fant ingen bruker (${usr})`)
-      return res.status(401).json({ error: 'Invalid credentials' })
+      return res.status(404).json({ error: 'Not found' })
     }
     if (await checkPassword(pw, user.password)) {
       if (!user.details.startsWith('et:CONFIRMED-')) {
-        log(`Bruker allerede godkjent (${usr})`)
+        log(`Bruker mangler verifisering (${usr})`)
         return res.status(403).json({ error: 'Email not verified' })
       }
       const token = makeTheToken(user.id, user.email)

@@ -12,6 +12,7 @@ import MyLinksList from '../components/MyLinksList.vue'
 import MyLinksArea from '../components/MyLinksArea.vue'
 import MyLink from '../components/MyLink.vue'
 import MyLinkCard from '../components/MyLinkCard.vue'
+import MySubscriptionForm from '../components/MySubscriptionForm.vue'
 import CatTax from '../components/CatTax.vue'
 
 const addAuthHeader = (data) => {
@@ -37,6 +38,7 @@ export default {
       .component('MyLinksArea', MyLinksArea)
       .component('MyLink', MyLink)
       .component('MyLinkCard', MyLinkCard)
+      .component('MySubscriptionForm', MySubscriptionForm)
       .component('CatTax', CatTax)
 
     const ikkeGodkjent = shallowRef(false)

@@ -5,6 +5,8 @@ import ViteExpress from 'vite-express'
 
 import 'dotenv/config'
 
+process.env.DEVELOP = process.env.NODE_ENV === 'development'
+
 import api from './api.js'
 
 const port = process.env.PORT || 3001
@@ -22,5 +24,7 @@ app.use((err, req, res, next) => {
 ViteExpress.config({ inlineViteConfig: 'vite.config.js' })
 
 ViteExpress.listen(app, port, () =>
-  console.log(`Server is listening on port ${port}...`),
+  console.log(`Server is listening on port ${port}...\n`
+    // , JSON.stringify({ env: process.env }, null, 2)
+  )
 )

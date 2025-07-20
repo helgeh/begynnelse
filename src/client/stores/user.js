@@ -11,6 +11,19 @@ export const useUserStore = defineStore('user', () => {
   const notVerified = shallowRef(false)
   const loginError = shallowRef('')
 
+  async function register(usr, pw) {
+    const { data, error, statusCode } = await useFetch('/blimed').post({ usr, pw }).json()
+    if (data.value) {
+      loginError.value = 'Verifisér din epost ved å klikke linken vi har sendt'
+      notVerified.value = false
+    }
+    if (error.value) {
+      loginError.value = 'Kunne ikke registrere'
+      if (statusCode.value === 409)
+        loginError.value = 'Bruker finnes fra før'
+    }
+  }
+
   async function verify(usr, pw) {
     const { data, error, statusCode } = await useFetch('/blimed/godkjenn').post({ usr, pw }).json()
     if (data.value) {
@@ -45,6 +58,9 @@ export const useUserStore = defineStore('user', () => {
       notVerified.value = false
       loginError.value = ''
     }
+    if (statusCode.value === 404) {
+      loginError.value = 'Fant ikke bruker'
+    }
     if (statusCode.value === 403) {
       notVerified.value = true
       loginError.value = 'Ikke godkjent enda'
@@ -75,10 +91,17 @@ export const useUserStore = defineStore('user', () => {
   loadme()
   
   return {
+
+    // state
     user,
     isLoggedIn,
     notVerified,
     loginError,
+
+    // getters // TODO: move loginError (and others?) to be accessors and stop changing values outside the store
+
+    // methods
+    register,
     login,
     logout,
     deleteme,

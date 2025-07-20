@@ -42,6 +42,7 @@
   import HomePage from './pages/HomePage.vue'
   import MyPage from './pages/MyPage.vue'
   import VerifyEmailPage from './pages/VerifyEmailPage.vue'
+  import RegisterPage from './pages/RegisterPage.vue'
   import MiraMull from './pages/MiraMull.vue'
   import ZipList from './pages/ZipList.vue'
   import PodPlayer from './pages/PodPlayer.vue'
@@ -51,7 +52,7 @@
 
   const routes = {
     '/': HomePage,
-    '/my': MyPage,
+    '/my': RegisterPage,
     '/zips': ZipList,
     '/videos': VideoPage,
 
