@@ -12,7 +12,10 @@ import MyLinksList from '../components/MyLinksList.vue'
 import MyLinksArea from '../components/MyLinksArea.vue'
 import MyLink from '../components/MyLink.vue'
 import MyLinkCard from '../components/MyLinkCard.vue'
+import EditLinks from '../components/EditLinks.vue'
 import MySubscriptionForm from '../components/MySubscriptionForm.vue'
+import GreeterPanel from '../components/GreeterPanel.vue'
+import LoginPanel from '../components/LoginPanel.vue'
 import CatTax from '../components/CatTax.vue'
 
 const addAuthHeader = (data) => {
@@ -38,112 +41,115 @@ export default {
       .component('MyLinksArea', MyLinksArea)
       .component('MyLink', MyLink)
       .component('MyLinkCard', MyLinkCard)
+      .component('EditLinks', EditLinks)
       .component('MySubscriptionForm', MySubscriptionForm)
+      .component('GreeterPanel', GreeterPanel)
+      .component('LoginPanel', LoginPanel)
       .component('CatTax', CatTax)
 
     const ikkeGodkjent = shallowRef(false)
-    app.provide('ikkeGodkjent', ikkeGodkjent)
-    app.provide('tilgang', {
-      blimed: async (epost, passord) => {
-        try {
-          ikkeGodkjent.value = false
-          const result = await axios.post('/blimed', { usr: epost, pw: passord })
-          // if (result.data.success) {
-          //   console.log('heck yes, registered')
-          // }
-          return result.data.success
-        }
-        catch (err) {
-          if (err.response.data.code !== undefined) {
-            if (err.response.data.code === 0) {
-              return Promise.reject('Passordet må være lenger (minimum 8, helst 11)')
-            }
-            if (err.response.data.code < 3) {
-              return Promise.reject('Passordet må ha være mer komplekst... Prøv store/små bokstaver, tall, tegn og/eller lengde på mer enn 11 tegn.')
-            }
-          }
-        }
-      },
-      godkjenn: async (epost, passord) => {
-        try {
-          ikkeGodkjent.value = false
-          const result = await axios.post('/blimed/godkjenn', { usr: epost, pw: passord })
-          // if (result.data.success)
-          //   console.log('new email should have been sent')
-          return result.data
-        }
-        catch (err) {
-          // console.log('kunne ikke sende epost eller noe?')
-          return false
-        }
-      },
-      godkjennHemmelighet: async (epost, hemmelighet) => {
-        try {
-          const response = await axios.get(`/blimed/godkjenn/${epost}/${hemmelighet}`)
-          return response.data
-        }
-        catch (err) {
-          // console.log('feil under godkjenning', err)
-          // throw new Error('Kunne ikke godkjenne')
-          return Promise.reject('Kunne ikke godkjenne')
-        }
-      },
-      heisann: async (epost, passord) => {
-        try {
-          ikkeGodkjent.value = false
-          const response = await axios.post(`/heisann`, {
-            usr: epost,
-            pw: passord,
-          })
-          if (response.status !== 200) {
-            throw new Error('Ikke greit')
-          }
-          const token = response.data.token
+    // app.provide('ikkeGodkjent', ikkeGodkjent)
+    // app.provide('tilgang', {
+    //   blimed: async (epost, passord) => {
+    //     try {
+    //       ikkeGodkjent.value = false
+    //       const result = await axios.post('/blimed', { usr: epost, pw: passord })
+    //       // if (result.data.success) {
+    //       //   console.log('heck yes, registered')
+    //       // }
+    //       return result.data.success
+    //     }
+    //     catch (err) {
+    //       if (err.response.data.code !== undefined) {
+    //         if (err.response.data.code === 0) {
+    //           return Promise.reject('Passordet må være lenger (minimum 8, helst 11)')
+    //         }
+    //         if (err.response.data.code < 3) {
+    //           return Promise.reject('Passordet må ha være mer komplekst... Prøv store/små bokstaver, tall, tegn og/eller lengde på mer enn 11 tegn.')
+    //         }
+    //       }
+    //     }
+    //   },
+    //   godkjenn: async (epost, passord) => {
+    //     try {
+    //       ikkeGodkjent.value = false
+    //       const result = await axios.post('/blimed/godkjenn', { usr: epost, pw: passord })
+    //       // if (result.data.success)
+    //       //   console.log('new email should have been sent')
+    //       return result.data
+    //     }
+    //     catch (err) {
+    //       // console.log('kunne ikke sende epost eller noe?')
+    //       return false
+    //     }
+    //   },
+    //   godkjennHemmelighet: async (epost, hemmelighet) => {
+    //     try {
+    //       const response = await axios.get(`/blimed/godkjenn/${epost}/${hemmelighet}`)
+    //       return response.data
+    //     }
+    //     catch (err) {
+    //       // console.log('feil under godkjenning', err)
+    //       // throw new Error('Kunne ikke godkjenne')
+    //       return Promise.reject('Kunne ikke godkjenne')
+    //     }
+    //   },
+    //   heisann: async (epost, passord) => {
+    //     try {
+    //       ikkeGodkjent.value = false
+    //       const response = await axios.post(`/heisann`, {
+    //         usr: epost,
+    //         pw: passord,
+    //       })
+    //       if (response.status !== 200) {
+    //         throw new Error('Ikke greit')
+    //       }
+    //       const token = response.data.token
 
-          // document.cookie = `token=${token}; Path=/; HttpOnly; Secure; SameSite=Lax`
-          localStorage.setItem('mitt-merke', token)
+    //       // document.cookie = `token=${token}; Path=/; HttpOnly; Secure; SameSite=Lax`
+    //       localStorage.setItem('mitt-merke', token)
 
-          return token
-        } catch (error) {
-          console.warn('Feil ved innlogging: ', error)
-          if (error.response.status === 403)
-            ikkeGodkjent.value = true
-          throw new Error(error?.response?.data?.error || 'Sorry, innlogging feilet!')
-        }
-      },
-      lenker: async () => {
-        try {
-          const response = await fetch('/lenker', addAuthHeader())
-          return await response.json()
-        }
-        catch (error) {
-          // console.log('feil ved henting av lenker', error.message)
-          throw new Error('Sorry, kunne ikke hente lenker!')
-        }
-      },
-      hade: () => {
-        // document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'
-        return new Promise((res, rej) => {
-          localStorage.removeItem('mitt-merke')
-          res()
-        })
-      },
-      allerede: () => {
-        const merke = localStorage.getItem('mitt-merke')
-        return merke != null
-      },
-      slettmeg: async () => {
-        try {
-          const response = await fetch('/slettmeg', addAuthHeader({method: 'POST'}))
-          localStorage.removeItem('mitt-merke')
-          return true
-        }
-        catch (err) {
-          console.log('feil ved sletting', err)
-          return false
-        }
-      }
-    })
+    //       return token
+    //     } catch (error) {
+    //       console.warn('Feil ved innlogging: ', error)
+    //       if (error.response.status === 403)
+    //         ikkeGodkjent.value = true
+    //       throw new Error(error?.response?.data?.error || 'Sorry, innlogging feilet!')
+    //     }
+    //   },
+    //   lenker: async () => {
+    //     try {
+    //       const response = await fetch('/lenker', addAuthHeader())
+    //       return await response.json()
+    //     }
+    //     catch (error) {
+    //       // console.log('feil ved henting av lenker', error.message)
+    //       throw new Error('Sorry, kunne ikke hente lenker!')
+    //     }
+    //   },
+    //   hade: () => {
+    //     // document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+    //     return new Promise((res, rej) => {
+    //       localStorage.removeItem('mitt-merke')
+    //       res()
+    //     })
+    //   },
+    //   allerede: () => {
+    //     const merke = localStorage.getItem('mitt-merke')
+    //     return merke != null
+    //   },
+    //   slettmeg: async () => {
+    //     try {
+    //       const response = await fetch('/slettmeg', addAuthHeader({method: 'POST'}))
+    //       localStorage.removeItem('mitt-merke')
+    //       return true
+    //     }
+    //     catch (err) {
+    //       console.log('feil ved sletting', err)
+    //       return false
+    //     }
+    //   }
+    // })
 
     app.provide('service', {
       getZipList: () =>

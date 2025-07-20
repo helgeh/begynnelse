@@ -1,8 +1,29 @@
 <template>
-  <div>
-    <v-btn v-if="!isLoggedIn" @click="overlay = true" class="mx-auto">Slipp meg inn</v-btn>
-    <v-btn v-if="isLoggedIn" @click="emit('logout')" class="me-2">Logg ut</v-btn>
-    <v-btn v-if="isLoggedIn" @click="onDelete" :size="warned ? 'small' : 'x-small'" :color="warned ? 'warning' : 'normal'" variant="tonal">{{ warned ? 'SLETT MEG?!' : 'Slett meg' }}</v-btn>
+    <v-btn 
+      v-if="!isLoggedIn"
+      @click="overlay = true"
+      class="mx-auto"
+    >
+      Slipp meg inn
+    </v-btn>
+    <v-spacer></v-spacer>
+    <v-btn 
+      v-if="isLoggedIn"
+      @click="onDelete"
+      :prepend-icon="warned ? 'mdi-alert-octagram' : 'mdi-alert'"
+      :size="warned ? 'small' : 'x-small'"
+      :color="warned ? 'warning' : 'normal'"
+      variant="tonal" class="me-2"
+    >
+      {{ warned ? 'SLETT MEG?!' : 'Slett meg' }}
+    </v-btn>
+    <v-btn 
+      v-if="isLoggedIn"
+      @click="emit('logout')"
+      variant="outlined"
+    >
+      Logg ut
+    </v-btn>
     
     <v-dialog max-width="600" v-model="overlay">
 
@@ -59,8 +80,6 @@
       </v-card>
 
     </v-dialog>
-
-  </div>
 
 </template>
 

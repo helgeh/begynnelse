@@ -1,47 +1,23 @@
 <template>
-  <v-card class="mx-auto my-8" elevation="16" max-width="344">
-    <v-card-item>
-      <v-card-title>{{ isLoggedIn ? 'Hei' : 'logget ut' }} {{ user.email }}</v-card-title>
+  
+  <v-card variant="text" :prepend-icon="'mdi-account'" class="mx-auto ma-8 pa-5"  elevation="0" max-width="544">
+    
+    <template v-slot:title>
+      <greeter-panel />
+    </template>
 
-      <v-card-subtitle></v-card-subtitle>
-    </v-card-item>
-
-    <v-card-text>
-      <my-subscription-form @register="onRegister" @login="onLogin" @logout="onLogout" @verify="onVerify" @delete="onDeleteMe" />
+    <v-card-text class="py-4">
+      <edit-links />
     </v-card-text>
+
+    <v-card-actions class="bg-surface-light">
+      <login-panel />
+    </v-card-actions>
+
   </v-card>
+
 </template>
 
-<script setup>
-  import { storeToRefs } from 'pinia'
-
-  import { useUserStore, useLinksStore } from '../stores'
-
-  const userStore = useUserStore()
-  const { user, isLoggedIn } = storeToRefs(userStore)
-  const linksStore = useLinksStore()
-  const { links } = storeToRefs(linksStore)
-
-  async function onRegister(usr, pw) {
-    await userStore.register(usr, pw)
-  }
-
-  async function onLogin(usr, pw) {
-    await userStore.login(usr, pw)
-  }
-
-  function onLogout() {
-    userStore.logout()
-    links.value = []
-  }
-
-  async function onVerify() {
-    await userStore.verify(usr, pw)
-  }
-
-  function onDeleteMe() {
-    userStore.deleteme()
-  }
-</script>
+<script setup></script>
 
 <style scoped></style>

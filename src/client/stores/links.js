@@ -1,4 +1,4 @@
-import { ref, computed, watch } from 'vue'
+import { shallowRef, computed, watch } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useFetch } from '@vueuse/core'
 
@@ -12,9 +12,11 @@ export const useLinksStore = defineStore('links', () => {
   watch(isLoggedIn, (newState, oldState) => {
     if (newState)
       reload()
+    else
+      links.value = []
   })
 
-  const links = ref([])
+  const links = shallowRef([])
   async function reload() {
     const { data, error } = await useFetch(url, {
       beforeFetch: attachTokenHeader,

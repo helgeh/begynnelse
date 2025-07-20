@@ -144,6 +144,14 @@ function getLinks(userId) {
 // db.prepare('UPDATE links SET icon = ? WHERE name = ?').run('https://favicone.com/mail.proton.me?s=32', 'Protonmail')
 // const linksStmt = db.prepare('INSERT INTO links (name, url, icon, category, tags, user) VALUES (?, ?, ?, ?, ?, ?)')
 // linksStmt.run(
+//     "Proton.mail", 
+//     "https://mail.proton.me",
+//     "https://favicone.com/mail.proton.me?s=32",
+//     "common",
+//     "mail,proton,pri1,standard",
+//     1
+//   )
+// linksStmt.run(
 //     "Proton.pass", 
 //     "https://pass.proton.me",
 //     "https://favicone.com/pass.proton.me?s=32",
@@ -160,7 +168,7 @@ function getLinks(userId) {
 //       1
 //     )
 
-// log('user', getUserById(1))
+// log('user', getUserByEmail('haefs@pm.me'))
 // log('links', getLinks(1))
 
 export {
