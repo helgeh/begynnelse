@@ -1,65 +1,55 @@
 <template>
-  <v-card class="mx-auto my-8" elevation="16" max-width="344" v-if="harTilgang">
+  <v-card class="mx-auto my-8" elevation="16" max-width="344">
     <v-card-item>
-      <v-card-title> Card title </v-card-title>
+      <v-card-title>{{ isLoggedIn ? 'Hei' : 'logget ut' }} {{ user.email }}</v-card-title>
 
-      <v-card-subtitle> Card subtitle secondary text </v-card-subtitle>
+      <v-card-subtitle></v-card-subtitle>
     </v-card-item>
 
     <v-card-text>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua.
-      <v-divider class="my-5"></v-divider>
+      <p v-if="isLoggedIn">Linker:</p>
+      <v-divider class="mt-2 mb-5"></v-divider>
       <ul>
-        <li v-for="link in links"><a :href="link.url">{{ link.name }}</a></li>
+        <li v-for="(link, i) in links" :key="i"><a :href="link.url">{{ link.name }}</a></li>
       </ul>
       <v-divider class="my-5"></v-divider>
-      <v-btn v-if="harTilgang" @click="onLogOut" class="me-2">Logg ut</v-btn>
-      <v-btn v-if="harTilgang" @click="onDeleteMe">Slett meg</v-btn>
+      <!-- <v-btn v-if="isLoggedIn" @click="onLogOut" class="me-2">Logg ut</v-btn>
+      <v-btn v-if="isLoggedIn" @click="onDeleteMe">Slett meg</v-btn> -->
+      <GetAccess @login="onLogin" @logout="onLogout" @verify="onVerify" @delete="onDeleteMe" />
     </v-card-text>
   </v-card>
-  <v-sheet class="mx-auto mt-8 pa-3" max-width="400" rounded="lg" v-else>
-    <GetAccess @godkjent="onTommelOpp" />
-  </v-sheet>
 </template>
 
 <script setup>
   import { ref, inject, onMounted } from 'vue'
+  import { storeToRefs } from 'pinia'
 
-  const links = ref([])
-  const harTilgang = ref(false)
+  import { useUserStore, useLinksStore } from '../stores'
 
-  const tilgang = inject('tilgang')
+  const userStore = useUserStore()
+  const { user, isLoggedIn } = storeToRefs(userStore)
+  const linksStore = useLinksStore()
+  const { links } = storeToRefs(linksStore)
 
-  function finnLenker() {
-    tilgang
-      .lenker()
-      .then(lenker => {
-        links.value = lenker
-      })
-      .catch(err => {
-        harTilgang.value = false
-        tilgang.hade()
-      })
+  async function onGodkjent(usr, pw) {
+    await userStore.login(usr, pw)
   }
 
-  function onTommelOpp() {
-    harTilgang.value = true
-    finnLenker()
+  async function onLogin(usr, pw) {
+    await userStore.login(usr, pw)
   }
 
-  function onLogOut() {
-    tilgang.hade()
-      .then(_ => {
-        harTilgang.value = false
-      })
+  function onLogout() {
+    userStore.logout()
+    links.value = []
+  }
+
+  async function onVerify() {
+    await userStore.verify(usr, pw)
   }
 
   function onDeleteMe() {
-    tilgang.slettmeg()
-      .then(_ => {
-        harTilgang.value = false
-      })
+    userStore.deleteme()
   }
 </script>
 

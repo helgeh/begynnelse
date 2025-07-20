@@ -10,13 +10,18 @@
     <v-bottom-navigation v-model="route" mode="shift" color="primary">
       <v-btn href="#/">
         <v-icon>mdi-home-variant</v-icon>
-        <span>Home</span>
+        <span>Links</span>
       </v-btn>
 
-      <v-btn href="#/mira">
+      <v-btn href="#/my">
+        <v-icon>mdi-account-badge</v-icon>
+        <span>User</span>
+      </v-btn>
+
+      <!-- <v-btn href="#/mira">
         <v-icon>mdi-dog</v-icon>
         <span>Mira</span>
-      </v-btn>
+      </v-btn> -->
 
       <v-btn href="#/zips">
         <v-icon>mdi-folder-zip</v-icon>
@@ -46,15 +51,15 @@
 
   const routes = {
     '/': HomePage,
-    '/mira': MiraMull,
+    '/my': MyPage,
     '/zips': ZipList,
     '/videos': VideoPage,
 
     // These are not in the exposed menu and need to come
     // last to not f up the 'active' state
+    '/mira': MiraMull,
     '/player': PodPlayer,
     '/about': AboutPage,
-    '/my': MyPage,
     '/verify': VerifyEmailPage,
   }
 

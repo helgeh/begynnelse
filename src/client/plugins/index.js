@@ -1,4 +1,5 @@
 import { loadFonts } from './webfontloader'
+import { createPinia } from 'pinia'
 import vuetify from './vuetify'
 import service from './service'
 import podcasts from './podcasts'
@@ -8,6 +9,12 @@ import mediasession from './mediasession'
 
 export function registerPlugins(app) {
   loadFonts()
-  app.use(vuetify).use(service).use(podcasts).use(storage).use(mediasession)
+  app
+    .use(vuetify)
+    .use(createPinia())
+    .use(service)
+    .use(podcasts)
+    .use(storage)
+    .use(mediasession)
   // .use(router)
 }

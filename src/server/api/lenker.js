@@ -5,7 +5,9 @@ export default function configure(router) {
 
   router.get('/lenker', authTheToken, (req, res) => {
     const links = getLinks(req.user.id)
-    res.json(links)
+    // setTimeout(() => {
+      res.json(links)
+    // }, 5000)
   })
 
   router.post('/lenker', authTheToken, (req, res) => {

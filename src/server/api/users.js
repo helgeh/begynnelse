@@ -1,5 +1,5 @@
 import { authTheToken, makeTheToken, checkPassword, randomHex, getPasswordComplexityScore } from '../sikkerhet.js'
-import { addUser, setUserDetails, removeUser, getUserByEmail, addLink, getLinks } from '../db.js'
+import { addUser, setUserDetails, removeUser, getUserByEmail, getUserById, addLink, getLinks } from '../db.js'
 import { sendAdminMail } from '../mailer.js'
 import config from '../config.js'
 import { log } from '../logger.js'
@@ -88,16 +88,25 @@ export default function configure(router) {
         return res.status(403).json({ error: 'Email not verified' })
       }
       const token = makeTheToken(user.id, user.email)
-      return res.json({ token })
+      return res.json({ token, email: user.email, name: user.name })
     }
     log(`Feil usr/pw (${usr})`)
     return res.status(401).json({ error: 'Invalid credentials' })
   })
 
   router.post('/slettmeg', authTheToken, (req, res) => {
+    // TODO: Mark users as 'deleted' in stead of actually removing
     const result = removeUser(req.user.id)
     log(`Bruker slettet (${result.id, result.email})`)
-    res.json(result)
+    res.json({ message: `Slettet ${result.email}`, success: true })
+  })
+
+  router.get('/meg', authTheToken, (req, res) => {
+    const me = getUserById(req.user.id)
+    res.json({
+      name: me.name,
+      email: me.email,
+    })
   })
 
 }

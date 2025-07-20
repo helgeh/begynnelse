@@ -140,14 +140,35 @@ function getLinks(userId) {
 // const remove = db.prepare('DELETE FROM links WHERE id = 3 OR id = 4')
 // remove.run()
 
-log('user', getUserById(1))
-log('links', getLinks(1))
+// db.prepare('UPDATE links SET tags = ?').run('pri1')
+// db.prepare('UPDATE links SET icon = ? WHERE name = ?').run('https://favicone.com/mail.proton.me?s=32', 'Protonmail')
+// const linksStmt = db.prepare('INSERT INTO links (name, url, icon, category, tags, user) VALUES (?, ?, ?, ?, ?, ?)')
+// linksStmt.run(
+//     "Proton.pass", 
+//     "https://pass.proton.me",
+//     "https://favicone.com/pass.proton.me?s=32",
+//     "common",
+//     "passwords,proton,pri1,standard",
+//     1
+//   )
+// linksStmt.run(
+//       "Github",
+//       "https://github.com/helgeh",
+//       `{ "light": "/icons/github-light-32x32.png", "dark": "/icons/github-dark-32x32.png" }`,
+//       "develop",
+//       "code,git,pri1,standard",
+//       1
+//     )
+
+// log('user', getUserById(1))
+// log('links', getLinks(1))
 
 export {
   addUser,
   setUserDetails,
   removeUser,
   getUserByEmail,
+  getUserById,
   
   getCategories,
 
