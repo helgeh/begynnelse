@@ -3,6 +3,7 @@
       v-if="!isLoggedIn"
       @click="overlay = true"
       class="mx-auto"
+      prepend-icon="mdi-login"
     >
       Slipp meg inn
     </v-btn>
@@ -22,6 +23,7 @@
       v-if="isLoggedIn"
       @click="emit('logout')"
       variant="outlined"
+      prepend-icon="mdi-hand-wave"
     >
       Logg ut
     </v-btn>
@@ -30,13 +32,15 @@
 
       <v-card
         prepend-icon="mdi-lock"
-        class="px-3"
+        class="px-3 mx-auto"
         :title="register ? 'Bli med!' : 'Slipp meg inn'"
+        min-width="320"
+        max-width="450"
       >
         <v-text-field
           v-model="usr"
           density="compact"
-          placeholder="brukernavn"
+          label="brukernavn"
           prepend-inner-icon="mdi-account-check"
           variant="outlined"
           @keypress="onKeyPress($event, 0)"
@@ -48,7 +52,7 @@
           :type="pwVisible ? 'text' : 'password'"
           v-model="pw"
           density="compact"
-          placeholder="passord"
+          label="passord"
           prepend-inner-icon="mdi-lock-outline"
           variant="outlined"
           @click:append-inner="pwVisible = !pwVisible"
@@ -60,10 +64,12 @@
         </v-alert>
         <template v-slot:actions>
 
-          <v-btn v-if="notVerified" @click="emit('verify')"> Godkjenn </v-btn>
+          <v-btn v-if="notVerified" @click="emit('verify')" size="small" variant="tonal">
+            Send epost
+          </v-btn>
 
           <v-btn 
-            v-if="!isLoggedIn"
+            v-if="!isLoggedIn && !notVerified"
             @click="register = !register"
             size="x-small"
             color="normal"
@@ -74,9 +80,9 @@
 
           <v-spacer></v-spacer>
 
-          <v-btn @click="overlay = false"> Avbryt </v-btn>
+          <v-btn @click="overlay = false" variant="plain" color="">Avbryt</v-btn>
 
-          <v-btn @click="onSubmit()"> OK </v-btn>
+          <v-btn @click="onSubmit()" variant="tonal" color="success">OK</v-btn>
         </template>
       </v-card>
 
@@ -90,6 +96,8 @@
   import { onClickOutside } from '@vueuse/core'
 
   import { useUserStore } from '../stores'
+
+  const emailReg = /\S+\@\S+\.\S+/
 
   const emit = defineEmits(['register', 'login', 'logout', 'verify', 'delete'])
 
@@ -127,6 +135,8 @@
   async function onSubmit() {
     if (usr.value.length < 1 || pw.value.length < 1)
       return loginError.value = 'Du må iallfall skrive NOE her...'
+    if (!emailReg.test(usr.value))
+      return loginError.value = 'Brukernavn må nødt å være epost'
     loginError.value = ''
     if (register.value)
       emit('register', usr.value, pw.value)

@@ -1,5 +1,6 @@
 <template>
   <v-sheet class="mx-auto mt-8" max-width="400" rounded="lg">
+    <p class="text-h6 pa-2">Videos</p>
     <my-file-list
       ref="videoList"
       v-if="showVideolist"

@@ -9,13 +9,13 @@
 
     <v-bottom-navigation :modelValue="route" @update:modelValue="() => {}" mode="shift" color="primary">
       <v-btn href="#/">
-        <v-icon>mdi-home-variant</v-icon>
+        <v-icon>mdi-list-box</v-icon>
         <span>Links</span>
       </v-btn>
 
-      <v-btn href="#/my">
-        <v-icon>mdi-account-badge</v-icon>
-        <span>User</span>
+      <v-btn href="#/config">
+        <v-icon>mdi-playlist-edit</v-icon>
+        <span>Config</span>
       </v-btn>
 
       <!-- <v-btn href="#/mira">
@@ -42,7 +42,7 @@
   import HomePage from './pages/HomePage.vue'
   import MyPage from './pages/MyPage.vue'
   import VerifyEmailPage from './pages/VerifyEmailPage.vue'
-  import RegisterPage from './pages/RegisterPage.vue'
+  import ConfigPage from './pages/ConfigPage.vue'
   import MiraMull from './pages/MiraMull.vue'
   import ZipList from './pages/ZipList.vue'
   import PodPlayer from './pages/PodPlayer.vue'
@@ -52,12 +52,13 @@
 
   const routes = {
     '/': HomePage,
-    '/my': RegisterPage,
+    '/config': ConfigPage,
     '/zips': ZipList,
     '/videos': VideoPage,
 
     // These are not in the exposed menu and need to come
     // last to not f up the 'active' state
+    '/links': HomePage,
     '/mira': MiraMull,
     '/player': PodPlayer,
     '/about': AboutPage,
