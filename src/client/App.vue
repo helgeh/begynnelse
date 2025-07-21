@@ -7,7 +7,7 @@
       <component :is="currentView" />
     </div>
 
-    <v-bottom-navigation v-model="route" mode="shift" color="primary">
+    <v-bottom-navigation :modelValue="route" @update:modelValue="() => {}" mode="shift" color="primary">
       <v-btn href="#/">
         <v-icon>mdi-home-variant</v-icon>
         <span>Links</span>
