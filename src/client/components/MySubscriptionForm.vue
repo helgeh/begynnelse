@@ -14,6 +14,7 @@
       :size="warned ? 'small' : 'x-small'"
       :color="warned ? 'warning' : 'normal'"
       variant="tonal" class="me-2"
+      ref="delete-btn"
     >
       {{ warned ? 'SLETT MEG?!' : 'Slett meg' }}
     </v-btn>
@@ -86,6 +87,7 @@
 <script setup>
   import { shallowRef, useTemplateRef, watch } from 'vue'
   import { storeToRefs } from 'pinia'
+  import { onClickOutside } from '@vueuse/core'
 
   import { useUserStore } from '../stores'
 
@@ -96,6 +98,7 @@
 
   const firstInput = useTemplateRef('first-input')
   const secondInput = useTemplateRef('second-input')
+  const deleteBtn = useTemplateRef('delete-btn')
   const usr = shallowRef('')
   const pw = shallowRef('')
   const pwVisible = shallowRef(false)
@@ -114,6 +117,11 @@
       warned.value = false
       overlay.value = false
     }
+  })
+
+  onClickOutside(deleteBtn, event => {
+    if (warned.value)
+      warned.value = false
   })
 
   async function onSubmit() {

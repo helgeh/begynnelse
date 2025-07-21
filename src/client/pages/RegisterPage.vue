@@ -1,6 +1,6 @@
 <template>
   
-  <v-card variant="text" :prepend-icon="'mdi-account'" class="mx-auto ma-8 pa-5"  elevation="0" max-width="544">
+  <v-card variant="text" :prepend-icon="'mdi-account'" class="mx-auto ma-8 pa-5"  elevation="0" max-width="800">
     
     <template v-slot:title>
       <greeter-panel />

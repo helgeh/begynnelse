@@ -1,4 +1,4 @@
-import { shallowRef, computed, watch } from 'vue'
+import { shallowRef, ref, computed, watch } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useFetch } from '@vueuse/core'
 
@@ -16,7 +16,7 @@ export const useLinksStore = defineStore('links', () => {
       links.value = []
   })
 
-  const links = shallowRef([])
+  const links = ref([])
   async function reload() {
     const { data, error } = await useFetch(url, {
       beforeFetch: attachTokenHeader,
@@ -24,6 +24,8 @@ export const useLinksStore = defineStore('links', () => {
         ctx.data.forEach(link => {
           if (link.icon && link.icon.startsWith('{'))
             link.icon = JSON.parse(link.icon)
+          else
+            link.icon = { dark: link.icon }
         })
         return ctx
       },
@@ -35,5 +37,9 @@ export const useLinksStore = defineStore('links', () => {
     }
   }
 
-  return { links, reload }
+  async function add(link) {
+    links.value.push({ name: link.name, url: link.url })
+  }
+
+  return { links, reload, add }
 })
