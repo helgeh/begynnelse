@@ -13,6 +13,13 @@ const port = process.env.PORT || 3001
 const publicPath = path.join(path.resolve(), 'public')
 const app = express()
 
+app.use(function (req, res, next) {
+  res.removeHeader("x-powered-by");
+  res.removeHeader("set-cookie");
+  res.removeHeader("x-served-by");
+  res.removeHeader("server");
+  next();
+})
 app.use(cors())
 app.use(api)
 app.use('/', express.static(publicPath))
