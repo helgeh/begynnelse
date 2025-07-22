@@ -20,7 +20,10 @@ try {
   seedDb = true
 }
 catch (err) {
-  console.log('DB file already exists, or some error occured.', err)
+  if (err.errno === -17)
+    console.log('DB file already exists.')
+  else
+    console.log('Something wrong opening DB file', err)
 }
 
 const db = new Database(dbFile, { verbose: logSql })
