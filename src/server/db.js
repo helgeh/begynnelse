@@ -58,78 +58,88 @@ createUsers.run()
 
 
 
-const insertUser = db.prepare('INSERT INTO users (name, email, password, details) VALUES (?, ?, ?, ?)')
-const updateUserDetails = db.prepare('UPDATE users SET details = ? WHERE id = ?')
-const removeUserById = db.prepare('DELETE from users WHERE id = ?')
-const userById = db.prepare('SELECT name, email FROM users WHERE id = ?')
-const userByEmail = db.prepare('SELECT id, name, email, password, details FROM users WHERE email = ?')
+const insertUserStmt = db.prepare('INSERT INTO users (name, email, password, details) VALUES (?, ?, ?, ?)')
+const updateUserDetailsStmt = db.prepare('UPDATE users SET details = ? WHERE id = ?')
+const removeUserByIdStmt = db.prepare('DELETE from users WHERE id = ?')
+const userByIdStmt = db.prepare('SELECT name, email FROM users WHERE id = ?')
+const userByEmailStmt = db.prepare('SELECT id, name, email, password, details FROM users WHERE email = ?')
 
 async function addUser(email, password, details) {
   const user = getUserByEmail(email)
   const hash = await hashPassword(password)
   if (user && user.email === email)
     throw new Error('User already exists')
-  insertUser.run('', email, hash, details)
+  insertUserStmt.run('', email, hash, details)
 }
 
 function setUserDetails(email, str) {
   const user = getUserByEmail(email)
   if (!user)
     throw new Error('User not found')
-  updateUserDetails.run(str, user.id)
+  updateUserDetailsStmt.run(str, user.id)
 }
 
 function removeUser(id) {
   const user = getUserById(id)
   if (user)
-    removeUserById.run(id)
+    removeUserByIdStmt.run(id)
   else throw new Error('User not found')
   return user
 }
 
 function getUserById(id) {
-  return userById.get(id)
+  return userByIdStmt.get(id)
 }
 
 function getUserByEmail(email) {
-  return userByEmail.get(email)
+  return userByEmailStmt.get(email)
 }
 
-const insertCategory = db.prepare('INSERT INTO categories (name, title) VALUES (?, ?)')
-const categories = db.prepare('SELECT * from categories')
+const insertCategoryStmt = db.prepare('INSERT INTO categories (name, title) VALUES (?, ?)')
+const getCategoriesStmt = db.prepare('SELECT * from categories')
 
 function addCategory(name, title) {
-  insertCategory.run(name, title)
+  insertCategoryStmt.run(name, title)
 }
 
 function getCategories() {
-  return categories.all()
+  return getCategoriesStmt.all()
 }
 
-const insertLinks = db.prepare('INSERT INTO links (name, url, user) VALUES (?, ?, ?)')
-const updateLinkIcon = db.prepare('UPDATE links SET icon = :icon WHERE id = :id')
-const updateLinkCategory = db.prepare('UPDATE links SET category = :category WHERE id = :id')
-const updateLinkTags = db.prepare('UPDATE links SET tags = :tags WHERE id = :id')
-const linksByUser = db.prepare('SELECT id, name, url, icon, category, tags FROM links WHERE user = ? ORDER BY id')
+const insertLinksStmt = db.prepare('INSERT INTO links (name, url, user) VALUES (?, ?, ?)')
+const updateLinkStmt = db.prepare('UPDATE links SET name = :name, url = :url, icon = :icon, category = :category, tags = :tags WHERE id = :id')
+const updateLinkIconStmt = db.prepare('UPDATE links SET icon = :icon WHERE id = :id')
+const updateLinkCategoryStmt = db.prepare('UPDATE links SET category = :category WHERE id = :id')
+const updateLinkTagsStmt = db.prepare('UPDATE links SET tags = :tags WHERE id = :id')
+const linksByUserStmt = db.prepare('SELECT id, name, url, icon, category, tags FROM links WHERE user = ? ORDER BY id')
+const linkByIdStmt = db.prepare('SELECT id, name, url, icon, category, tags, user FROM links WHERE id = ?')
 
 function addLink(name, url, user) {
-  insertLinks.run(name, url, user)
+  return insertLinksStmt.run(name, url, user)
+}
+
+function updateLink(link) {
+  updateLinkStmt.run(link)
 }
 
 function setLinkIcon(id, icon) {
-  updateLinkIcon.run({id, icon})
+  updateLinkIconStmt.run({id, icon})
 }
 
 function setLinkCategory(id, category) {
-  updateLinkCategory.run({id, category})
+  updateLinkCategoryStmt.run({id, category})
 }
 
 function setLinkTags(id, tags) {
-  updateLinkTags.run({id, tags})
+  updateLinkTagsStmt.run({id, tags})
 }
 
 function getLinks(userId) {
-  return linksByUser.all(userId)
+  return linksByUserStmt.all(userId)
+}
+
+function getLink(id) {
+  return linkByIdStmt.get(id)
 }
 
 // addUser('hjh', 'test@somedomain.com', '')
@@ -181,8 +191,10 @@ export {
   getCategories,
 
   addLink,
+  updateLink,
   setLinkIcon,
   setLinkCategory,
   setLinkTags,
-  getLinks
+  getLinks,
+  getLink
 }

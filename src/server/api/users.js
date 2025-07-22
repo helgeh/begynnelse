@@ -3,14 +3,9 @@ import { addUser, setUserDetails, removeUser, getUserByEmail, getUserById, addLi
 import { sendAdminMail } from '../mailer.js'
 import config from '../config.js'
 import { log } from '../logger.js'
+import { slowResponse } from '../utils.js'
 
 export default function configure(router) {
-
-  async function slowResponse() {
-    return new Promise(res => {
-      setTimeout(res, 1250)
-    })
-  }
 
   function notifyEmailVerify(to, secret) {
     const url = `https://begy.nnel.se/?email=${to}&token=${secret}#/verify`

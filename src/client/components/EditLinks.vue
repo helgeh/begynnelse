@@ -22,7 +22,18 @@
           </v-row>
           <v-row dense>
             <v-col>
-              <v-textarea label="Ikoner" variant="outlined" v-model="link.icon"></v-textarea>
+              <v-text-field label="Ikon (dark)" variant="outlined" v-model="link.icon.dark"></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row dense>
+            <v-col>
+              <v-text-field label="Ikon (light)" variant="outlined" v-model="link.icon.light"></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row dense>
+            <v-col>
+              <v-btn @click="update" class="me-2">Lagre</v-btn> 
+              <v-icon color="success" v-if="updateOk">mdi-thumb-up</v-icon>
             </v-col>
           </v-row>
         </div>
@@ -40,6 +51,11 @@
             </v-col>
             <v-col>
               <v-text-field label="Url" variant="outlined" v-model="newLink.url" @keypress="onAddNewKeyPress($event, 1)" ref="newlink-url-input"></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row v-if="addError" dense>
+            <v-col>
+              <v-alert type="error">{{ addError }}</v-alert>
             </v-col>
           </v-row>
           <v-row dense>
@@ -71,16 +87,33 @@
 
   const editIndex = shallowRef(-2)
   const newLink = ref({name: '', url: ''})
+  const updateOk = shallowRef(false)
+  const addError = ref('')
 
   onClickOutside(linksList, event => {
     editIndex.value = -2
   })
 
-  function addNew() {
-    linksStore.add(newLink.value)
+  async function addNew() {
+    const result = await linksStore.add(newLink.value)
+    if (result?.error) {
+      addError.value = result?.error || 'Noe gikk feil!'
+      return
+    }
     newLink.value.name = ''
     newLink.value.url = ''
     editIndex.value = -2
+  }
+
+  async function update() {
+    const link = links.value[editIndex.value]
+    if (link) {
+      const result = await linksStore.update(link)
+      if (result.success) {
+        updateOk.value = true
+        setTimeout(_ => updateOk.value = false, 3000)
+      }
+    }
   }
 
   async function onAddNewKeyPress(evt, id) {

@@ -22,10 +22,12 @@ export const useLinksStore = defineStore('links', () => {
       beforeFetch: attachTokenHeader,
       afterFetch(ctx) {
         ctx.data.forEach(link => {
-          if (link.icon && link.icon.startsWith('{'))
+          if (link.icon && link.icon.trim().startsWith('{')) {
             link.icon = JSON.parse(link.icon)
-          else
+          }
+          else {
             link.icon = { dark: link.icon }
+          }
         })
         return ctx
       },
@@ -38,8 +40,34 @@ export const useLinksStore = defineStore('links', () => {
   }
 
   async function add(link) {
-    links.value.push({ name: link.name, url: link.url })
+    const { data, error, statusCode } = await useFetch('/lenker', {
+        beforeFetch: attachTokenHeader
+      })
+      .post(link)
+      .json()
+    if (error.value) {
+      return { error: 'Kunne ikke opprett ny link' }
+    }
+    if (data?.value?.success) {
+      links.value.push({ name: link.name, url: link.url, id: data.value.linkId, category: null, tags: null, icon: {} })
+      return { success: true }
+    }
   }
 
-  return { links, reload, add }
+  async function update(link) {
+    const { name, url, icon, category, tags } = link
+    const { data, error, statusCode } = await useFetch(`/lenker/${link.id}`, {
+        beforeFetch: attachTokenHeader
+      })
+      .put({
+        name, url, category, tags, 
+        icon: JSON.stringify(icon),
+      })
+    if (error?.value) {
+      return { error: 'Kunne ikke oppdatere linken :('}
+    }
+    return { success: true }
+  }
+
+  return { links, reload, add, update }
 })
