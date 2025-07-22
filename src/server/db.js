@@ -111,6 +111,7 @@ const updateLinkStmt = db.prepare('UPDATE links SET name = :name, url = :url, ic
 const updateLinkIconStmt = db.prepare('UPDATE links SET icon = :icon WHERE id = :id')
 const updateLinkCategoryStmt = db.prepare('UPDATE links SET category = :category WHERE id = :id')
 const updateLinkTagsStmt = db.prepare('UPDATE links SET tags = :tags WHERE id = :id')
+const deleteLinkStmt = db.prepare('DELETE FROM links WHERE id = ?')
 const linksByUserStmt = db.prepare('SELECT id, name, url, icon, category, tags FROM links WHERE user = ? ORDER BY id')
 const linkByIdStmt = db.prepare('SELECT id, name, url, icon, category, tags, user FROM links WHERE id = ?')
 
@@ -119,7 +120,7 @@ function addLink(name, url, user) {
 }
 
 function updateLink(link) {
-  updateLinkStmt.run(link)
+  return updateLinkStmt.run(link)
 }
 
 function setLinkIcon(id, icon) {
@@ -132,6 +133,10 @@ function setLinkCategory(id, category) {
 
 function setLinkTags(id, tags) {
   updateLinkTagsStmt.run({id, tags})
+}
+
+function deleteLink(id) {
+  return deleteLinkStmt.run(id)
 }
 
 function getLinks(userId) {
@@ -195,6 +200,7 @@ export {
   setLinkIcon,
   setLinkCategory,
   setLinkTags,
+  deleteLink,
   getLinks,
   getLink
 }

@@ -69,5 +69,17 @@ export const useLinksStore = defineStore('links', () => {
     return { success: true }
   }
 
-  return { links, reload, add, update }
+  async function remove(id) {
+    const { data, error, statusCode } = await useFetch(`/lenker/${id}`, {
+        beforeFetch: attachTokenHeader
+      })
+      .delete()
+    if (error?.value) {
+      return { error: 'Kunne ikke slette linken :('}
+    }
+    links.value.splice(links.value.findIndex(l => l.id === id), 1)
+    return { success: true }
+  }
+
+  return { links, reload, add, update, remove }
 })

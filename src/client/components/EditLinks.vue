@@ -34,6 +34,7 @@
             <v-col>
               <v-btn @click="update" class="me-2">Lagre</v-btn> 
               <v-icon color="success" v-if="updateOk">mdi-thumb-up</v-icon>
+              <v-btn @click="remove" class="ms-3" color="warning">Slett</v-btn> 
             </v-col>
           </v-row>
         </div>
@@ -112,6 +113,17 @@
       if (result.success) {
         updateOk.value = true
         setTimeout(_ => updateOk.value = false, 3000)
+      }
+    }
+  }
+
+  async function remove() {
+    const link = links.value[editIndex.value]
+    if (link) {
+      const result = await linksStore.remove(link.id)
+      if (result.success) {
+        editIndex.value = -2
+        console.log('remove success')
       }
     }
   }
