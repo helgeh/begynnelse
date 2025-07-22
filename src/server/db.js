@@ -1,4 +1,5 @@
-import Database from 'better-sqlite3';
+import { open } from 'node:fs/promises'
+import Database from 'better-sqlite3'
 
 import { hashPassword } from './sikkerhet.js'
 import { log } from './logger.js'
@@ -10,7 +11,19 @@ const logSql = function (...args) {
     log(...args)
 }
 
-const db = new Database('./src/server/db/begynnelse.db', { verbose: logSql })
+const dbFile = './src/server/db/begynnelse.db'
+
+let testFile, seedDb = false
+try {
+  testFile = await open(dbFile, 'wx')
+  console.log('DB file created!. Will seed.')
+  seedDb = true
+}
+catch (err) {
+  console.log('DB file already exists, or some error occured.', err)
+}
+
+const db = new Database(dbFile, { verbose: logSql })
 db.pragma('journal_mode = WAL')
 
 const createLinks = db.prepare(`
@@ -30,8 +43,10 @@ createLinks.run()
 const createCategories = db.prepare(`
   CREATE TABLE IF NOT EXISTS categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT UNIQUE NOT NULL,
-    title TEXT NOT NULL
+    name TEXT NOT NULL,
+    title TEXT NOT NULL,
+    user INTEGER NOT NULL,
+    FOREIGN KEY(user) REFERENCES users(id)
   );
 `)
 createCategories.run()
@@ -56,6 +71,43 @@ const createUsers = db.prepare(`
 `)
 createUsers.run()
 
+
+if (seedDb) {
+  console.log('Seeding DB...')
+  const userResult = db.prepare('INSERT INTO users (name, email, password, details) VALUES (?, ?, ?, ?)')
+    .run('hjh', process.env.ADMIN_EMAIL, process.env.ADMIN_PW, `et:CONFIRMED-${Date.now()};`)
+  console.log('  Added user with id ' + userResult.lastInsertRowid)
+  const linksStmt = db.prepare('INSERT INTO links (name, url, icon, category, tags, user) VALUES (?, ?, ?, ?, ?, ?)')
+  linksStmt.run(
+    "Proton.mail", 
+    "https://mail.proton.me",
+    "https://favicone.com/mail.proton.me?s=32",
+    "common",
+    "mail,proton,pri1,standard",
+    userResult.lastInsertRowid
+  )
+  linksStmt.run(
+    "Proton.pass", 
+    "https://pass.proton.me",
+    "https://favicone.com/pass.proton.me?s=32",
+    "common",
+    "passwords,proton,pri1,standard",
+    userResult.lastInsertRowid
+  )
+  linksStmt.run(
+    "Github",
+    "https://github.com/helgeh",
+    `{ "light": "/icons/github-light-32x32.png", "dark": "/icons/github-dark-32x32.png" }`,
+    "develop",
+    "code,git,pri1,standard",
+    userResult.lastInsertRowid
+  )
+  const categoryStmt = db.prepare('INSERT INTO categories (name, title, user) VALUES (?, ?, ?)')
+  categoryStmt.run('common', 'Basic', userResult.lastInsertRowid)
+  categoryStmt.run('develop', 'Develop', userResult.lastInsertRowid)
+  console.log('    Done seeding DB!')
+  seedDb = false
+}
 
 
 const insertUserStmt = db.prepare('INSERT INTO users (name, email, password, details) VALUES (?, ?, ?, ?)')
@@ -95,15 +147,23 @@ function getUserByEmail(email) {
   return userByEmailStmt.get(email)
 }
 
-const insertCategoryStmt = db.prepare('INSERT INTO categories (name, title) VALUES (?, ?)')
-const getCategoriesStmt = db.prepare('SELECT * from categories')
+const insertCategoryStmt = db.prepare('INSERT INTO categories (name, title, user) VALUES (?, ?, ?)')
+const getCategoriesStmt = db.prepare('SELECT * from categories WHERE user = ?')
+const getCategoryStmt = db.prepare('SELECT * from categories WHERE name = ? AND user = ?')
 
-function addCategory(name, title) {
-  insertCategoryStmt.run(name, title)
+function addCategory(name, title, userId) {
+  const cat = getCategory(name, userId)
+  if (cat)
+    throw new Error('Category already exists for this user')
+  insertCategoryStmt.run(name, title, userId)
 }
 
-function getCategories() {
-  return getCategoriesStmt.all()
+function getCategories(userId) {
+  return getCategoriesStmt.all(userId)
+}
+
+function getCategory(name, userId) {
+  return getCategoryStmt.run(name, userId)
 }
 
 const insertLinksStmt = db.prepare('INSERT INTO links (name, url, user) VALUES (?, ?, ?)')
@@ -146,42 +206,6 @@ function getLinks(userId) {
 function getLink(id) {
   return linkByIdStmt.get(id)
 }
-
-// addUser('hjh', 'test@somedomain.com', '')
-
-// addLink('vg.no', 'https://www.vg.no', 1)
-// addLink('gmail', 'https://mail.google.com', 1)
-
-// const remove = db.prepare('DELETE FROM links WHERE id = 3 OR id = 4')
-// remove.run()
-
-// db.prepare('UPDATE links SET tags = ?').run('pri1')
-// db.prepare('UPDATE links SET icon = ? WHERE name = ?').run('https://favicone.com/mail.proton.me?s=32', 'Protonmail')
-// const linksStmt = db.prepare('INSERT INTO links (name, url, icon, category, tags, user) VALUES (?, ?, ?, ?, ?, ?)')
-// linksStmt.run(
-//     "Proton.mail", 
-//     "https://mail.proton.me",
-//     "https://favicone.com/mail.proton.me?s=32",
-//     "common",
-//     "mail,proton,pri1,standard",
-//     1
-//   )
-// linksStmt.run(
-//     "Proton.pass", 
-//     "https://pass.proton.me",
-//     "https://favicone.com/pass.proton.me?s=32",
-//     "common",
-//     "passwords,proton,pri1,standard",
-//     1
-//   )
-// linksStmt.run(
-//       "Github",
-//       "https://github.com/helgeh",
-//       `{ "light": "/icons/github-light-32x32.png", "dark": "/icons/github-dark-32x32.png" }`,
-//       "develop",
-//       "code,git,pri1,standard",
-//       1
-//     )
 
 // log('user', getUserByEmail('haefs@pm.me'))
 // log('links', getLinks(1))
