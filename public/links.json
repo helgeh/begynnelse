@@ -152,6 +152,20 @@
       "tags": "satisfactory,calculator,pri2,gaming"
     },
     {
+      "href": "https://scramble.cubing.net",
+      "name": "Cube.Scrambler",
+      "icon": "https://favicone.com/scramble.cubing.net?s=32",
+      "section": "entertain",
+      "tags": "scramble,rubiks,pri2,cubing"
+    },
+    {
+      "href": "https://timer.cubing.net",
+      "name": "Cube.Timer",
+      "icon": "https://favicone.com/timer.cubing.net?s=32",
+      "section": "entertain",
+      "tags": "timer,rubiks,pri2,cubing"
+    },
+    {
       "href": "https://stackoverflow.com",
       "name": "Stackoverflow",
       "icon": "https://favicone.com/stackoverflow.com?s=32",

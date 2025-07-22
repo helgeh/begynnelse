@@ -204,10 +204,12 @@
     <v-card 
       :href="link.href" 
       @click="$emit('click', $event, link)" 
-      :title="link.name"
     >
+      <template v-slot:title>
+        <span class="text-subtitle-2 font-weight-medium">{{ link.name }}</span>
+      </template>
       <template v-slot:append v-if="link.icon">
-        <v-icon size="32">
+        <v-icon size="24">
           <v-img
             :alt="link.name"
             :src="link.icon[theme] ? link.icon[theme] : link.icon"
