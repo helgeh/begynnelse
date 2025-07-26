@@ -1,5 +1,5 @@
 import { authTheToken } from '../sikkerhet.js'
-import { addLink, updateLink, deleteLink, getLinks, getLink } from '../db.js'
+import { addLink, addCompleteLink, updateLink, deleteLink, getLinks, getLink } from '../db.js'
 import { log } from '../logger.js'
 import { slowResponse } from '../utils.js'
 
@@ -15,6 +15,26 @@ export default function configure(router) {
     // TODO: also add category, tags and icon if provided
     const result = addLink(name, url, req.user.id)
     res.json({ success: true, linkId: result.lastInsertRowid })
+  })
+
+  router.post('/mange-lenker', authTheToken, (req, res) => {
+    const items = req.body
+    console.log('mange-lenker, hmmm', items.length)
+    console.dir(items)
+    if (items && items.length > 0) {
+      try {
+        items.forEach(item => {
+          const { name, url, category, tags, icon } = item
+          // TODO: also add category, tags and icon if provided
+          addCompleteLink({name, url, category, tags, icon}, req.user.id)
+        })
+      }
+      catch (err) {
+        log('Noe gikk feil under masselagring av lenker', err.message)
+        return res.status(500).json({ error: 'Could not store the links provided' })
+      }
+      res.json({ success: true })
+    }
   })
 
   router.put('/lenker/:id', authTheToken, async (req, res) => {

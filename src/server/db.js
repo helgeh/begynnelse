@@ -17,7 +17,7 @@ const dbFile = './src/server/db/begynnelse.db'
 let testFile, seedDb = false
 try {
   testFile = await open(dbFile, 'wx')
-  log('DB file created!. Will seed.')
+  log('DB file created. Will seed.')
   seedDb = true
 }
 catch (err) {
@@ -26,6 +26,9 @@ catch (err) {
   else
     log('Something wrong opening DB file', err)
 }
+finally {
+  await testFile?.close()
+}
 
 const db = new Database(dbFile, { verbose: logSql })
 db.pragma('journal_mode = WAL')
@@ -33,9 +36,11 @@ db.pragma('journal_mode = WAL')
 
 if (seedDb) {
   try {
-    await dbSeeder.run(db, {
+    const result = await dbSeeder.run(db, {
       logger: log
     })
+    if (!result)
+      throw new Error('Noe gikk feil under seeding men det smalt ikke?')
     seedDb = false
   }
   catch (err) {
@@ -102,6 +107,7 @@ function getCategory(name, userId) {
 }
 
 const insertLinksStmt = db.prepare('INSERT INTO links (name, url, user) VALUES (?, ?, ?)')
+const insertCompleteLinksStmt = db.prepare('INSERT INTO links (name, url, category, tags, icon, user) VALUES (:name, :url, :category, :tags, :icon, ?)')
 const updateLinkStmt = db.prepare('UPDATE links SET name = :name, url = :url, icon = :icon, category = :category, tags = :tags WHERE id = :id')
 const updateLinkIconStmt = db.prepare('UPDATE links SET icon = :icon WHERE id = :id')
 const updateLinkCategoryStmt = db.prepare('UPDATE links SET category = :category WHERE id = :id')
@@ -112,6 +118,10 @@ const linkByIdStmt = db.prepare('SELECT id, name, url, icon, category, tags, use
 
 function addLink(name, url, user) {
   return insertLinksStmt.run(name, url, user)
+}
+
+function addCompleteLink(link, userId) {
+  return insertCompleteLinksStmt.run(userId, link)
 }
 
 function updateLink(link) {
@@ -155,6 +165,7 @@ export {
   getCategories,
 
   addLink,
+  addCompleteLink,
   updateLink,
   setLinkIcon,
   setLinkCategory,

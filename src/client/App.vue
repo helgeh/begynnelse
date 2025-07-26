@@ -43,6 +43,7 @@
   import MyPage from './pages/MyPage.vue'
   import VerifyEmailPage from './pages/VerifyEmailPage.vue'
   import ConfigPage from './pages/ConfigPage.vue'
+  import CreateManyLinksPage from './pages/CreateManyLinksPage.vue'
   import MiraMull from './pages/MiraMull.vue'
   import ZipList from './pages/ZipList.vue'
   import PodPlayer from './pages/PodPlayer.vue'
@@ -58,11 +59,14 @@
 
     // These are not in the exposed menu and need to come
     // last to not f up the 'active' state
+    
     '/links': HomePage,
+    '/many-links': CreateManyLinksPage,
+    '/verify': VerifyEmailPage,
+
     '/mira': MiraMull,
     '/player': PodPlayer,
     '/about': AboutPage,
-    '/verify': VerifyEmailPage,
   }
 
   const currentPath = ref(window.location.hash.slice(1))
@@ -89,6 +93,7 @@
 <style scoped>
   .page-content {
     position: relative;
+    margin-bottom: 50px;
   }
 
   /*.logo {

@@ -2,7 +2,7 @@
 export async function run(db, config) {
 
   const log = config.logger || console.log
-    
+
   log('Seeding DB...')
 
   const createLinks = db.prepare(`

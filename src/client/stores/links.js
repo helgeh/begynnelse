@@ -54,6 +54,20 @@ export const useLinksStore = defineStore('links', () => {
     }
   }
 
+  async function addMany(links) {
+    const { data, error, statusCode } = await useFetch('/mange-lenker', {
+        beforeFetch: attachTokenHeader
+      })
+      .post(links)
+      .json()
+    if (error.value) {
+      return { error: 'Kunne ikke opprette mange nye linker' }
+    }
+    if (data?.value?.success) {
+      return await reload()
+    }
+  }
+
   async function update(link) {
     const { name, url, icon, category, tags } = link
     const { data, error, statusCode } = await useFetch(`/lenker/${link.id}`, {
@@ -64,7 +78,7 @@ export const useLinksStore = defineStore('links', () => {
         icon: JSON.stringify(icon),
       })
     if (error?.value) {
-      return { error: 'Kunne ikke oppdatere linken :('}
+      return { error: 'Kunne ikke oppdatere linken :(' }
     }
     return { success: true }
   }
@@ -75,11 +89,11 @@ export const useLinksStore = defineStore('links', () => {
       })
       .delete()
     if (error?.value) {
-      return { error: 'Kunne ikke slette linken :('}
+      return { error: 'Kunne ikke slette linken :(' }
     }
     links.value.splice(links.value.findIndex(l => l.id === id), 1)
     return { success: true }
   }
 
-  return { links, reload, add, update, remove }
+  return { links, reload, add, addMany, update, remove }
 })
