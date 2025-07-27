@@ -37,6 +37,9 @@ export default function configure(router) {
           files.map((file) => ({ path: path.join('/zips', file), fileName: file })),
         )
         .then((files) => res.json({ files }))
+        .catch(err => {
+          res.json({ files: [] })
+        })
     })
 
     router.get('/videolist', function (req, res, next) {

@@ -4,31 +4,31 @@
     <!-- <CatTax /> -->
 
     <div class="page-content">
-      <component :is="currentView" />
+      <RouterView />
     </div>
 
-    <v-bottom-navigation :modelValue="route" @update:modelValue="() => {}" mode="shift" color="primary">
-      <v-btn href="#/">
+    <v-bottom-navigation mode="shift" color="primary">
+      <v-btn to="/">
         <v-icon>mdi-list-box</v-icon>
         <span>Links</span>
       </v-btn>
 
-      <v-btn href="#/config">
+      <v-btn to="/config">
         <v-icon>mdi-playlist-edit</v-icon>
         <span>Config</span>
       </v-btn>
 
-      <!-- <v-btn href="#/mira">
+      <!-- <v-btn to="/mira">
         <v-icon>mdi-dog</v-icon>
         <span>Mira</span>
       </v-btn> -->
 
-      <v-btn href="#/zips">
+      <v-btn to="/zips">
         <v-icon>mdi-folder-zip</v-icon>
         <span>Zips</span>
       </v-btn>
 
-      <v-btn href="#/videos">
+      <v-btn to="/videos">
         <v-icon>mdi-movie</v-icon>
         <span>Movies</span>
       </v-btn>
@@ -36,59 +36,7 @@
   </v-app>
 </template>
 
-<script setup>
-  import { ref, computed } from 'vue'
-
-  import HomePage from './pages/HomePage.vue'
-  import MyPage from './pages/MyPage.vue'
-  import VerifyEmailPage from './pages/VerifyEmailPage.vue'
-  import ConfigPage from './pages/ConfigPage.vue'
-  import CreateManyLinksPage from './pages/CreateManyLinksPage.vue'
-  import MiraMull from './pages/MiraMull.vue'
-  import ZipList from './pages/ZipList.vue'
-  import PodPlayer from './pages/PodPlayer.vue'
-  import AboutPage from './pages/AboutPage.vue'
-  import VideoPage from './pages/VideoPage.vue'
-  import NotFoundPage from './pages/NotFoundPage.vue'
-
-  const routes = {
-    '/': HomePage,
-    '/config': ConfigPage,
-    '/zips': ZipList,
-    '/videos': VideoPage,
-
-    // These are not in the exposed menu and need to come
-    // last to not f up the 'active' state
-    
-    '/links': HomePage,
-    '/many-links': CreateManyLinksPage,
-    '/verify': VerifyEmailPage,
-
-    '/mira': MiraMull,
-    '/player': PodPlayer,
-    '/about': AboutPage,
-  }
-
-  const currentPath = ref(window.location.hash.slice(1))
-  const route = ref(getRouteIndex())
-
-  const currentView = computed(() => {
-    let index = currentPath.value || '/'
-    if (index.substr(1).indexOf('/') >= 0) {
-      index = index.substr(0, index.substr(1).indexOf('/') + 1)
-    }
-    return routes[index] || NotFoundPage
-  })
-
-  window.addEventListener('hashchange', () => {
-    currentPath.value = window.location.hash.slice(1)
-    route.value = getRouteIndex()
-  })
-
-  function getRouteIndex() {
-    return Object.keys(routes).indexOf(currentPath.value || '/')
-  }
-</script>
+<script setup></script>
 
 <style scoped>
   .page-content {

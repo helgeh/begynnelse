@@ -123,7 +123,6 @@
       const result = await linksStore.remove(link.id)
       if (result.success) {
         editIndex.value = -2
-        console.log('remove success')
       }
     }
   }
