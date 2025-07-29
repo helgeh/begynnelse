@@ -19,8 +19,6 @@ export default function configure(router) {
 
   router.post('/mange-lenker', authTheToken, (req, res) => {
     const items = req.body
-    console.log('mange-lenker, hmmm', items.length)
-    console.dir(items)
     if (items && items.length > 0) {
       try {
         items.forEach(item => {

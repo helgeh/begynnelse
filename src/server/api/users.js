@@ -8,7 +8,8 @@ import { slowResponse } from '../utils.js'
 export default function configure(router) {
 
   function notifyEmailVerify(to, secret) {
-    const url = `https://begy.nnel.se/?email=${to}&token=${secret}#/verify`
+    const domain = 'begy.nnel.se'
+    const url = `https://${domain}/verify?email=${to}&token=${secret}`
     if (process.env.DEVELOP) {
       console.log('SKIPPING EMAIL VERIFY BECAUSE WE ARE IN DEVELOP')
       console.log(`URL to click: ${url}`)
@@ -17,7 +18,11 @@ export default function configure(router) {
     sendAdminMail(
       to, 
       'Email verification', 
-      `<p>To complete the begy.nnel.se registration <a href="${url}">click here</a> to verify your email address</p>`
+      `<p>
+              To complete the begy.nnel.se registration 
+              <a href="${url}">click here</a> 
+              to verify your email address
+            </p>`
     )
   }
 

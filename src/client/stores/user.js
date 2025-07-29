@@ -34,6 +34,16 @@ export const useUserStore = defineStore('user', () => {
       loginError.value = 'Kunne ikke sende godkjenning'
     }
   }
+
+  async function comply(email, key) {
+    const { data, error } = await useFetch(`/blimed/godkjenn/${email}/${key}`)
+      .get()
+      .json()
+    if (error.value) {
+      throw new Error(error.value)
+    }
+    return { data, error }
+  }
   
   async function loadme() {
     const { data, error } = await useFetch('/meg', {
@@ -105,7 +115,8 @@ export const useUserStore = defineStore('user', () => {
     login,
     logout,
     deleteme,
-    verify
+    verify,
+    comply
   }
 
 })

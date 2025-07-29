@@ -64,7 +64,7 @@
         </v-alert>
         <template v-slot:actions>
 
-          <v-btn v-if="notVerified" @click="emit('verify')" size="small" variant="tonal">
+          <v-btn v-if="notVerified" @click="onVerify" size="small" variant="tonal">
             Send epost
           </v-btn>
 
@@ -142,6 +142,10 @@
       emit('register', usr.value, pw.value)
     else
       emit('login', usr.value, pw.value)
+  }
+
+  async function onVerify() {
+    emit('verify', usr.value, pw.value)
   }
 
   async function onDelete() {

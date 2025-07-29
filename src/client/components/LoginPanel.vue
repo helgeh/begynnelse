@@ -38,7 +38,7 @@
     userStore.logout()
   }
 
-  async function onVerify() {
+  async function onVerify(usr, pw) {
     await userStore.verify(usr, pw)
   }
 

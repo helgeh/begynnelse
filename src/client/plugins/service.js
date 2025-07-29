@@ -1,8 +1,6 @@
 import axios from 'axios'
 import { shallowRef } from 'vue'
 
-import router from '../routes'
-
 import GetAccess from '../components/GetAccess.vue'
 import MyHeader from '../components/MyHeader.vue'
 import MyForm from '../components/MyForm.vue'
@@ -31,8 +29,6 @@ const addAuthHeader = (data) => {
 
 export default {
   install(app, options) {
-
-    app.use(router)
     
     app
       .component('GetAccess', GetAccess)

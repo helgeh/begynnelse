@@ -8,7 +8,7 @@
 
     <v-card-text>
       <p v-if="ok">
-        Din epost skal nå være godkjent og du kan logge inn <a href="/#/my">her</a>.
+        Din epost skal nå være godkjent og du kan logge inn <a href="/config">her</a>.
       </p>
       <v-alert v-else-if="err" type="warning">
         <p>{{ err }}</p>
@@ -28,23 +28,24 @@
   import { shallowRef, ref, inject } from 'vue'
   import { useUrlSearchParams } from '@vueuse/core'
 
-  const tilgang = inject('tilgang')
+  import { useUserStore } from '../stores'
+
+  const userStore = useUserStore()
+
   const ok = ref(false)
   const err = ref('')
   const params = useUrlSearchParams('history')
   const { email, token } = params
   if (email && token) {
-    tilgang.godkjennHemmelighet(email, token)
+    userStore.comply(email, token)
       .then(result => {
         ok.value = true
       })
       .catch(error => {
-        // console.log('noe gikk feil', error)
         err.value = 'Kunne ikke godkjenne. Har du allerede godkjent? Har det gått mer enn 5 minutter siden du registrerte?'
       })
   }
   else {
-    // err.value = true
     err.value = 'Mangler info. Forsøk å klikke på linken i eposten igjen.'
   }
 </script>
