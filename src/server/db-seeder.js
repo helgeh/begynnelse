@@ -12,9 +12,10 @@ export async function run(db, config) {
       url TEXT NOT NULL,
       user INTEGER NOT NULL,
       icon TEXT,
-      category TEXT,
+      category INTEGER,
       tags TEXT,
-      FOREIGN KEY(user) REFERENCES users(id)
+      FOREIGN KEY(user) REFERENCES users(id),
+      FOREIGN KEY(category) REFERENCES categories(id)
     );
   `)
   createLinks.run()
@@ -53,12 +54,16 @@ export async function run(db, config) {
   const userResult = db.prepare('INSERT INTO users (name, email, password, details) VALUES (?, ?, ?, ?)')
     .run('hjh', process.env.ADMIN_EMAIL, process.env.ADMIN_PW, `et:CONFIRMED-${Date.now()};`)
   log('  Added user with id ' + userResult.lastInsertRowid)
+
+  const categoryStmt = db.prepare('INSERT INTO categories (name, title, user) VALUES (?, ?, ?)')
+  const commonCategoryResult = categoryStmt.run('common', 'Basic', userResult.lastInsertRowid)
+  
   const linksStmt = db.prepare('INSERT INTO links (name, url, icon, category, tags, user) VALUES (?, ?, ?, ?, ?, ?)')
   linksStmt.run(
     "Proton.mail", 
     "https://mail.proton.me",
     "https://favicone.com/mail.proton.me?s=32",
-    "common",
+    commonCategoryResult.lastInsertRowid,
     "mail,proton,pri1,standard",
     userResult.lastInsertRowid
   )
@@ -66,22 +71,22 @@ export async function run(db, config) {
     "Proton.pass", 
     "https://pass.proton.me",
     "https://favicone.com/pass.proton.me?s=32",
-    "common",
+    commonCategoryResult.lastInsertRowid,
     "passwords,proton,pri1,standard",
     userResult.lastInsertRowid
   )
+
+  const developCategoryResult = categoryStmt.run('develop', 'Develop', userResult.lastInsertRowid)
+
   linksStmt.run(
     "Github",
     "https://github.com/helgeh",
     `{ "light": "/icons/github-light-32x32.png", "dark": "/icons/github-dark-32x32.png" }`,
-    "develop",
+    developCategoryResult.lastInsertRowid,
     "code,git,pri1,standard",
     userResult.lastInsertRowid
   )
-  const categoryStmt = db.prepare('INSERT INTO categories (name, title, user) VALUES (?, ?, ?)')
-  categoryStmt.run('common', 'Basic', userResult.lastInsertRowid)
-  categoryStmt.run('develop', 'Develop', userResult.lastInsertRowid)
-  
+
   log('    Done seeding DB!')
 
   return true

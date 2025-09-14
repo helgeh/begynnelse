@@ -88,6 +88,7 @@ function getUserByEmail(email) {
 }
 
 const insertCategoryStmt = db.prepare('INSERT INTO categories (name, title, user) VALUES (?, ?, ?)')
+const updateCategoryStmt = db.prepare('UPDATE categories SET name = :name, title = :title WHERE id = :id')
 const getCategoriesStmt = db.prepare('SELECT * from categories WHERE user = ?')
 const getCategoryStmt = db.prepare('SELECT * from categories WHERE name = ? AND user = ?')
 
@@ -95,7 +96,11 @@ function addCategory(name, title, userId) {
   const cat = getCategory(name, userId)
   if (cat)
     throw new Error('Category already exists for this user')
-  insertCategoryStmt.run(name, title, userId)
+  return insertCategoryStmt.run(name, title, userId)
+}
+
+function updateCategory(category) {
+  return updateCategoryStmt.run(category)
 }
 
 function getCategories(userId) {
@@ -114,6 +119,7 @@ const updateLinkCategoryStmt = db.prepare('UPDATE links SET category = :category
 const updateLinkTagsStmt = db.prepare('UPDATE links SET tags = :tags WHERE id = :id')
 const deleteLinkStmt = db.prepare('DELETE FROM links WHERE id = ?')
 const linksByUserStmt = db.prepare('SELECT id, name, url, icon, category, tags FROM links WHERE user = ? ORDER BY id')
+// const linksByUserStmt = db.prepare('SELECT links.id, links.name, url, icon, categories.name AS categoryName, categories.title AS categoryTitle, tags FROM links LEFT JOIN categories ON categories.id = links.category WHERE links.user = ? ORDER BY links.id')
 const linkByIdStmt = db.prepare('SELECT id, name, url, icon, category, tags, user FROM links WHERE id = ?')
 
 function addLink(name, url, user) {
@@ -162,7 +168,10 @@ export {
   getUserByEmail,
   getUserById,
   
+  addCategory,
+  updateCategory,
   getCategories,
+  getCategory,
 
   addLink,
   addCompleteLink,

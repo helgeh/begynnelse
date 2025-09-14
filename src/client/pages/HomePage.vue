@@ -1,10 +1,24 @@
 <template>
   <v-container responsive>
 
+    <v-row dense class="mb-5" v-for="(prio, i) in priorities" :key="i">
+      <v-col
+        v-for="(link, j) in linksStore.prioritize(prio)"
+        :key="j"
+        cols="6"
+        sm="6"
+        md="3"
+        lg="2"
+        xl="1"
+      >
+        <my-link-card :link="link" @click="onCardClick" :theme="theme"></my-link-card>
+      </v-col>
+    </v-row>
+
     <v-row dense class="mb-5">
       <v-col
-        v-for="(link, i) in links"
-        :key="i"
+        v-for="(link, j) in linksStore.getUnprioritized()"
+        :key="j"
         cols="6"
         sm="6"
         md="3"
@@ -29,7 +43,7 @@
   const userStore = useUserStore()
   const { user, isLoggedIn } = storeToRefs(userStore)
   const linksStore = useLinksStore()
-  const { links } = storeToRefs(linksStore)
+  const { priorities } = storeToRefs(linksStore)
   const theme = shallowRef('dark')
 
   function onCardClick(event, link) {
