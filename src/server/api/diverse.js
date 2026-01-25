@@ -72,11 +72,14 @@ export default function configure(router) {
     const playersFile = path.join(path.resolve(), 'localfiles', 'players.json')
     try {
       const stat = await fs.stat(playersFile)
-      if (!stat)
+      if (!stat) {
+        console.log('jøss, ingen stat response?', playersFile, stat)
         return res.status(404).json({ msg: 'Playerslist mangler visst... ikke satt opp prosjektet riktig kanskje'})
+      }
     }
     catch (e) {
-        return res.status(404).json({ msg: 'Playerslist mangler visst... ikke satt opp prosjektet riktig kanskje'})
+      console.log('lese playersfil feila!', playersFile, stat)
+      return res.status(404).json({ msg: 'Playerslist mangler visst... ikke satt opp prosjektet riktig kanskje'})
     }
     const allPlayers = JSON.parse(await fs.readFile(playersFile))
     const names = allPlayers.map(pl => pl.name)
