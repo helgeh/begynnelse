@@ -78,7 +78,7 @@ export default function configure(router) {
       }
     }
     catch (e) {
-      console.log('lese playersfil feila!', playersFile, stat)
+      console.log('lese playersfil feila!', playersFile, e.message)
       return res.status(404).json({ msg: 'Playerslist mangler visst... ikke satt opp prosjektet riktig kanskje'})
     }
     const allPlayers = JSON.parse(await fs.readFile(playersFile))
