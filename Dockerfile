@@ -22,16 +22,16 @@ FROM node:20-bookworm AS production
 WORKDIR /app
 
 # Create non-root user
-RUN groupadd -g 1001 nodejs && \
-    useradd -u 1001 -g nodejs hjh
+# RUN groupadd -g 1001 nodejs && \
+#     useradd -u 1001 -g nodejs hjh
 
 # Copy built application from builder stage
-COPY --from=builder --chown=hjh:nodejs /app /app
+COPY --from=builder --chown=node:node /app /app
 
-RUN chown -R hjh:nodejs /app/src/server/db
+# RUN chown -R hjh:nodejs /app/src/server/db
 
 # Switch to non-root user
-USER hjh
+USER node
 
 # Expose port
 EXPOSE 3001
