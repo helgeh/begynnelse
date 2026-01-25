@@ -61,4 +61,11 @@ export default function configure(router) {
         res.json({ files: [] })
       })
   })
+
+  router.get('/jegvilspille', function (req, res, next) {
+    const theirIp = '' + req.ip
+    const forwardedIp = '' + req.header('x-forwarded-for')
+    const origHost = '' + req.header('x-original-host')
+    res.json({ msg: 'Ok gutta', test: { theirIp, forwardedIp, origHost } })
+  })
 }
