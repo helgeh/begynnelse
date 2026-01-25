@@ -1,6 +1,4 @@
-
 export async function run(db, config) {
-
   const log = config.logger || console.log
 
   log('Seeding DB...')
@@ -51,44 +49,63 @@ export async function run(db, config) {
   `)
   createUsers.run()
 
-  const userResult = db.prepare('INSERT INTO users (name, email, password, details) VALUES (?, ?, ?, ?)')
-    .run('hjh', process.env.ADMIN_EMAIL, process.env.ADMIN_PW, `et:CONFIRMED-${Date.now()};`)
+  const userResult = db
+    .prepare(
+      'INSERT INTO users (name, email, password, details) VALUES (?, ?, ?, ?)',
+    )
+    .run(
+      'hjh',
+      process.env.ADMIN_EMAIL,
+      process.env.ADMIN_PW,
+      `et:CONFIRMED-${Date.now()};`,
+    )
   log('  Added user with id ' + userResult.lastInsertRowid)
 
-  const categoryStmt = db.prepare('INSERT INTO categories (name, title, user) VALUES (?, ?, ?)')
-  const commonCategoryResult = categoryStmt.run('common', 'Basic', userResult.lastInsertRowid)
-  
-  const linksStmt = db.prepare('INSERT INTO links (name, url, icon, category, tags, user) VALUES (?, ?, ?, ?, ?, ?)')
-  linksStmt.run(
-    "Proton.mail", 
-    "https://mail.proton.me",
-    "https://favicone.com/mail.proton.me?s=32",
-    commonCategoryResult.lastInsertRowid,
-    "mail,proton,pri1,standard",
-    userResult.lastInsertRowid
+  const categoryStmt = db.prepare(
+    'INSERT INTO categories (name, title, user) VALUES (?, ?, ?)',
   )
-  linksStmt.run(
-    "Proton.pass", 
-    "https://pass.proton.me",
-    "https://favicone.com/pass.proton.me?s=32",
-    commonCategoryResult.lastInsertRowid,
-    "passwords,proton,pri1,standard",
-    userResult.lastInsertRowid
+  const commonCategoryResult = categoryStmt.run(
+    'common',
+    'Basic',
+    userResult.lastInsertRowid,
   )
 
-  const developCategoryResult = categoryStmt.run('develop', 'Develop', userResult.lastInsertRowid)
+  const linksStmt = db.prepare(
+    'INSERT INTO links (name, url, icon, category, tags, user) VALUES (?, ?, ?, ?, ?, ?)',
+  )
+  linksStmt.run(
+    'Proton.mail',
+    'https://mail.proton.me',
+    'https://favicone.com/mail.proton.me?s=32',
+    commonCategoryResult.lastInsertRowid,
+    'mail,proton,pri1,standard',
+    userResult.lastInsertRowid,
+  )
+  linksStmt.run(
+    'Proton.pass',
+    'https://pass.proton.me',
+    'https://favicone.com/pass.proton.me?s=32',
+    commonCategoryResult.lastInsertRowid,
+    'passwords,proton,pri1,standard',
+    userResult.lastInsertRowid,
+  )
+
+  const developCategoryResult = categoryStmt.run(
+    'develop',
+    'Develop',
+    userResult.lastInsertRowid,
+  )
 
   linksStmt.run(
-    "Github",
-    "https://github.com/helgeh",
+    'Github',
+    'https://github.com/helgeh',
     `{ "light": "/icons/github-light-32x32.png", "dark": "/icons/github-dark-32x32.png" }`,
     developCategoryResult.lastInsertRowid,
-    "code,git,pri1,standard",
-    userResult.lastInsertRowid
+    'code,git,pri1,standard',
+    userResult.lastInsertRowid,
   )
 
   log('    Done seeding DB!')
 
   return true
-
 }

@@ -5,27 +5,29 @@ import { useFetch } from '@vueuse/core'
 import { attachTokenHeader } from '.'
 
 export const useUserStore = defineStore('user', () => {
-
-  const user = shallowRef({name: '', email: ''})
+  const user = shallowRef({ name: '', email: '' })
   const isLoggedIn = shallowRef(false)
   const notVerified = shallowRef(false)
   const loginError = shallowRef('')
 
   async function register(usr, pw) {
-    const { data, error, statusCode } = await useFetch('/blimed').post({ usr, pw }).json()
+    const { data, error, statusCode } = await useFetch('/blimed')
+      .post({ usr, pw })
+      .json()
     if (data.value) {
       loginError.value = 'Verifisér din epost ved å klikke linken vi har sendt'
       notVerified.value = false
     }
     if (error.value) {
       loginError.value = 'Kunne ikke registrere'
-      if (statusCode.value === 409)
-        loginError.value = 'Bruker finnes fra før'
+      if (statusCode.value === 409) loginError.value = 'Bruker finnes fra før'
     }
   }
 
   async function verify(usr, pw) {
-    const { data, error, statusCode } = await useFetch('/blimed/godkjenn').post({ usr, pw }).json()
+    const { data, error, statusCode } = await useFetch('/blimed/godkjenn')
+      .post({ usr, pw })
+      .json()
     if (data.value) {
       loginError.value = 'Du skal nå ha fått en epost'
       notVerified.value = false
@@ -44,23 +46,26 @@ export const useUserStore = defineStore('user', () => {
     }
     return { data, error }
   }
-  
+
   async function loadme() {
     const { data, error } = await useFetch('/meg', {
       beforeFetch: attachTokenHeader,
       afterFetch: function (ctx) {
-        isLoggedIn.value = !!(ctx.data.email)
+        isLoggedIn.value = !!ctx.data.email
         console.log('isLoggedIn ? ', isLoggedIn.value, ctx.data.email)
         return ctx
-      }
-    }).get().json()
-    if (data.value)
-      user.value = data.value
+      },
+    })
+      .get()
+      .json()
+    if (data.value) user.value = data.value
     return error
   }
 
   async function login(usr, pw) {
-    const { data, error, statusCode } = await useFetch('/heisann').post({ usr, pw }).json()
+    const { data, error, statusCode } = await useFetch('/heisann')
+      .post({ usr, pw })
+      .json()
     if (data.value) {
       user.value = { email: data.value.email, name: data.value.name }
       localStorage.setItem('mitt-merke', data.value.token)
@@ -90,8 +95,10 @@ export const useUserStore = defineStore('user', () => {
 
   async function deleteme() {
     const { data, error, statusCode } = await useFetch('/slettmeg', {
-      beforeFetch: attachTokenHeader
-    }).post().json()
+      beforeFetch: attachTokenHeader,
+    })
+      .post()
+      .json()
     if (error.value) {
       console.log('feil under sletting av bruker', error.value)
     }
@@ -99,9 +106,8 @@ export const useUserStore = defineStore('user', () => {
   }
 
   loadme()
-  
-  return {
 
+  return {
     // state
     user,
     isLoggedIn,
@@ -116,7 +122,6 @@ export const useUserStore = defineStore('user', () => {
     logout,
     deleteme,
     verify,
-    comply
+    comply,
   }
-
 })

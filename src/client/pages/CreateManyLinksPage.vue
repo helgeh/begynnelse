@@ -22,10 +22,8 @@
     try {
       console.log('sending...', JSON.parse(json.value))
       linksStore.addMany(JSON.parse(json.value))
-    }
-    catch (err) {
+    } catch (err) {
       response.value = err.message
     }
   }
-  
 </script>

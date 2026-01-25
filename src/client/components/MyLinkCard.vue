@@ -1,7 +1,7 @@
 <template>
-  <v-card 
-    :href="link.url" 
-    @click="$emit('click', $event, link)" 
+  <v-card
+    :href="link.url"
+    @click="$emit('click', $event, link)"
     :title="link.name"
   >
     <template v-slot:append v-if="link.icon">

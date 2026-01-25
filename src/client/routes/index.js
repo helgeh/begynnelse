@@ -15,7 +15,12 @@ import NotFoundPage from '../pages/NotFoundPage.vue'
 import { useUserStore } from '../stores'
 
 const routes = [
-  { path: '/', name: 'home', component: HomePage, meta: { requiresAuth: true }, },
+  {
+    path: '/',
+    name: 'home',
+    component: HomePage,
+    meta: { requiresAuth: true },
+  },
   { path: '/config', name: 'config', component: ConfigPage },
   { path: '/zips', name: 'zips', component: ZipList },
   { path: '/videos', name: 'videos', component: VideoPage },

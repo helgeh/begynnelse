@@ -2,10 +2,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import parser from 'xml2json'
 
-
 export default function configure(router) {
-
-
   router.get('/podcasts', function (req, res, next) {
     const mp3Dir = path.join(path.resolve(), 'public', 'mp3')
     const result = []
@@ -78,13 +75,10 @@ export default function configure(router) {
       })
   })
 
-
-
   const xmlMap = {
     rbeai: 'Roger Bullman - Etterlyst av Interpol',
     kak: 'Kongen av Kongsberg',
     tom: 'Torpedoen og Milliardæren',
     stdmeb: 'Skyldig til det motsatte er bevist',
   }
-
 }

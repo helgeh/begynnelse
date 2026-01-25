@@ -9,17 +9,15 @@ export const useLinksStore = defineStore('links', () => {
   const { isLoggedIn } = storeToRefs(userStore)
 
   watch(isLoggedIn, (newState, oldState) => {
-    if (newState)
-      reload()
-    else
-      links.value = []
+    if (newState) reload()
+    else links.value = []
   })
 
   const links = ref([])
   const categories = ref([
     {
-      "name": "*",
-      "title": "*Alle"
+      name: '*',
+      title: '*Alle',
     },
   ])
   const curCat = shallowRef(0)
@@ -27,15 +25,20 @@ export const useLinksStore = defineStore('links', () => {
 
   function prioritize(prio) {
     const curSec = categories.value[curCat.value]?.name
-    return links.value.filter(link => {
-      return (curSec === '*' || link.category === curSec) && link.tags?.indexOf(prio) >= 0
+    return links.value.filter((link) => {
+      return (
+        (curSec === '*' || link.category === curSec) &&
+        link.tags?.indexOf(prio) >= 0
+      )
     })
   }
 
   function getUnprioritized() {
     const curSec = categories.value[curCat.value]?.name
-    return links.value.filter(link => {
-      const inPrios = priorities.value.some(prio => link.tags?.indexOf(prio) >= 0)
+    return links.value.filter((link) => {
+      const inPrios = priorities.value.some(
+        (prio) => link.tags?.indexOf(prio) >= 0,
+      )
       return (curSec === '*' || link.category === curSec) && !inPrios
     })
   }
@@ -48,8 +51,10 @@ export const useLinksStore = defineStore('links', () => {
   async function reloadCategories() {
     const { data, error } = await useFetch('/kategorier', {
       beforeFetch: attachTokenHeader,
-      refetch: true
-    }).get().json()
+      refetch: true,
+    })
+      .get()
+      .json()
 
     if (data.value) {
       categories.value.push(...data.value)
@@ -60,18 +65,19 @@ export const useLinksStore = defineStore('links', () => {
     const { data, error } = await useFetch('/lenker', {
       beforeFetch: attachTokenHeader,
       afterFetch(ctx) {
-        ctx.data.forEach(link => {
+        ctx.data.forEach((link) => {
           if (link.icon && link.icon.trim().startsWith('{')) {
             link.icon = JSON.parse(link.icon)
-          }
-          else {
+          } else {
             link.icon = { dark: link.icon }
           }
         })
         return ctx
       },
-      refetch: true
-    }).get().json()
+      refetch: true,
+    })
+      .get()
+      .json()
 
     if (data.value) {
       links.value = data.value
@@ -80,23 +86,30 @@ export const useLinksStore = defineStore('links', () => {
 
   async function add(link) {
     const { data, error, statusCode } = await useFetch('/lenker', {
-        beforeFetch: attachTokenHeader
-      })
+      beforeFetch: attachTokenHeader,
+    })
       .post(link)
       .json()
     if (error.value) {
       return { error: 'Kunne ikke opprette ny link' }
     }
     if (data?.value?.success) {
-      links.value.push({ name: link.name, url: link.url, id: data.value.linkId, category: null, tags: null, icon: {} })
+      links.value.push({
+        name: link.name,
+        url: link.url,
+        id: data.value.linkId,
+        category: null,
+        tags: null,
+        icon: {},
+      })
       return { success: true }
     }
   }
 
   async function addMany(links) {
     const { data, error, statusCode } = await useFetch('/mange-lenker', {
-        beforeFetch: attachTokenHeader
-      })
+      beforeFetch: attachTokenHeader,
+    })
       .post(links)
       .json()
     if (error.value) {
@@ -110,12 +123,14 @@ export const useLinksStore = defineStore('links', () => {
   async function update(link) {
     const { name, url, icon, categoryName: category, tags } = link
     const { data, error, statusCode } = await useFetch(`/lenker/${link.id}`, {
-        beforeFetch: attachTokenHeader
-      })
-      .put({
-        name, url, category, tags, 
-        icon: JSON.stringify(icon),
-      })
+      beforeFetch: attachTokenHeader,
+    }).put({
+      name,
+      url,
+      category,
+      tags,
+      icon: JSON.stringify(icon),
+    })
     if (error?.value) {
       return { error: 'Kunne ikke oppdatere linken :(' }
     }
@@ -124,18 +139,19 @@ export const useLinksStore = defineStore('links', () => {
 
   async function remove(id) {
     const { data, error, statusCode } = await useFetch(`/lenker/${id}`, {
-        beforeFetch: attachTokenHeader
-      })
-      .delete()
+      beforeFetch: attachTokenHeader,
+    }).delete()
     if (error?.value) {
       return { error: 'Kunne ikke slette linken :(' }
     }
-    links.value.splice(links.value.findIndex(l => l.id === id), 1)
+    links.value.splice(
+      links.value.findIndex((l) => l.id === id),
+      1,
+    )
     return { success: true }
   }
 
   return {
-
     // state
     categories,
     links,
@@ -148,6 +164,6 @@ export const useLinksStore = defineStore('links', () => {
     add,
     addMany,
     update,
-    remove
+    remove,
   }
 })

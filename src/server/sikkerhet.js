@@ -6,7 +6,7 @@ const saltRounds = 10
 
 export async function hashPassword(password) {
   return new Promise((res, rej) => {
-    bcrypt.hash(password, saltRounds, function(err, hash) {
+    bcrypt.hash(password, saltRounds, function (err, hash) {
       if (err) {
         console.log('some error during password encryption', err)
         rej('Error')
@@ -19,7 +19,7 @@ export async function hashPassword(password) {
 
 export async function checkPassword(password, hash) {
   return new Promise((res, rej) => {
-    bcrypt.compare(password, hash, function(err, result) {
+    bcrypt.compare(password, hash, function (err, result) {
       if (err) {
         console.log('some error during password comparison')
         rej(false)
@@ -54,8 +54,7 @@ export function makeTheToken(id, username) {
 }
 
 export function getPasswordComplexityScore(pw) {
-  if (pw.length < 8)
-    return 0
+  if (pw.length < 8) return 0
   const hasLongLength = pw.length > 11
   const hasUpperCase = /[A-Z]/.test(pw)
   const hasLowerCase = /[a-z]/.test(pw)

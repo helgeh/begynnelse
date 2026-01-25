@@ -1,10 +1,14 @@
 import { authTheToken } from '../sikkerhet.js'
-import { addCategory, getCategories, getCategory, updateCategory } from '../db.js'
+import {
+  addCategory,
+  getCategories,
+  getCategory,
+  updateCategory,
+} from '../db.js'
 import { log } from '../logger.js'
 import { slowResponse } from '../utils.js'
 
 export default function configure(router) {
-
   router.get('/kategorier', authTheToken, (req, res) => {
     const categories = getCategories(req.user.id)
     res.json(categories)
@@ -15,8 +19,7 @@ export default function configure(router) {
     try {
       const result = addCategory(name, title, req.user.id)
       res.json({ success: true, categoryId: result.lastInsertRowid })
-    }
-    catch (err) {
+    } catch (err) {
       res.status(500).json({ error: 'noe gikk feil' })
     }
   })
@@ -29,19 +32,16 @@ export default function configure(router) {
       return res.status(401).json({ error: 'Not allowed' })
     }
     try {
-      Object.keys(category).forEach(key => {
-        if (key === 'id' || key === 'user')
-          return
+      Object.keys(category).forEach((key) => {
+        if (key === 'id' || key === 'user') return
         category[key] = req.body[key]
       })
       const result = updateCategory(category)
       res.json({ success: true })
-    }
-    catch (err) {
+    } catch (err) {
       log('Noe gikk feil under oppdatering av kategori', err)
       await slowResponse()
       res.status(500).json({ error: 'Huh? Update failed' })
     }
   })
-
 }

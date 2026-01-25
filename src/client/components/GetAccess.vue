@@ -1,11 +1,22 @@
 <template>
   <div>
-    <v-btn v-if="!isLoggedIn" @click="overlay = true" class="mx-auto">Slipp meg inn</v-btn>
-    <v-btn v-if="isLoggedIn" @click="emit('logout')" class="me-2">Logg ut</v-btn>
-    <v-btn v-if="isLoggedIn" @click="onDelete" :size="warned ? 'small' : 'x-small'" :color="warned ? 'warning' : 'normal'" variant="tonal">{{ warned ? 'SLETT MEG?!' : 'Slett meg' }}</v-btn>
-    
-    <v-dialog max-width="400" v-model="overlay">
+    <v-btn v-if="!isLoggedIn" @click="overlay = true" class="mx-auto">
+      Slipp meg inn
+    </v-btn>
+    <v-btn v-if="isLoggedIn" @click="emit('logout')" class="me-2">
+      Logg ut
+    </v-btn>
+    <v-btn
+      v-if="isLoggedIn"
+      @click="onDelete"
+      :size="warned ? 'small' : 'x-small'"
+      :color="warned ? 'warning' : 'normal'"
+      variant="tonal"
+    >
+      {{ warned ? 'SLETT MEG?!' : 'Slett meg' }}
+    </v-btn>
 
+    <v-dialog max-width="400" v-model="overlay">
       <v-card
         prepend-icon="mdi-lock"
         class="px-3"
@@ -35,7 +46,6 @@
           ref="second-input"
         ></v-text-field>
         <template v-slot:actions>
-
           <v-btn v-if="notVerified" @click="emit('verify')"> Godkjenn </v-btn>
 
           <v-spacer></v-spacer>
@@ -45,11 +55,8 @@
           <v-btn @click="onSubmit()"> OK </v-btn>
         </template>
       </v-card>
-
     </v-dialog>
-
   </div>
-
 </template>
 
 <script setup>
@@ -83,7 +90,7 @@
 
   async function onSubmit() {
     if (usr.value.length < 1 || pw.value.length < 1)
-      return loginError.value = 'Du må iallfall skrive NOE her...'
+      return (loginError.value = 'Du må iallfall skrive NOE her...')
     emit('login', usr.value, pw.value)
   }
 
@@ -98,10 +105,8 @@
 
   async function onKeyPress(evt, id) {
     if (evt.code === 'Enter') {
-      if (id === 0) 
-        secondInput.value.focus()
-      else if (id === 1)
-        onSubmit()
+      if (id === 0) secondInput.value.focus()
+      else if (id === 1) onSubmit()
     }
   }
 </script>

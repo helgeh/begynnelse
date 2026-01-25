@@ -1,7 +1,9 @@
 <template>
   <v-card class="mx-auto my-8" elevation="16" max-width="344">
     <v-card-item>
-      <v-card-title>{{ isLoggedIn ? 'Hei' : 'logget ut' }} {{ user.email }}</v-card-title>
+      <v-card-title>
+        {{ isLoggedIn ? 'Hei' : 'logget ut' }} {{ user.email }}
+      </v-card-title>
 
       <v-card-subtitle></v-card-subtitle>
     </v-card-item>
@@ -10,10 +12,17 @@
       <p v-if="isLoggedIn">Linker:</p>
       <v-divider class="mt-2 mb-5"></v-divider>
       <ul>
-        <li v-for="(link, i) in links" :key="i"><a :href="link.url">{{ link.name }}</a></li>
+        <li v-for="(link, i) in links" :key="i">
+          <a :href="link.url">{{ link.name }}</a>
+        </li>
       </ul>
       <v-divider class="my-5"></v-divider>
-      <GetAccess @login="onLogin" @logout="onLogout" @verify="onVerify" @delete="onDeleteMe" />
+      <GetAccess
+        @login="onLogin"
+        @logout="onLogout"
+        @verify="onVerify"
+        @delete="onDeleteMe"
+      />
     </v-card-text>
   </v-card>
 </template>

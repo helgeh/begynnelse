@@ -14,11 +14,11 @@ const publicPath = path.join(path.resolve(), 'public')
 const app = express()
 
 app.use(function (req, res, next) {
-  res.removeHeader("x-powered-by");
-  res.removeHeader("set-cookie");
-  res.removeHeader("x-served-by");
-  res.removeHeader("server");
-  next();
+  res.removeHeader('x-powered-by')
+  res.removeHeader('set-cookie')
+  res.removeHeader('x-served-by')
+  res.removeHeader('server')
+  next()
 })
 app.use(cors())
 app.use(api)
@@ -31,7 +31,8 @@ app.use((err, req, res, next) => {
 ViteExpress.config({ inlineViteConfig: 'vite.config.js' })
 
 ViteExpress.listen(app, port, () =>
-  console.log(`Server is listening on port ${port}...\n`
+  console.log(
+    `Server is listening on port ${port}...\n`,
     // , JSON.stringify({ env: process.env }, null, 2)
-  )
+  ),
 )

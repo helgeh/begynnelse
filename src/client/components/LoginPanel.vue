@@ -25,7 +25,7 @@
 
   const userStore = useUserStore()
   const removePrompt = useTemplateRef('remove-prompt')
-  
+
   async function onRegister(usr, pw) {
     await userStore.register(usr, pw)
   }
@@ -51,9 +51,8 @@
   }
 
   function onDeleteMeConfirm() {
-    userStore.deleteme()
-      .then(() => {
-        removePrompt.value.hide()
-      })
+    userStore.deleteme().then(() => {
+      removePrompt.value.hide()
+    })
   }
 </script>

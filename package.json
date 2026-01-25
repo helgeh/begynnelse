@@ -10,28 +10,28 @@
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
-    "@vitejs/plugin-vue": "^6.0.1",
+    "@vitejs/plugin-vue": "^6.0.3",
     "@vueuse/core": "^13.9.0",
-    "axios": "^1.12.1",
+    "axios": "^1.13.3",
     "bcrypt": "^6.0.0",
-    "better-sqlite3": "^12.4.1",
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.2",
+    "better-sqlite3": "^12.6.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
     "express": "^4.21.2",
-    "jsonwebtoken": "^9.0.2",
+    "jsonwebtoken": "^9.0.3",
     "lodash": "^4.17.21",
     "nodemailer": "^7.0.10",
-    "pinia": "^3.0.3",
-    "vite": "^7.1.12",
+    "pinia": "^3.0.4",
+    "vite": "^7.3.1",
     "vite-express": "^0.21.1",
-    "vue": "^3.5.22",
-    "vue-router": "^4.6.3",
-    "vuetify": "^3.10.7",
+    "vue": "^3.5.27",
+    "vue-router": "^4.6.4",
+    "vuetify": "^3.11.7",
     "webfontloader": "^1.0.0",
     "xml2json": "^0.7.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10",
-    "prettier": "^3.6.2"
+    "nodemon": "^3.1.11",
+    "prettier": "^3.8.1"
   }
 }

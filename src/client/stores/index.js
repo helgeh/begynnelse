@@ -8,8 +8,7 @@ export function getMyToken() {
 
 export async function attachTokenHeader({ url, options, cancel }) {
   const myToken = await getMyToken()
-  if (!myToken)
-    cancel()
+  if (!myToken) cancel()
   options.headers = {
     ...options.headers,
     Authorization: `Bearer ${myToken}`,

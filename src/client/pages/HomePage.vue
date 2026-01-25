@@ -1,6 +1,5 @@
 <template>
   <v-container responsive>
-
     <v-row dense class="mb-5" v-for="(prio, i) in priorities" :key="i">
       <v-col
         v-for="(link, j) in linksStore.prioritize(prio)"
@@ -11,7 +10,11 @@
         lg="2"
         xl="1"
       >
-        <my-link-card :link="link" @click="onCardClick" :theme="theme"></my-link-card>
+        <my-link-card
+          :link="link"
+          @click="onCardClick"
+          :theme="theme"
+        ></my-link-card>
       </v-col>
     </v-row>
 
@@ -25,10 +28,13 @@
         lg="2"
         xl="1"
       >
-        <my-link-card :link="link" @click="onCardClick" :theme="theme"></my-link-card>
+        <my-link-card
+          :link="link"
+          @click="onCardClick"
+          :theme="theme"
+        ></my-link-card>
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -38,7 +44,7 @@
   import { useFetch } from '@vueuse/core'
   import { useAppStore, useUserStore, useLinksStore } from '../stores'
   import { attachTokenHeader } from '../stores'
-  
+
   const { app } = useAppStore()
   const userStore = useUserStore()
   const { user, isLoggedIn } = storeToRefs(userStore)

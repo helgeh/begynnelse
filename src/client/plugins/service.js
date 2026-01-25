@@ -29,7 +29,6 @@ const addAuthHeader = (data) => {
 
 export default {
   install(app, options) {
-    
     app
       .component('GetAccess', GetAccess)
       .component('MyHeader', MyHeader)

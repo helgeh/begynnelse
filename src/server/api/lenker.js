@@ -1,10 +1,17 @@
 import { authTheToken } from '../sikkerhet.js'
-import { addLink, addCompleteLink, updateLink, deleteLink, getLinks, getLink, getCategory } from '../db.js'
+import {
+  addLink,
+  addCompleteLink,
+  updateLink,
+  deleteLink,
+  getLinks,
+  getLink,
+  getCategory,
+} from '../db.js'
 import { log } from '../logger.js'
 import { slowResponse } from '../utils.js'
 
 export default function configure(router) {
-
   router.get('/lenker', authTheToken, (req, res) => {
     const links = getLinks(req.user.id)
     res.json(links)
@@ -21,15 +28,16 @@ export default function configure(router) {
     const items = req.body
     if (items && items.length > 0) {
       try {
-        items.forEach(item => {
+        items.forEach((item) => {
           const { name, url, category, tags, icon } = item
           // TODO: also add category, tags and icon if provided
-          addCompleteLink({name, url, category, tags, icon}, req.user.id)
+          addCompleteLink({ name, url, category, tags, icon }, req.user.id)
         })
-      }
-      catch (err) {
+      } catch (err) {
         log('Noe gikk feil under masselagring av lenker', err.message)
-        return res.status(500).json({ error: 'Could not store the links provided' })
+        return res
+          .status(500)
+          .json({ error: 'Could not store the links provided' })
       }
       res.json({ success: true })
     }
@@ -43,21 +51,16 @@ export default function configure(router) {
       return res.status(401).json({ error: 'Not allowed' })
     }
     try {
-      Object.keys(link).forEach(key => {
-        if (key === 'id' || key === 'user')
-          return
+      Object.keys(link).forEach((key) => {
+        if (key === 'id' || key === 'user') return
         if (key === 'category') {
           const cat = getCategory(req.body['category'], req.user.id)
-          if (cat)
-            link[key] = cat.id
-        }
-        else
-          link[key] = req.body[key]
+          if (cat) link[key] = cat.id
+        } else link[key] = req.body[key]
       })
       const result = updateLink(link)
       res.json({ success: true })
-    }
-    catch (err) {
+    } catch (err) {
       log('Noe gikk feil under oppdatering av link', err)
       await slowResponse()
       res.status(500).json({ error: 'Huh? Update failed' })
@@ -74,12 +77,10 @@ export default function configure(router) {
     try {
       const result = deleteLink(link.id)
       res.json({ success: true })
-    }
-    catch (err) {
+    } catch (err) {
       log('Noe gikk feil under sletting av link', err)
       await slowResponse()
       res.status(500).json({ error: 'Huh? Remove failed' })
     }
   })
-
 }
