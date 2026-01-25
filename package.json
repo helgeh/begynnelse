@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
+    "@vitejs/plugin-vue": "^6.0.1",
     "@vueuse/core": "^13.9.0",
     "axios": "^1.12.1",
     "bcrypt": "^6.0.0",
@@ -19,10 +20,9 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
-    "multer": "^2.0.2",
     "nodemailer": "^7.0.10",
     "pinia": "^3.0.3",
-    "roboto-fontface": "*",
+    "vite": "^7.1.12",
     "vite-express": "^0.21.1",
     "vue": "^3.5.22",
     "vue-router": "^4.6.3",
@@ -31,9 +31,7 @@
     "xml2json": "^0.7.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.1",
     "nodemon": "^3.1.10",
-    "prettier": "^3.6.2",
-    "vite": "^7.1.12"
+    "prettier": "^3.6.2"
   }
 }
