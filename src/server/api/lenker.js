@@ -1,5 +1,5 @@
 import { authTheToken } from '../sikkerhet.js'
-import { addLink, addCompleteLink, updateLink, deleteLink, getLinks, getLink } from '../db.js'
+import { addLink, addCompleteLink, updateLink, deleteLink, getLinks, getLink, getCategory } from '../db.js'
 import { log } from '../logger.js'
 import { slowResponse } from '../utils.js'
 
@@ -46,7 +46,13 @@ export default function configure(router) {
       Object.keys(link).forEach(key => {
         if (key === 'id' || key === 'user')
           return
-        link[key] = req.body[key]
+        if (key === 'category') {
+          const cat = getCategory(req.body['category'], req.user.id)
+          if (cat)
+            link[key] = cat.id
+        }
+        else
+          link[key] = req.body[key]
       })
       const result = updateLink(link)
       res.json({ success: true })

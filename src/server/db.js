@@ -108,7 +108,7 @@ function getCategories(userId) {
 }
 
 function getCategory(name, userId) {
-  return getCategoryStmt.run(name, userId)
+  return getCategoryStmt.get(name, userId)
 }
 
 const insertLinksStmt = db.prepare('INSERT INTO links (name, url, user) VALUES (?, ?, ?)')

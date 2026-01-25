@@ -1,34 +1,44 @@
-FROM node:lts-alpine3.18
+# Build stage
+FROM node:20-bookworm AS builder
 
-WORKDIR /home/node/app
+# Set working directory
+WORKDIR /app
 
+# Copy package files
 COPY package*.json ./
 
-RUN apk add --no-cache --virtual .gyp \
-		py3-pip \
-		make \
-		g++ \
-	&& npm install --quiet \
-	&& apk del .gyp
+# Install dependencies
+RUN npm ci && npm cache clean --force
 
+# Copy source code
 COPY . .
-
-# RUN chown node ./uploads
-
-RUN chown -R node ./public
-
-EXPOSE 3001
 
 RUN npm run build
 
-# Install python/pip
-# ENV PYTHONUNBUFFERED=1
-# RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
-# RUN python3 -m ensurepip
-# RUN pip3 install --no-cache --upgrade pip setuptools
-# RUN pip3 install --no-cache fonttools
+# Production stage
+FROM node:20-bookworm AS production
 
-USER node
+# Create app directory
+WORKDIR /app
 
+# Create non-root user
+RUN groupadd -g 1001 nodejs && \
+    useradd -u 1001 -g nodejs hjh
 
+# Copy built application from builder stage
+COPY --from=builder --chown=hjh:nodejs /app /app
+
+RUN chown -R hjh:nodejs /app/src/server/db
+
+# Switch to non-root user
+USER hjh
+
+# Expose port
+EXPOSE 3001
+
+# Add health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3001', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+
+# Start the application
 CMD [ "npm", "start" ]
