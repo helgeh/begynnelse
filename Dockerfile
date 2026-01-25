@@ -28,7 +28,7 @@ RUN groupadd -g 1001 nodejs && \
 # Copy built application from builder stage
 COPY --from=builder --chown=hjh:nodejs /app /app
 
-# RUN chown -R hjh:nodejs /app/src/server/db
+RUN chown -R hjh:nodejs /app/src/server/db
 
 # Switch to non-root user
 USER hjh
