@@ -108,7 +108,7 @@ export const useLinksStore = defineStore('links', () => {
   }
 
   async function update(link) {
-    const { name, url, icon, category, tags } = link
+    const { name, url, icon, categoryName: category, tags } = link
     const { data, error, statusCode } = await useFetch(`/lenker/${link.id}`, {
         beforeFetch: attachTokenHeader
       })

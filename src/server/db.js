@@ -118,8 +118,8 @@ const updateLinkIconStmt = db.prepare('UPDATE links SET icon = :icon WHERE id = 
 const updateLinkCategoryStmt = db.prepare('UPDATE links SET category = :category WHERE id = :id')
 const updateLinkTagsStmt = db.prepare('UPDATE links SET tags = :tags WHERE id = :id')
 const deleteLinkStmt = db.prepare('DELETE FROM links WHERE id = ?')
-const linksByUserStmt = db.prepare('SELECT id, name, url, icon, category, tags FROM links WHERE user = ? ORDER BY id')
-// const linksByUserStmt = db.prepare('SELECT links.id, links.name, url, icon, categories.name AS categoryName, categories.title AS categoryTitle, tags FROM links LEFT JOIN categories ON categories.id = links.category WHERE links.user = ? ORDER BY links.id')
+// const linksByUserStmt = db.prepare('SELECT id, name, url, icon, category, tags FROM links WHERE user = ? ORDER BY id')
+const linksByUserStmt = db.prepare('SELECT links.id, links.name, url, icon, categories.name AS categoryName, categories.title AS categoryTitle, tags FROM links LEFT JOIN categories ON categories.id = links.category WHERE links.user = ? ORDER BY links.id')
 const linkByIdStmt = db.prepare('SELECT id, name, url, icon, category, tags, user FROM links WHERE id = ?')
 
 function addLink(name, url, user) {

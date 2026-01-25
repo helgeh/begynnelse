@@ -14,7 +14,7 @@
           </v-row>
           <v-row dense>
             <v-col>
-              <v-text-field label="Kategori" variant="outlined" v-model="link.category"></v-text-field>
+              <v-text-field label="Kategori" variant="outlined" v-model="link.categoryName"></v-text-field>
             </v-col>
             <v-col>
               <v-text-field label="Tagger" variant="outlined" v-model="link.tags"></v-text-field>
