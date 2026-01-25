@@ -62,10 +62,36 @@ export default function configure(router) {
       })
   })
 
-  router.get('/jegvilspille', function (req, res, next) {
-    const theirIp = '' + req.ip
-    const forwardedIp = '' + req.header('x-forwarded-for')
-    const origHost = '' + req.header('x-original-host')
-    res.json({ msg: 'Ok gutta', test: { theirIp, forwardedIp, origHost } })
+  router.get('/jegvilspille/:name', async function (req, res, next) {
+    const mcName = req.params.name
+    // const theirIp = '' + req.ip
+    // const origHost = '' + req.header('x-original-host')
+    const forwardedIp = '' + (req.header('x-forwarded-for') ?? req.header('x-original-host') ?? req.ip)
+    if (!forwardedIp)
+      return res.status(404).json({ msg: 'Hmm, fant ikke no ip gitt' })
+    const playersFile = path.join(path.resolve(), 'localfiles', 'players.json')
+    try {
+      const stat = await fs.stat(playersFile)
+      if (!stat)
+        return res.status(404).json({ msg: 'Playerslist mangler visst... ikke satt opp prosjektet riktig kanskje'})
+    }
+    catch (e) {
+        return res.status(404).json({ msg: 'Playerslist mangler visst... ikke satt opp prosjektet riktig kanskje'})
+    }
+    const allPlayers = JSON.parse(await fs.readFile(playersFile))
+    const names = allPlayers.map(pl => pl.name)
+    if (!names.includes(mcName))
+      return res.status(404).json({msg: 'Sorry but nope'})
+    allPlayers.find(pl => pl.name === mcName).ip = forwardedIp
+    await fs.writeFile(playersFile, JSON.stringify(allPlayers, null, 2))
+    res.json({
+      msg: 'Ok gutta',
+      test: {
+        mcName,
+        // theirIp,
+        // forwardedIp,
+        // origHost
+      }
+    })
   })
 }

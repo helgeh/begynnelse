@@ -16,6 +16,8 @@ dist-ssr
 src/server/db/*.db
 src/server/db/*.db-*
 
+localfiles
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
