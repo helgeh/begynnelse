@@ -1,20 +1,17 @@
 <template>
   
-  <div
+  <a
     v-for="(image, key) in imagesData"
     :key="key"
-    :id="galleryID"
+    :href="image.largeURL"
+    :data-pswp-width="image.width"
+    :data-pswp-height="image.height"
+    target="_blank"
+    rel="noreferrer"
+    class="image-thumb"
   >
-    <a
-      :href="image.largeURL"
-      :data-pswp-width="image.width"
-      :data-pswp-height="image.height"
-      target="_blank"
-      rel="noreferrer"
-    >
-      <v-img width="150" :src="image.thumbnailURL" alt="" />
-    </a>
-  </div>
+    <v-img width="150" :src="image.thumbnailURL" alt="" />
+  </a>
 
 </template>
 
@@ -48,12 +45,3 @@
     }
   })
 </script>
-
-<style scoped>
-  /*.gallery {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(auto-fill, 1fr);
-    gap: 8px;
-  }*/
-</style>

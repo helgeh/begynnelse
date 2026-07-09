@@ -1,7 +1,7 @@
 <template>
 
   <v-container>
-    <v-row v-for="(gall) in galleries" class="gall-container" :data-id="gall">
+    <v-row v-for="(gall) in galleries" class="gall-container" :id="gall">
       <SimpleGallery v-if="items[gall]?.length" :galleryID="gall" :images="items[gall]" />
     </v-row>
   </v-container>
