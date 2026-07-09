@@ -1,5 +1,6 @@
 import { createWebHistory, createRouter } from 'vue-router'
 
+import BottomNav from '../components/BottomNav.vue'
 import HomePage from '../pages/HomePage.vue'
 import MyPage from '../pages/MyPage.vue'
 import VerifyEmailPage from '../pages/VerifyEmailPage.vue'
@@ -19,12 +20,36 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomePage,
+    components: {
+      default: HomePage,
+      bottom: BottomNav,
+    },
     meta: { requiresAuth: true },
   },
-  { path: '/config', name: 'config', component: ConfigPage },
-  { path: '/zips', name: 'zips', component: ZipList },
-  { path: '/videos', name: 'videos', component: VideoPage },
+  {
+    path: '/config',
+    name: 'config',
+    components: {
+      default: ConfigPage,
+      bottom: BottomNav,
+    },
+  },
+  {
+    path: '/zips',
+    name: 'zips',
+    components: {
+      default: ZipList,
+      bottom: BottomNav,
+    },
+  },
+  {
+    path: '/videos',
+    name: 'videos',
+    components: {
+      default: VideoPage,
+      bottom: BottomNav,
+    },
+  },
   { path: '/many-links', name: 'many-links', component: CreateManyLinksPage },
   { path: '/verify', name: 'verify', component: VerifyEmailPage },
   { path: '/mira', name: 'mira', component: MiraMull },

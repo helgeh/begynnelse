@@ -1,6 +1,7 @@
 import fs from 'fs/promises'
 import path from 'path'
 import axios from 'axios'
+import { imageSizeFromFile } from 'image-size/fromFile'
 
 export default function configure(router) {
   router.post('/mirasay', (req, res) => {
@@ -96,59 +97,61 @@ export default function configure(router) {
         // origHost
       }
     })
-//<<<<<<< Updated upstream
   })
-//=======
 
-//    router.get('/ziplist', function (req, res, next) {
-//      const z = path.join(path.resolve(), 'public', 'zips')
-//      const result = []
-//      fs.readdir(z)
-//        .then((files) => files.filter((file) => /.zip$/.test(file)))
-//        .then((files) =>
-//          files.map((file) => ({ path: path.join('/zips', file), fileName: file })),
-//        )
-//        .then((files) => res.json({ files }))
-//        .catch(err => {
-//          res.json({ files: [] })
-//        })
-//    })
-//
-//    router.get('/videolist', function (req, res, next) {
-//      const z = path.join(path.resolve(), 'public', 'videos')
-//      const result = []
-//      fs.readdir(z)
-//        .then((files) => files.filter((file) => /.mp4$/.test(file)))
-//        .then((files) =>
-//          files.map((file) => ({
-//            path: path.join('/videos', file),
-//            fileName: file,
-//          })),
-//        )
-//        .then((files) => res.json({ files }))
-//        .catch(function (err) {
-//          console.log(err)
-//          res.json({ files: [] })
-//        })
-//    })
-
-    router.get('/ppplist', function (req, res, next) {
-      const z = path.join(path.resolve(), 'public', 'test', 'ppp')
-      const result = []
-      fs.readdir(z)
-        .then((files) => files.filter((file) => /.jpg$/.test(file) || /.png$/.test(file)))
-        .then((files) =>
-          files.map((file) => ({
-            path: path.join('/test/ppp', file),
-            fileName: file,
-          })),
-        )
-        .then((files) => res.json({ files }))
-        .catch(function (err) {
-          console.log(err)
-          res.json({ files: [] })
-        })
+  router.get('/ppplist', async function (req, res, next) {
+    const z = path.join(path.resolve(), 'public', 'test', 'ppp')
+    const result = []
+    const files = await fs.readdir(z)
+    const folders = []
+    for (let i = 0; i < files.length; i++) {
+      try {
+        const p = path.join(z, files[i])
+        const st = await fs.lstat(p)
+        if (st.isDirectory()) folders.push(files[i])
+      }
+      catch {
+        console.warn('lstat failed', files[i])
+      }
+    }
+    return res.json({
+      folders
     })
+  })
 
-//>>>>>>> Stashed changes
+  router.get('/ppplist/:cat', async function (req, res, next) {
+    const cat = req.params.cat
+    const z = path.join(path.resolve(), 'public', 'test', 'ppp', cat)
+    const result = []
+    const dir = await fs.readdir(z)
+    const files = dir.filter((file) => /.jpg$/.test(file) || /.png$/.test(file))
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      const dim = await imageSizeFromFile(path.join(z, file))
+      const p = path.join('test', 'ppp', cat, file)
+      result.push({
+        path: `/${p}`,
+        fileName: file,
+        width: dim.width,
+        height: dim.height
+      })
+    }
+    return res.json({
+      files: result
+    })
+    // fs.readdir(z)
+    //   .then((files) => files.filter((file) => /.jpg$/.test(file) || /.png$/.test(file)))
+    //   .then((files) => {
+    //     const p = cat ? path.join('test', 'ppp', cat) : path.join('test', 'ppp')
+    //     return files.map((file) => ({
+    //       path: '/' + path.join(p, file),
+    //       fileName: file,
+    //     }))
+    //   })
+    //   .then((files) => res.json({ files }))
+    //   .catch(function (err) {
+    //     console.log(err)
+    //     res.json({ files: [] })
+    //   })
+  })
 }

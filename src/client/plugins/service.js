@@ -77,6 +77,10 @@ export default {
 
       getPppList: () =>
         fetch('/ppplist')
+          .then((res) => res.json()),
+
+      getPppContents: (folder) =>
+        fetch(`/ppplist/${folder}`)
           .then((res) => res.json())
           .then((json) =>
             json.files.map((file) => {
@@ -84,6 +88,10 @@ export default {
                 key: Date.now(),
                 text: file.fileName,
                 value: file.path,
+                largeURL: file.path,
+                thumbnailURL: file.path,
+                width: file.width,
+                height: file.height,
               }
             }),
           ),
