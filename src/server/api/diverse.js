@@ -96,5 +96,59 @@ export default function configure(router) {
         // origHost
       }
     })
+//<<<<<<< Updated upstream
   })
+//=======
+
+//    router.get('/ziplist', function (req, res, next) {
+//      const z = path.join(path.resolve(), 'public', 'zips')
+//      const result = []
+//      fs.readdir(z)
+//        .then((files) => files.filter((file) => /.zip$/.test(file)))
+//        .then((files) =>
+//          files.map((file) => ({ path: path.join('/zips', file), fileName: file })),
+//        )
+//        .then((files) => res.json({ files }))
+//        .catch(err => {
+//          res.json({ files: [] })
+//        })
+//    })
+//
+//    router.get('/videolist', function (req, res, next) {
+//      const z = path.join(path.resolve(), 'public', 'videos')
+//      const result = []
+//      fs.readdir(z)
+//        .then((files) => files.filter((file) => /.mp4$/.test(file)))
+//        .then((files) =>
+//          files.map((file) => ({
+//            path: path.join('/videos', file),
+//            fileName: file,
+//          })),
+//        )
+//        .then((files) => res.json({ files }))
+//        .catch(function (err) {
+//          console.log(err)
+//          res.json({ files: [] })
+//        })
+//    })
+
+    router.get('/ppplist', function (req, res, next) {
+      const z = path.join(path.resolve(), 'public', 'test', 'ppp')
+      const result = []
+      fs.readdir(z)
+        .then((files) => files.filter((file) => /.jpg$/.test(file) || /.png$/.test(file)))
+        .then((files) =>
+          files.map((file) => ({
+            path: path.join('/test/ppp', file),
+            fileName: file,
+          })),
+        )
+        .then((files) => res.json({ files }))
+        .catch(function (err) {
+          console.log(err)
+          res.json({ files: [] })
+        })
+    })
+
+//>>>>>>> Stashed changes
 }

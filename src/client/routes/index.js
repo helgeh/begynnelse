@@ -10,6 +10,7 @@ import ZipList from '../pages/ZipList.vue'
 import PodPlayer from '../pages/PodPlayer.vue'
 import AboutPage from '../pages/AboutPage.vue'
 import VideoPage from '../pages/VideoPage.vue'
+import PppPage from '../pages/PppPage.vue'
 import NotFoundPage from '../pages/NotFoundPage.vue'
 
 import { useUserStore } from '../stores'
@@ -28,6 +29,7 @@ const routes = [
   { path: '/verify', name: 'verify', component: VerifyEmailPage },
   { path: '/mira', name: 'mira', component: MiraMull },
   { path: '/player', name: 'player', component: PodPlayer },
+  { path: '/ppp', name: 'ppp', component: PppPage },
   { path: '/about', name: 'about', component: AboutPage },
 ]
 
