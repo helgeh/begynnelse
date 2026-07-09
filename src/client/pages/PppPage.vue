@@ -1,9 +1,10 @@
 <template>
 
-  <div v-for="(gall) in galleries">
-    <p>{{ gall }}</p>
-    <SimpleGallery v-if="items[gall]?.length" :galleryID="gall" :images="items[gall]" />
-  </div>
+  <v-container>
+    <v-row v-for="(gall) in galleries" class="gall-container" :data-id="gall">
+      <SimpleGallery v-if="items[gall]?.length" :galleryID="gall" :images="items[gall]" />
+    </v-row>
+  </v-container>
 
 </template>
 
@@ -31,7 +32,14 @@
 </script>
 
 <style scoped>
-  iframe {
-    border: none;
+  .gall-container {
+    overflow-x: scroll;
+    flex-wrap: nowrap;
+    &::before {
+      content: attr(data-id);
+      position: absolute;
+      left: 20px;
+      width: 20px;
+    }
   }
 </style>

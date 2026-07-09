@@ -1,9 +1,11 @@
 <template>
   
-  <div :id="galleryID" class="gallery">
+  <div
+    v-for="(image, key) in imagesData"
+    :key="key"
+    :id="galleryID"
+  >
     <a
-      v-for="(image, key) in imagesData"
-      :key="key"
       :href="image.largeURL"
       :data-pswp-width="image.width"
       :data-pswp-height="image.height"
@@ -48,10 +50,10 @@
 </script>
 
 <style scoped>
-  .gallery {
+  /*.gallery {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(auto-fill, 1fr);
     gap: 8px;
-  }
+  }*/
 </style>
