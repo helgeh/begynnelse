@@ -7,7 +7,7 @@
   </v-container>
 
   <v-container>
-    <v-btn @click="fsClick">FS</v-btn>
+    <v-btn @click="fsClick">FS</v-btn> | <v-btn :active="autoplay" @click="apClick">AP</v-btn>
   </v-container>
 
 </template>
@@ -22,9 +22,29 @@
   const galleries = ref([])
   const items = ref([])
   const lightbox = ref(null)
+  const autoplay = ref(false)
+  let timeout = null
 
   function fsClick() {
     requestFullScreen(document.documentElement)
+  }
+
+  function apClick() {
+    autoplay.value = !autoplay.value
+  }
+
+  function runAutoplay() {
+    if (timeout != null) {
+      clearTimeout(timeout)
+      timeout = null
+    }
+    timeout = setTimeout(() => {
+      const pswp = lightbox.value.pswp
+      if (!pswp) return
+      pswp.next()
+      if (autoplay.value)
+        runAutoplay()
+    }, 7000)
   }
 
   onMounted(async () => {
@@ -39,6 +59,10 @@
         maxZoomLevel: 2,
       })
       lightbox.value.init()
+      lightbox.value.on('beforeOpen', () => {
+        if (autoplay.value)
+          runAutoplay()
+      })
     }
   })
 
