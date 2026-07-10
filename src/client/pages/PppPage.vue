@@ -6,6 +6,10 @@
     </v-row>
   </v-container>
 
+  <v-container>
+    <v-btn @click="fsClick">FS</v-btn>
+  </v-container>
+
 </template>
 
 <script setup>
@@ -18,6 +22,10 @@
   const galleries = ref([])
   const items = ref([])
   const lightbox = ref(null)
+
+  function fsClick() {
+    requestFullScreen(document.body)
+  }
 
   onMounted(async () => {
     await fetchVideos()
@@ -47,6 +55,21 @@
     for (let i = 0; i < galleries.value.length; i++) {
       const files = await service.getPppContents(response.folders[i])
       items.value[galleries.value[i]] = files
+    }
+  }
+
+  function requestFullScreen(element) {
+    // Supports most browsers and their versions.
+    var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
+
+    if (requestMethod) { // Native full screen.
+        requestMethod.call(element);
+    }
+    else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+        var wscript = new ActiveXObject("WScript.Shell");
+        if (wscript !== null) {
+            wscript.SendKeys("{F11}");
+        }
     }
   }
 </script>
