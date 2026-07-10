@@ -7,7 +7,11 @@
   </v-container>
 
   <v-container>
-    <v-btn @click="fsClick">FS</v-btn> | <v-btn :active="autoplay" @click="apClick">AP</v-btn>
+    <v-row>
+      <v-btn @click="fsClick">FS</v-btn>
+      <v-btn :active="autoplay" @click="apClick">AP</v-btn>
+      <v-select label="interval" :items="[3, 5, 7, 10, 15, 30]" :model-value="interval" @update:modelValue="interval = $event" density="compact"></v-select>
+    </v-row>
   </v-container>
 
 </template>
@@ -23,6 +27,7 @@
   const items = ref([])
   const lightbox = ref(null)
   const autoplay = ref(false)
+  const interval = ref(5)
   let timeout = null
 
   function fsClick() {
@@ -44,7 +49,7 @@
       pswp.next()
       if (autoplay.value)
         runAutoplay()
-    }, 7000)
+    }, interval.value * 1000)
   }
 
   onMounted(async () => {

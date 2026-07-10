@@ -18,3 +18,9 @@
 <script setup>
   defineProps(['images'])
 </script>
+
+<style scoped>
+  .image-thumb:focus-visible {
+    outline: none;
+  }
+</style>
