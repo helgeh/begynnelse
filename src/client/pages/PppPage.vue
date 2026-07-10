@@ -1,21 +1,45 @@
 <template>
 
-  <v-container>
-    <v-row v-for="(gall) in galleries" class="gall-container" :id="gall">
-      <SimpleGallery v-if="items[gall]?.length" :galleryID="gall" :images="items[gall]" />
+  <v-container id="gallery">
+    <v-row v-for="(gall) in galleries" class="gallery-container">
+      <SimpleGallery v-if="items[gall]?.length" :images="items[gall]" />
     </v-row>
   </v-container>
 
 </template>
 
 <script setup>
-  import { ref, inject, onMounted } from 'vue'
-
+  import { ref, inject, onMounted, onUnmounted } from 'vue'
+  import PhotoSwipeLightbox from 'photoswipe/lightbox'
+  import 'photoswipe/style.css'
   import SimpleGallery from '../components/SimpleGallery.vue'
 
   const service = inject('service')
   const galleries = ref([])
   const items = ref([])
+  const lightbox = ref(null)
+
+  onMounted(async () => {
+    await fetchVideos()
+    if (!lightbox.value) {
+      lightbox.value = new PhotoSwipeLightbox({
+        gallery: '#gallery',
+        children: 'a',
+        pswpModule: () => import('photoswipe'),
+        // initialZoomLevel: 'fill',
+        // secondaryZoomLevel: 1,
+        // maxZoomLevel: 2,
+      })
+      lightbox.value.init()
+    }
+  })
+
+  onUnmounted(() => {
+    if (lightbox.value) {
+      lightbox.value.destroy()
+      lightbox.value = null
+    }
+  })
 
   async function fetchVideos() {
     const response = await service.getPppList()
@@ -25,14 +49,10 @@
       items.value[galleries.value[i]] = files
     }
   }
-
-  onMounted(() => {
-    fetchVideos()
-  })
 </script>
 
 <style scoped>
-  .gall-container {
+  .gallery-container {
     overflow-x: scroll;
     flex-wrap: nowrap;
     &::before {

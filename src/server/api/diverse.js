@@ -101,7 +101,6 @@ export default function configure(router) {
 
   router.get('/ppplist', async function (req, res, next) {
     const z = path.join(path.resolve(), 'public', 'test', 'ppp')
-    const result = []
     const files = await fs.readdir(z)
     const folders = []
     for (let i = 0; i < files.length; i++) {
@@ -139,19 +138,5 @@ export default function configure(router) {
     return res.json({
       files: result
     })
-    // fs.readdir(z)
-    //   .then((files) => files.filter((file) => /.jpg$/.test(file) || /.png$/.test(file)))
-    //   .then((files) => {
-    //     const p = cat ? path.join('test', 'ppp', cat) : path.join('test', 'ppp')
-    //     return files.map((file) => ({
-    //       path: '/' + path.join(p, file),
-    //       fileName: file,
-    //     }))
-    //   })
-    //   .then((files) => res.json({ files }))
-    //   .catch(function (err) {
-    //     console.log(err)
-    //     res.json({ files: [] })
-    //   })
   })
 }
