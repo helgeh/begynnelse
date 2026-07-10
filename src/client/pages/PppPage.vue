@@ -24,7 +24,7 @@
   const lightbox = ref(null)
 
   function fsClick() {
-    requestFullScreen(document.body)
+    requestFullScreen(document.documentElement)
   }
 
   onMounted(async () => {
