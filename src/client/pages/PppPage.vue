@@ -26,9 +26,9 @@
         gallery: '#gallery',
         children: 'a',
         pswpModule: () => import('photoswipe'),
-        // initialZoomLevel: 'fill',
-        // secondaryZoomLevel: 1,
-        // maxZoomLevel: 2,
+        initialZoomLevel: 'fill',
+        secondaryZoomLevel: 1,
+        maxZoomLevel: 2,
       })
       lightbox.value.init()
     }
