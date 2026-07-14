@@ -15,18 +15,30 @@ function randomSequence(len) {
   return array
 }
 
-function requestFullScreen(element) {
+function requestFullScreen() {
+  const element = document.documentElement
   // Supports most browsers and their versions.
-  var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen
+  const requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen
 
   if (requestMethod) { // Native full screen.
       requestMethod.call(element)
   }
   else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
-      var wscript = new ActiveXObject("WScript.Shell")
+      const wscript = new ActiveXObject("WScript.Shell")
       if (wscript !== null) {
           wscript.SendKeys("{F11}")
       }
+  }
+}
+
+function toggleFullscreen() {
+  if (document.fullscreenElement) {
+    document
+      .exitFullscreen()
+      // .then(() => console.log("Document Exited from Full screen mode"))
+      .catch((err) => console.error(err));
+  } else {
+    requestFullScreen()
   }
 }
 
@@ -80,6 +92,7 @@ export const usePppStore = defineStore('ppp', () => {
         secondaryZoomLevel: 1,
         maxZoomLevel: 2,
       })
+      addLightboxUi(lightbox.value)
       lightbox.value.init()
       lightbox.value.on('beforeOpen', () => {
         if (isAutoplay.value)
@@ -88,20 +101,57 @@ export const usePppStore = defineStore('ppp', () => {
     }
   }
 
+  function addLightboxUi(lightbox) {
+    lightbox.on('uiRegister', function() {
+      lightbox.pswp.ui.registerElement({
+        name: 'fs-button',
+        ariaLabel: 'Toggle fullscreen',
+        order: 9,
+        isButton: true,
+        html: 'FS',
+        onClick: (event, el) => {
+          toggleFullscreen()
+        }
+      })
+      lightbox.pswp.ui.registerElement({
+        name: 'ap-button',
+        ariaLabel: 'Toggle autoplay',
+        order: 9,
+        isButton: true,
+        html: 'AP',
+        onClick: (event, el) => {
+          isAutoplay.value = !isAutoplay.value
+          if (isAutoplay.value) {
+            runAutoplay()
+            el.classList.add('active')
+          }
+          else el.classList.remove('active')
+        },
+        onInit: (el, pswp) => {
+          if (isAutoplay.value) {
+            el.classList.add('active')
+          }
+          else el.classList.remove('active')
+        },
+      })
+    })
+  }
+
   function runAutoplay() {
     if (timeout != null) {
       clearTimeout(timeout)
       timeout = null
     }
     timeout = setTimeout(() => {
+      if (!isAutoplay.value)
+        return
       const pswp = lightbox.value.pswp
       if (!pswp) return
       if (!isRandom.value)
         pswp.next()
       else
         pswp.goTo(nextRandom())
-      if (isAutoplay.value)
-        runAutoplay()
+      runAutoplay()
     }, interval.value * 1000)
   }
 
@@ -123,14 +173,7 @@ export const usePppStore = defineStore('ppp', () => {
     toggleRandom: () => isRandom.value = !isRandom.value,
     setInterval: (val) => interval.value = val,
     fullscreen: () => {
-      if (document.fullscreenElement) {
-        document
-          .exitFullscreen()
-          // .then(() => console.log("Document Exited from Full screen mode"))
-          .catch((err) => console.error(err));
-      } else {
-        requestFullScreen(document.documentElement)
-      }
+      toggleFullscreen()
     },
   }
 })
