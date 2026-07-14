@@ -8,7 +8,7 @@
 
   <div>
     <div class="gallery-controls">
-      <v-btn @click="ppp.fullscreen()">FS</v-btn>
+      <v-btn :active="ppp.isFullscreen" @click="ppp.fullscreen()">FS</v-btn>
       <v-btn :active="ppp.isAutoplay" @click="ppp.toggleAutoplay()">AP</v-btn>
       <v-btn :active="ppp.isRandom" @click="ppp.toggleRandom()">RND</v-btn>
       <v-select label="interval" :items="[3, 5, 7, 10, 15, 30]" :model-value="ppp.interval" @update:modelValue="ppp.setInterval($event)" density="compact"></v-select>
