@@ -2,6 +2,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import axios from 'axios'
 import { imageSizeFromFile } from 'image-size/fromFile'
+import { authTheToken } from '../sikkerhet.js'
 
 export default function configure(router) {
   router.post('/mirasay', (req, res) => {
@@ -99,7 +100,7 @@ export default function configure(router) {
     })
   })
 
-  router.get('/ppplist', async function (req, res, next) {
+  router.get('/ppplist', authTheToken, async function (req, res, next) {
     const z = path.join(path.resolve(), 'public', 'test', 'ppp')
     const files = await fs.readdir(z)
     const folders = []
@@ -118,7 +119,7 @@ export default function configure(router) {
     })
   })
 
-  router.get('/ppplist/:cat', async function (req, res, next) {
+  router.get('/ppplist/:cat', authTheToken, async function (req, res, next) {
     const cat = req.params.cat
     const z = path.join(path.resolve(), 'public', 'test', 'ppp', cat)
     const result = []

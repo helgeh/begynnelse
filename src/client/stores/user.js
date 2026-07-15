@@ -1,10 +1,12 @@
 import { ref, shallowRef, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { useRouter } from 'vue-router'
 import { useFetch } from '@vueuse/core'
 
 import { attachTokenHeader } from '.'
 
 export const useUserStore = defineStore('user', () => {
+  const router = useRouter()
   const user = shallowRef({ name: '', email: '' })
   const isLoggedIn = shallowRef(false)
   const notVerified = shallowRef(false)
@@ -48,18 +50,25 @@ export const useUserStore = defineStore('user', () => {
   }
 
   async function loadme() {
-    const { data, error } = await useFetch('/meg', {
-      beforeFetch: attachTokenHeader,
-      afterFetch: function (ctx) {
-        isLoggedIn.value = !!ctx.data.email
-        console.log('isLoggedIn ? ', isLoggedIn.value, ctx.data.email)
-        return ctx
-      },
-    })
-      .get()
-      .json()
-    if (data.value) user.value = data.value
-    return error
+    try {
+      const { data, error } = await useFetch('/meg', {
+        beforeFetch: attachTokenHeader,
+        afterFetch: function (ctx) {
+          isLoggedIn.value = !!ctx.data.email
+          console.log('isLoggedIn ? ', isLoggedIn.value, ctx.data.email)
+          return ctx
+        },
+      })
+        .get()
+        .json()
+      if (data.value) {
+        user.value = data.value
+      }
+      return error
+    }
+    catch (e) {
+      return e
+    }
   }
 
   async function login(usr, pw) {
@@ -72,6 +81,9 @@ export const useUserStore = defineStore('user', () => {
       isLoggedIn.value = true
       notVerified.value = false
       loginError.value = ''
+      if (router.currentRoute.value?.redirectedFrom?.fullPath) {
+        router.replace(router.currentRoute.value.redirectedFrom.fullPath)
+      }
     }
     if (statusCode.value === 404) {
       loginError.value = 'Fant ikke bruker'
@@ -109,6 +121,7 @@ export const useUserStore = defineStore('user', () => {
 
   return {
     // state
+    loadme,
     user,
     isLoggedIn,
     notVerified,

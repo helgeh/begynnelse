@@ -76,11 +76,14 @@ export default {
           ),
 
       getPppList: () =>
-        fetch('/ppplist')
-          .then((res) => res.json()),
+        fetch('/ppplist', addAuthHeader())
+          .then((res) => res.json())
+          .catch(err => {
+            // console.error(err)
+          }),
 
       getPppContents: (folder) =>
-        fetch(`/ppplist/${folder}`)
+        fetch(`/ppplist/${folder}`, addAuthHeader())
           .then((res) => res.json())
           .then((json) =>
             json.files.map((file) => {
@@ -94,7 +97,10 @@ export default {
                 height: file.height,
               }
             }),
-          ),
+          )
+          .catch(err => {
+            // console.error(err)
+          }),
 
       miraSay: (data) => {
         return new Promise((resolve, reject) => {

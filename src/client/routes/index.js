@@ -54,7 +54,7 @@ const routes = [
   { path: '/verify', name: 'verify', component: VerifyEmailPage },
   { path: '/mira', name: 'mira', component: MiraMull },
   { path: '/player', name: 'player', component: PodPlayer },
-  { path: '/ppp', name: 'ppp', component: PppPage },
+  { path: '/ppp', name: 'ppp', component: PppPage, meta: { requiresAuth: true } },
   { path: '/about', name: 'about', component: AboutPage },
 ]
 
@@ -63,9 +63,14 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to) => {
+router.beforeEach(async (to, from, next) => {
   const store = useUserStore()
-  if (to.meta.requiresAuth && !store.isLoggedIn) return '/config'
+  if (!to.meta.requiresAuth) {
+    return next()
+  }
+  const err = await store.loadme()
+  if (err && !store.isLoggedIn) next({ name: 'config' })
+  else next()
 })
 
 export default router
