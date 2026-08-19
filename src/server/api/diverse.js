@@ -29,6 +29,36 @@ export default function configure(router) {
       })
   })
 
+  // router.get('/tbane/:stop', async (req, res) => {
+  //   let targetUrl = null
+  //   const furuset = 'https://vis-tavla.entur.no/zHgmyNkipPWWtyV1HN1T'
+  //   if (req.params.stop === 'furuset') {
+  //     targetUrl = furuset
+  //   }
+  //   if (!targetUrl) {
+  //     return res.end('Ingen parametre gitt')
+  //   }
+  //   try {
+  //     const response = await fetch(targetUrl);
+  //     if (!response.ok) {
+  //       return res.send('Fant ikke oppstrøms respons')
+  //     }
+  //     const html = await response.text()
+  //     res.setHeader('Content-Type', 'text/html; charset=utf-8')
+  //     // for (const [key, value] of response.headers.entries()) {
+  //     //   // Skip hop-by-hop headers if necessary
+  //     //   if (['transfer-encoding', 'connection'].includes(key)) continue
+  //     //   res.setHeader(key, value)
+  //     // }
+  //     // console.log(html)
+  //     res.send(html)
+  //   } catch (error) {
+  //     // Handle network errors or parsing errors
+  //     console.error('Relay error:', error.message)
+  //     res.send('Noe gikk feil ved henting av oppstrøms data')
+  //   }
+  // })
+
   router.get('/ziplist', function (req, res, next) {
     const z = path.join(path.resolve(), 'public', 'zips')
     const result = []
@@ -68,7 +98,7 @@ export default function configure(router) {
     const mcName = req.params.name
     // const theirIp = '' + req.ip
     // const origHost = '' + req.header('x-original-host')
-    const forwardedIp = '' + (req.header('x-forwarded-for') ?? req.header('x-original-host') ?? req.ip)
+    const forwardedIp = (req.header('x-forwarded-for') ?? req.header('x-original-host') ?? req.ip)
     if (!forwardedIp)
       return res.status(404).json({ msg: 'Hmm, fant ikke no ip gitt' })
     const playersFile = path.join(path.resolve(), 'localfiles', 'players.json')
